@@ -1,4 +1,5 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
     "target": "ES5",
     "lib": ["dom", "dom.iterable", "esnext"],
