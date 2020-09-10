@@ -1,11 +1,8 @@
 import { app, BrowserWindow } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
-import * as fs from 'fs';
 
 console.log('process.env.NODE_ENV=', process.env.NODE_ENV);
-console.log('app.getAppPath()=', app.getAppPath());
-console.log(fs.readdirSync(path.join(app.getAppPath(), '/app/')));
 
 app.on('ready', () => {
   let mainWindow: Electron.BrowserWindow | null = new BrowserWindow({
