@@ -60,5 +60,8 @@ convenience, but can easily be removed if you don't want them.
     in `webpack-electron.config.ts` for the main process.
 - How can I change the icon?
   - `resources/icon.png`
+- I don't want to use yarn.
+  - Remove the file `yarn.lock`, change `yarn` to `npm run`
+    in the scripts inside of `package.json`.
 - I want a more comprehensive boilerplate that includes more features.
   - Look into https://github.com/electron-react-boilerplate/electron-react-boilerplate
