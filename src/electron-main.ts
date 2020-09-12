@@ -8,10 +8,14 @@ app.on('ready', () => {
   let mainWindow: Electron.BrowserWindow | null = new BrowserWindow({
     width: 800,
     height: 600,
+    frame: false,
+    resizable: true,
+
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
       worldSafeExecuteJavaScript: true,
+      enableRemoteModule: true
     },
   });
 
