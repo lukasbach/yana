@@ -1,4 +1,4 @@
-import { app } from "electron";
+import { app } from 'electron';
 import * as fsLib from 'fs';
 import * as path from 'path';
 import { AppData } from '../types';
@@ -11,8 +11,7 @@ const APPDATA_FILE = 'workspaces.json';
 export class AppDataService {
   appData!: AppData;
 
-  constructor() {
-  }
+  constructor() {}
 
   private getAppDataFile() {
     const userDataFolder = app.getPath('userData');
@@ -28,7 +27,7 @@ export class AppDataService {
     const appDataFile = this.getAppDataFile();
 
     let appData: AppData = {
-      workspaces: []
+      workspaces: [],
     };
 
     if (!fsLib.existsSync(appDataFile)) {
@@ -40,18 +39,19 @@ export class AppDataService {
     this.appData = appData;
   }
 
-  public async createWorkSpace(name: string, path: string) { // TODO kind
-    const appDataFile = this.getAppDataFile();
-
-    this.appData.workspaces.push({
-      name,
-      dataSourceType: 'fs',
-      dataSourceOptions: {
-        sourcePath: path
-      }
-    });
-
-    await fs.writeFile(appDataFile, JSON.stringify(this.appData));
-    await LocalFileSystemDataSource.init({ sourcePath: path });
-  }
+  // public async createWorkSpace(name: string, path: string) {
+  //   // TODO kind
+  //   const appDataFile = this.getAppDataFile();
+//
+  //   this.appData.workspaces.push({
+  //     name,
+  //     dataSourceType: 'fs',
+  //     dataSourceOptions: {
+  //       sourcePath: path,
+  //     },
+  //   });
+//
+  //   await fs.writeFile(appDataFile, JSON.stringify(this.appData));
+  //   await LocalFileSystemDataSource.init({ sourcePath: path });
+  // }
 }

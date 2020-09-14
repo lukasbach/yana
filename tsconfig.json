@@ -11,9 +11,10 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "jsx": "react",
-    "outDir": "app"
+    "outDir": "app",
+    "downlevelIteration": true
   },
   "include": ["src"]
 }

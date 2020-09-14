@@ -1,36 +1,29 @@
 import { LocalFileSystemDataSourceOptions } from './datasource/LocalFileSystemDataSource';
 
-export interface NamedIdentifiableItem<K extends IdentifiableItemKind> {
+export enum DataItemKind {
+  NoteItem = 'note',
+  Collection = 'collection',
+  MediaItem = 'media',
+}
+
+export interface DataItem<K extends DataItemKind = any> {
   id: string;
   name: string;
   kind: K;
-}
-
-export enum IdentifiableItemKind {
-  NoteItem = 'note',
-  Collection = 'collection',
-  MediaItem = 'media'
-}
-
-export interface Taggable {
   tags: string[];
+  parentIds: string[];
+  created: number;
+  lastChange: number;
 }
 
-export interface HasParents {
-  parentIds: string[]
-}
-
-export interface NoteItemCollection extends NamedIdentifiableItem<IdentifiableItemKind.Collection>, Taggable, HasParents {
-}
-
-export interface NoteItem<T extends string, C extends object> extends NamedIdentifiableItem<IdentifiableItemKind.NoteItem>, Taggable, HasParents {
-  type: T;
+export interface NoteDataItem<T extends string, C extends object> extends DataItem<DataItemKind.NoteItem> {
+  noteType: T;
   content: C;
-  created: string;
-  lastChange: string;
 }
 
-export interface MediaItem extends NamedIdentifiableItem<IdentifiableItemKind.MediaItem>, Taggable, HasParents {
+export interface CollectionDataItem extends DataItem<DataItemKind.Collection> {}
+
+export interface MediaItem extends DataItem<DataItemKind.MediaItem> {
   added: string;
   size: number;
   type: 'image' | 'text' | 'folder';
@@ -50,7 +43,8 @@ export interface SearchQuery {
   contains?: string[];
   tags?: string[];
   parents?: string[];
-  kind?: IdentifiableItemKind;
+  exactParents?: string[];
+  kind?: DataItemKind;
 }
 
 export interface WorkSpace {

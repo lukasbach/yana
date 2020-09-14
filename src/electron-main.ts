@@ -15,7 +15,7 @@ app.on('ready', () => {
       nodeIntegration: true,
       webSecurity: false,
       worldSafeExecuteJavaScript: true,
-      enableRemoteModule: true
+      enableRemoteModule: true,
     },
   });
 

@@ -13,7 +13,7 @@ export class EventEmitter<EventPayload extends object> {
   public on(handler: (payload: EventPayload) => any): number {
     this.handlers.push(handler);
     return this.handlerCount++;
-  };
+  }
 
   public delete(handlerId: number) {
     this.handlers[handlerId] = null;
