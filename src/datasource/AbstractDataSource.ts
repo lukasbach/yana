@@ -10,6 +10,7 @@ export interface AbstractDataSource {
   removeItem: (id: string) => Promise<DataSourceActionResult>;
   changeItem: <K extends DataItemKind>(id: string, overwriteItem: DataItem<K>) => Promise<DataSourceActionResult>;
 
+  getParentsOf: <K extends DataItemKind>(childId: string) => Promise<DataItem<K>[]>;
   search: (search: SearchQuery, onFind: (result: Array<DataItem<any>>) => any) => Promise<DataSourceActionResult>;
 
   loadMediaItemContent: (id: string) => Promise<Buffer | Blob>;

@@ -104,9 +104,15 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     search: SearchQuery,
     onFind: (collections: Array<DataItem<any>>) => any
   ): Promise<DataSourceActionResult> {
-    onFind(
-      Object.values(this.structure.items).filter(item => SearchHelper.satisfiesSearch(item, search))
-    );
+    const result: DataItem[] = [];
+
+    for (const item of Object.values(this.structure.items)) {
+      if (await SearchHelper.satisfiesSearch(item, search, this)) {
+        result.push(item);
+      }
+    }
+
+    onFind(result);
   }
 
   public async loadMediaItemContent(id: string): Promise<Buffer | Blob> {
@@ -115,6 +121,10 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   }
 
   public async persist() {
-    fsLib.writeFileSync(this.resolvePath(STRUCTURE_FILE), JSON.stringify(this.structure));
+    fsLib.writeFileSync(this.resolvePath(STRUCTURE_FILE), JSON.stringify(this.structure, null, 1));
+  }
+
+  public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {
+    return Object.values(this.structure.items).filter(item => item.childIds.includes(childId));
   }
 }

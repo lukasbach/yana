@@ -47,24 +47,24 @@ export const SideBarTreeItem: React.FC<{
             <Button minimal={true} small={true} onClick={() => setIsEditingName(true)}>
               <Icon icon={'edit'} />
             </Button>
-            <Button minimal={true} small={true} onClick={() => dataInterface.createDataItem({
+            <Button minimal={true} small={true} onClick={() => dataInterface.createDataItemUnderParent({
               name: 'New Collection',
-              parentIds: [item.id],
+              childIds: [],
               kind: DataItemKind.Collection,
               lastChange: new Date().getTime(),
               created: new Date().getTime(),
               tags: []
-            })}>
+            }, item.id)}>
               <Icon icon={'folder-new'} />
             </Button>
-            <Button minimal={true} small={true} onClick={() => dataInterface.createDataItem({
+            <Button minimal={true} small={true} onClick={() => dataInterface.createDataItemUnderParent({
               name: 'New Note Item',
-              parentIds: [item.id],
+              childIds: [],
               kind: DataItemKind.NoteItem,
               lastChange: new Date().getTime(),
               created: new Date().getTime(),
               tags: []
-            })}>
+            }, item.id)}>
               <Icon icon={'new-object'} />
             </Button>
           </>

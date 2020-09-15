@@ -11,7 +11,7 @@ export interface DataItem<K extends DataItemKind = any> {
   name: string;
   kind: K;
   tags: string[];
-  parentIds: string[];
+  childIds: string[];
   created: number;
   lastChange: number;
 }

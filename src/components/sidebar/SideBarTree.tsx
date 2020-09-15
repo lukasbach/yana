@@ -36,6 +36,7 @@ export const SideBarTree: React.FC<{
   });
 
   useEffect(() => {
+    const itemIds = items.map(item => item.id);
     const newTree: TreeData = {
       rootId: 'root',
       items: {
@@ -46,9 +47,7 @@ export const SideBarTree: React.FC<{
             id: item.id,
             hasChildren: item.kind === DataItemKind.Collection,
             data: item,
-            children: items
-              .filter(potentialChild => potentialChild.parentIds.includes(item.id)/* && loadedContentIds.includes(potentialChild.id)*/)
-              .map(potentialChild => potentialChild.id),
+            children: item.childIds.filter(child => itemIds.includes(child)),
             isExpanded: expandedIds.includes(item.id)
           }
         ]))
@@ -94,6 +93,7 @@ export const SideBarTree: React.FC<{
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
+            title={item.id}
           >
             <SideBarTreeItem
               item={item.data}

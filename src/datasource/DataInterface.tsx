@@ -16,6 +16,7 @@ export const useRefreshedSearch = (search: SearchQuery) => {
   const [eventHandler, setEventHandler] = useState<undefined | number>();
 
   useEffect(() => {
+    setInterval(() => console.log(refreshedItems), 2000)
     console.log(1, search)
     setRefreshedItems([]);
     dataInterface.search(search, items => setRefreshedItems(oldItems => [...oldItems, ...items]));
@@ -33,12 +34,19 @@ export const useRefreshedSearch = (search: SearchQuery) => {
 
       for (const { id: itemId, reason } of changes) {
         const item = await dataInterface.getDataItem(itemId);
-        if (!refreshedItemIds.includes(itemId) && SearchHelper.satisfiesSearch(item, search)) {
+        console.log("!!===!", item, refreshedItems)
+
+        if ([ItemChangeEventReason.Created, ItemChangeEventReason.Changed].includes(reason)
+          && !refreshedItemIds.includes(itemId)
+          && await SearchHelper.satisfiesSearch(item, search, dataInterface)) {
+          console.log("useRefreshedSearch:addItems")
           addItems.push(item);
-        } else if (refreshedItemIds.includes(itemId)) {
-          if (!SearchHelper.satisfiesSearch(item, search)) {
+        } else if ([ItemChangeEventReason.Changed, ItemChangeEventReason.Removed].includes(reason) && refreshedItemIds.includes(itemId)) {
+          if (reason === ItemChangeEventReason.Removed || !(await SearchHelper.satisfiesSearch(item, search, dataInterface))) {
+            console.log("useRefreshedSearch:removeItemIds")
             removeItemIds.push(item.id);
           } else {
+            console.log("useRefreshedSearch:changedItems")
             changedItems.push(item);
           }
         }
@@ -161,20 +169,24 @@ export const useTreeStructure = (rootItems: Array<string | DataItem>, initiallyE
       for (const { id, reason } of changes) {
         if (itemIds.includes(id)) {
           if (reason === ItemChangeEventReason.Removed) {
+            console.log("Existing Item was removed")
             removed.push(id);
-          } else {
+          } else if (reason === ItemChangeEventReason.Changed) {
+            console.log("Existing Item was updated")
             updated.push(await dataInterface.getDataItem(id));
+            // const childs = await dataInterface.searchImmediate({ parents: [id] });
+            // const newChilds = childs.filter(child => !itemIds.includes(child.id));
+            // added.push(...newChilds);
           }
-        } else if (reason === ItemChangeEventReason.Changed || reason === ItemChangeEventReason.Created) {
+        } else if (reason === ItemChangeEventReason.Created) {
+          console.log("Item was added")
           const changedItem = await dataInterface.getDataItem(id);
-          const changedParentIds = arrayIntersection(changedItem.parentIds, itemIds);
-          console.log("!!", changedParentIds, changedItem, itemIds, items)
-          if (changedParentIds.length) {
-            // is child of expanded item
+          const changedItemParents = await dataInterface.searchImmediate({ parents: [changedItem.id] });
+          const itemIdsToChange = arrayIntersection(changedItemParents.map(i => i.id), itemIds);
+          const itemsToChange = await Promise.all(itemIdsToChange.map(id => dataInterface.getDataItem(id)));
+          updated.push(...itemsToChange);
+          if (itemIdsToChange.length) {
             added.push(changedItem);
-            for (const changedParentId of changedParentIds) {
-              updated.push(await dataInterface.getDataItem(changedParentId));
-            }
           }
         }
       }
@@ -206,7 +218,8 @@ export const useTreeStructure = (rootItems: Array<string | DataItem>, initiallyE
     expandedIds,
     expand: async (id: string) => {
       const childs = await dataInterface.searchImmediate({ parents: [id] });
-      setItems(items => [...items.filter(item => !childs.map(child => child.id).includes(item.id)), ...childs]);
+      const childIds = childs.map(child => child.id);
+      setItems(items => [...items.filter(item => !childIds.includes(item.id)), ...childs]);
       setExpandedIds(ids => [...ids, id]);
     },
     collapse: async (id: string) => {
@@ -307,6 +320,20 @@ export class DataInterface implements AbstractDataSource {
     return result;
   }
 
+  public async createDataItemUnderParent<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>, parentId: string): Promise<DataItem<K>> {
+    const parent = await this.dataSource.getDataItem(parentId);
+
+    if (!parent) {
+      throw Error(`Can't create item within parent ${parentId}, parent does not exist.`);
+    }
+
+    const result = await this.dataSource.createDataItem<K>(item);
+    await this.dataSource.changeItem(parentId, {...parent, childIds: [...parent.childIds, result.id]});
+    this.onChangeItems.emit([{ id: result.id, reason: ItemChangeEventReason.Created }]);
+    this.onChangeItems.emit([{ id: parentId, reason: ItemChangeEventReason.Changed }]);
+    return result;
+  }
+
   public async removeItem(id: string): Promise<DataSourceActionResult> {
     const result = await this.dataSource.removeItem(id);
     this.updateCache(id, undefined);
@@ -344,6 +371,10 @@ export class DataInterface implements AbstractDataSource {
 
   public async persist(): Promise<DataSourceActionResult> {
     return await this.dataSource.persist();
+  }
+
+  public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {
+    return await this.dataSource.getParentsOf(childId);
   }
 
   // TODO bulk operations such as changeItems, removeItems, ...

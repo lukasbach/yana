@@ -19,7 +19,7 @@ export const SideBarContent: React.FC<{}> = props => {
         kind: DataItemKind.Collection,
         name: 'New Collection',
         tags: [],
-        parentIds: [],
+        childIds: [],
         created: new Date().getTime(),
         lastChange: new Date().getTime()
       })}>
