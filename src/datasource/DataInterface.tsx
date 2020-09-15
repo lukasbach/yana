@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { useContext, useState, useEffect } from 'react';
+import { useContext, useState, useEffect, useRef } from 'react';
 import { AbstractDataSource } from './AbstractDataSource';
 import { DataSourceActionResult, DataItemKind, DataItem, SearchQuery } from '../types';
 import { EventEmitter } from '../common/EventEmitter';
 import { useAppData } from '../appdata/AppDataProvider';
 import { LocalFileSystemDataSource } from './LocalFileSystemDataSource';
 import { SearchHelper } from './SearchHelper';
+import { arrayIntersection, doArraysIntersect, undup } from '../utils';
 
 export const useDataInterface = () => useContext(DataInterfaceContext);
 
@@ -23,14 +24,14 @@ export const useRefreshedSearch = (search: SearchQuery) => {
       dataInterface.onChangeItems.delete(eventHandler);
     }
 
-    const handler = dataInterface.onChangeItems.on(async (items) => {
+    const handler = dataInterface.onChangeItems.on(async (changes) => {
       const refreshedItemIds = refreshedItems.map(item => item.id);
 
       const addItems: Array<DataItem<any>> = [];
       const changedItems: Array<DataItem<any>> = [];
       const removeItemIds: Array<string> = [];
 
-      for (const itemId of items) {
+      for (const { id: itemId, reason } of changes) {
         const item = await dataInterface.getDataItem(itemId);
         if (!refreshedItemIds.includes(itemId) && SearchHelper.satisfiesSearch(item, search)) {
           addItems.push(item);
@@ -86,13 +87,13 @@ export const useRefreshedItems = (
 
    setRefreshedItems(initialItems);
 
-    const handler = dataInterface.onChangeItems.on(async ids => {
+    const handler = dataInterface.onChangeItems.on(async changes => {
       const refreshedItemIds = refreshedItems.map(item => item.id);
 
       let updated: DataItem<any>[] = [];
       let removed: string[] = [];
 
-      for (const id of ids) {
+      for (const { id, reason } of changes) {
         if (refreshedItemIds.includes(id)) {
           const item = refreshedItems.find(i => i.id === id)!;
           const newItem = await dataInterface.getDataItem(id);
@@ -111,7 +112,7 @@ export const useRefreshedItems = (
           .map(item => updated.find(updatedItem => updatedItem.id === item.id) || item)
       );
 
-      onChangedItems?.(ids);
+      // TODO onChangedItems?.(changes); needed?
     });
 
     setEventHandler(handler);
@@ -135,17 +136,81 @@ export const useRefreshedItems = (
   ];
 };
 
-export const useTreeStructure = (rootItemIds: string[]) => {
+export const useTreeStructure = (rootItems: Array<string | DataItem>, initiallyExpanded: string[] = []) => {
   const dataInterface = useDataInterface();
   const [items, setItems] = useState<DataItem[]>([]);
+  const [expandedIds, setExpandedIds] = useState<string[]>(initiallyExpanded);
+  const [eventHandler, setEventHandler] = useState<undefined | number>();
+  console.log("???", items)
+
+  useEffect(() => {
+    Promise.all<DataItem>(rootItems.map(rootItem => typeof rootItem === 'string' ? dataInterface.getDataItem(rootItem) : new Promise(r => r(rootItem)))).then(setItems);
+  }, [rootItems]);
+
+  useEffect(() => {
+    if (eventHandler) {
+      dataInterface.onChangeItems.delete(eventHandler);
+    }
+
+    const handler = dataInterface.onChangeItems.on(async changes => {
+      const itemIds = items.map(item => item.id);
+      let updated: DataItem[] = [];
+      let removed: string[] = [];
+      let added: DataItem[] = [];
+
+      for (const { id, reason } of changes) {
+        if (itemIds.includes(id)) {
+          if (reason === ItemChangeEventReason.Removed) {
+            removed.push(id);
+          } else {
+            updated.push(await dataInterface.getDataItem(id));
+          }
+        } else if (reason === ItemChangeEventReason.Changed || reason === ItemChangeEventReason.Created) {
+          const changedItem = await dataInterface.getDataItem(id);
+          const changedParentIds = arrayIntersection(changedItem.parentIds, itemIds);
+          console.log("!!", changedParentIds, changedItem, itemIds, items)
+          if (changedParentIds.length) {
+            // is child of expanded item
+            added.push(changedItem);
+            for (const changedParentId of changedParentIds) {
+              updated.push(await dataInterface.getDataItem(changedParentId));
+            }
+          }
+        }
+      }
+
+      console.log("Tree update summary:")
+      console.log("  Updated items: ", updated)
+      console.log("  Removed items: ", removed)
+      console.log("  Added items: ", added)
+
+      setItems(i => [
+        ...i
+          .filter(item => !removed.includes(item.id))
+          .map(item => updated.find(updatedItem => updatedItem.id === item.id) || item),
+        ...added
+      ]);
+    });
+
+    setEventHandler(handler);
+
+    return () => {
+      if (eventHandler) {
+        dataInterface.onChangeItems.delete(eventHandler);
+      }
+    }
+  }, [rootItems, items]);
 
   return {
     items,
-    expand: (id: string) => {
-
+    expandedIds,
+    expand: async (id: string) => {
+      const childs = await dataInterface.searchImmediate({ parents: [id] });
+      setItems(items => [...items.filter(item => !childs.map(child => child.id).includes(item.id)), ...childs]);
+      setExpandedIds(ids => [...ids, id]);
     },
-    collapse: (id: string) => {
-
+    collapse: async (id: string) => {
+      setExpandedIds(ids => ids.filter(id2 => id2 !== id));
     }
   };
 }
@@ -188,7 +253,7 @@ export class DataInterface implements AbstractDataSource {
   private cachedKeys: string[] = [];
   private cachedKeysIt = 0;
 
-  public onChangeItems = new EventEmitter<string[]>();
+  public onChangeItems = new EventEmitter<ItemChangeEvent[]>();
 
   constructor(public dataSource: AbstractDataSource, private cacheLength: number = 50) {}
 
@@ -232,20 +297,20 @@ export class DataInterface implements AbstractDataSource {
 
   public async writeNoteItemContent<C extends object>(id: string, content: C): Promise<DataSourceActionResult> {
     const result = await this.dataSource.writeNoteItemContent<C>(id, content);
-    this.onChangeItems.emit([id]);
+    this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.ChangedNoteContents }]);
     return result;
   }
 
   public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>): Promise<DataItem<K>> {
     const result = await this.dataSource.createDataItem<K>(item);
-    this.onChangeItems.emit([result.id]);
+    this.onChangeItems.emit([{ id: result.id, reason: ItemChangeEventReason.Created }]);
     return result;
   }
 
   public async removeItem(id: string): Promise<DataSourceActionResult> {
     const result = await this.dataSource.removeItem(id);
     this.updateCache(id, undefined);
-    this.onChangeItems.emit([id]);
+    this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Removed }]);
     return result;
   }
 
@@ -255,7 +320,7 @@ export class DataInterface implements AbstractDataSource {
   ): Promise<DataSourceActionResult> {
     const result = await this.dataSource.changeItem(id, overwriteItem);
     this.updateCache(id, overwriteItem);
-    this.onChangeItems.emit([id]);
+    this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Changed }]);
     return result;
   }
 

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import Tree from '@atlaskit/tree';
 import cxs from 'cxs';
 import { Button, Icon } from '@blueprintjs/core';
-import { useDataInterface, useRefreshedItems, useTreeStructure } from '../../datasource/DataInterface';
+import { useDataInterface, useRefreshedItems } from '../../datasource/DataInterface';
 import { DataItem, DataItemKind } from '../../types';
 import { TreeData } from '@atlaskit/tree/types';
 import { useAsyncEffect } from '../../utils';
@@ -21,9 +21,26 @@ export const SideBarTree: React.FC<{
 }> = props => {
   const dataInterface = useDataInterface();
   useEffect(() => console.log("Root items changed: ", props.rootItems), [props.rootItems]);
-  const { items, collapse, expand, expandedIds } = useTreeStructure(props.rootItems);
-
-
+  const [expandedIds, setExpandedIds] = useState<string[]>([]);
+  const [loadedContentIds, setLoadedContentIds] = useState<string[]>([]);
+  const [items, setItems] = useRefreshedItems(
+    props.rootItems,
+    changedItemIds => {
+      (async () => {
+        console.log("Changed: ", changedItemIds)
+        for (const id of changedItemIds) {
+          const item = await dataInterface.getDataItem(id);
+          const isChildOfExpandedItem = expandedIds.map(id => item.parentIds.includes(id)).reduce((a, b) => a || b, false);
+          if (isChildOfExpandedItem) {
+            console.log("Yep reload, for item", item)
+            setLoadedContentIds(ids => ids.filter(i => !item.parentIds.includes(i)));
+            setExpandedIds(e => e);
+          }
+        }
+      })();
+    }
+  );
+  console.log("Current items: ", items)
   const [treeData, setTreeData] = useState<TreeData>({
     rootId: 'root',
     items: {
@@ -35,18 +52,41 @@ export const SideBarTree: React.FC<{
     }
   });
 
+  useAsyncEffect(async () => {
+    const loadContentForItems = expandedIds.filter(id => !loadedContentIds.includes(id));
+    console.log("Loading childs of newly expanded items...", expandedIds, loadedContentIds, loadContentForItems)
+    const loadedContentItems = (await Promise.all(loadContentForItems.map(itemId => dataInterface.searchImmediate({ parents: [itemId] }))))
+      .reduce((a, b) => [...a, ...b], []);
+    console.log(`Load childs of expanded items. ${loadContentForItems.length} new expansions, ${loadedContentItems.length} new items. Newly expanded are ${loadedContentItems.map(i => i.id).join(', ')}`);
+    console.log(props.rootItems, items);
+    setItems(oldItems => [...new Set([...oldItems, ...loadedContentItems])]);
+    // setLoadedContentIds(old => [...old, ...loadedContentItems.map(item => item.id)]);
+    setLoadedContentIds(old => [...old, ...loadContentForItems]);
+    console.log(items);
+
+    // const loadedItems = await Promise.all(loadItems.map(id => dataInterface.getDataItem(id)));
+    // const loadItems = expandedIds.filter(id => !loadedContentIds.includes(id));
+
+    // let loadedItems = await dataInterface.searchImmediate({ parents: [] });
+    // loadedItems = loadedItems.filter(item => items.find(i => i.id !== item.id));
+    // console.log("!!", items, loadedItems)
+    // setItems(oldItems => [...oldItems, ...loadedItems]);
+
+    // setLoadedContentIds(ids => [...ids, ...loadItems]);
+  }, [expandedIds]);
+
   useEffect(() => {
     const newTree: TreeData = {
       rootId: 'root',
       items: {
-        root: { id: 'root', hasChildren: true, data: {}, children: !items.length? [] : props.rootItems.map(item => item.id) },
+        root: { id: 'root', hasChildren: true, data: {}, children: props.rootItems.map(item => item.id) },
         ...Object.fromEntries(items.map(item => [
           item.id,
           {
             id: item.id,
             hasChildren: item.kind === DataItemKind.Collection,
             data: item,
-            children: items
+            children: !loadedContentIds.includes(item.id) ? [] : items
               .filter(potentialChild => potentialChild.parentIds.includes(item.id)/* && loadedContentIds.includes(potentialChild.id)*/)
               .map(potentialChild => potentialChild.id),
             isExpanded: expandedIds.includes(item.id)
@@ -83,8 +123,12 @@ export const SideBarTree: React.FC<{
         offsetPerLevel={16}
         isDragEnabled={false}
         tree={treeData}
-        onExpand={(itemId) => expand(itemId as string)}
-        onCollapse={(itemId) => collapse(itemId as string)}
+        onExpand={(itemId) => {
+          setExpandedIds(ids => [...ids, itemId as string]);
+        }}
+        onCollapse={(itemId) => {
+          setExpandedIds(ids => ids.filter(id => id !== itemId))
+        }}
         renderItem={({ item, onExpand, onCollapse, provided, depth }) => (
           <div
             className={[
