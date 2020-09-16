@@ -67,6 +67,9 @@ export const SideBarTreeItem: React.FC<{
             }, item.id)}>
               <Icon icon={'new-object'} />
             </Button>
+            <Button minimal={true} small={true} onClick={() => dataInterface.removeItem(item.id)}>
+              <Icon icon={'trash'} />
+            </Button>
           </>
         )
       }

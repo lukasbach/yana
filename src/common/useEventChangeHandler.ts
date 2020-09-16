@@ -1,20 +1,21 @@
-import { DataInterface, ItemChangeEvent } from '../datasource/DataInterface';
 import { EventEmitter } from './EventEmitter';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
-export const useEventChangeHandler = <T extends object>(eventEmitter: EventEmitter<T>, handler: (payload: T) => void, dependencies: any[]) => {
-  const [eventHandler, setEventHandler] = useState<undefined | number>();
+export const useEventChangeHandler = <T extends object>(eventEmitter: EventEmitter<T>, handler: (payload: T) => any, dependencies: any[]) => {
+  const eventHandler = useRef<undefined | number>();
 
   useEffect(() => {
-    if (eventHandler) {
-      eventEmitter.delete(eventHandler);
+    if (eventHandler.current) {
+      eventEmitter.delete(eventHandler.current);
     }
 
-    setEventHandler(eventEmitter.on(handler));
+    eventHandler.current = eventEmitter.on(handler);
+
+    // console.log("useEventChangeHandler: deps changed, now:", dependencies);
 
     return () => {
-      if (eventHandler) {
-        eventEmitter.delete(eventHandler);
+      if (eventHandler.current) {
+        eventEmitter.delete(eventHandler.current);
       }
     }
   }, [eventEmitter, ...dependencies]);

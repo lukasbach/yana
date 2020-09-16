@@ -44,6 +44,7 @@ export interface SearchQuery {
   tags?: string[];
   parents?: string[];
   exactParents?: string[];
+  childs?: string[];
   kind?: DataItemKind;
 }
 
