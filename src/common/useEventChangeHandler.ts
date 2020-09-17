@@ -11,8 +11,6 @@ export const useEventChangeHandler = <T extends object>(eventEmitter: EventEmitt
 
     eventHandler.current = eventEmitter.on(handler);
 
-    // console.log("useEventChangeHandler: deps changed, now:", dependencies);
-
     return () => {
       if (eventHandler.current) {
         eventEmitter.delete(eventHandler.current);

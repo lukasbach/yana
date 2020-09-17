@@ -13,7 +13,6 @@ import exp from 'constants';
 export const useDataInterface = () => useContext(DataInterfaceContext);
 
 export const useRefreshedSearch = (search: SearchQuery) => {
-  console.log("üü 1")
   const dataInterface = useDataInterface();
   const [refreshedItems, setRefreshedItems] = useState<Array<DataItem<any>>>([]);
 
@@ -31,26 +30,23 @@ export const useRefreshedSearch = (search: SearchQuery) => {
 
     for (const { id: itemId, reason } of changes) {
       const item = await dataInterface.getDataItem(itemId);
-      console.log("!!===!", item, refreshedItems)
+      console.log("refresh items,", refreshedItemIds, item, reason)
 
       if ([ItemChangeEventReason.Created, ItemChangeEventReason.Changed].includes(reason)
         && !refreshedItemIds.includes(itemId)
         && await SearchHelper.satisfiesSearch(item, search, dataInterface)) {
-        console.log("useRefreshedSearch:addItems")
         addItems.push(item);
       } else if ([ItemChangeEventReason.Changed, ItemChangeEventReason.Removed].includes(reason) && refreshedItemIds.includes(itemId)) {
         if (reason === ItemChangeEventReason.Removed || !(await SearchHelper.satisfiesSearch(item, search, dataInterface))) {
-          console.log("useRefreshedSearch:removeItemIds")
           removeItemIds.push(itemId);
         } else {
-          console.log("useRefreshedSearch:changedItems")
           changedItems.push(item);
         }
       }
     }
 
     if (addItems.length || changedItems.length || removeItemIds.length) {
-      console.log("üü 4")
+      console.log(addItems, changedItems, removeItemIds)
       setRefreshedItems(i => [
         ...addItems,
         ...i
@@ -118,8 +114,7 @@ export const useTreeStructure = (rootItems: Array<string | DataItem>, initiallyE
   const dataInterface = useDataInterface();
   const [items, setItems] = useState<DataItem[]>([]);
   const [expandedIds, setExpandedIds] = useState<string[]>(initiallyExpanded);
-
-  console.log("???", items)
+  const rootItemIds = rootItems.map(item => typeof item === 'string' ? item : item.id); // TODO maybe not neccessary or better implemented otherwise more efficiently?
 
   useAsyncEffect(async () => {
     console.log("Reload root items")
@@ -139,24 +134,15 @@ export const useTreeStructure = (rootItems: Array<string | DataItem>, initiallyE
     let added: DataItem[] = [];
 
     for (const { id, reason } of changes) {
-      console.log("Tree is handling change of:", await dataInterface.getDataItem(id), reason)
-
       if (itemIds.includes(id)) {
         if (reason === ItemChangeEventReason.Removed) {
-          console.log("Existing Item was removed")
           removed.push(id);
         } else if (reason === ItemChangeEventReason.Changed) {
-          console.log("Existing Item was updated")
           updated.push(await dataInterface.getDataItem(id));
-          // const childs = await dataInterface.searchImmediate({ parents: [id] });
-          // const newChilds = childs.filter(child => !itemIds.includes(child.id));
-          // added.push(...newChilds);
         }
       } else if (reason === ItemChangeEventReason.Created) {
-        console.log("Item was added")
         const changedItem = await dataInterface.getDataItem(id);
         const changedItemParents = await dataInterface.searchImmediate({ childs: [changedItem.id] });
-        console.log("PARENTS", changedItem, changedItemParents, dataInterface)
         const itemIdsToChange = arrayIntersection(changedItemParents.map(i => i.id), itemIds);
         const itemsToChange = await Promise.all(itemIdsToChange.map(id => dataInterface.getDataItem(id)));
         updated.push(...itemsToChange);
@@ -166,7 +152,9 @@ export const useTreeStructure = (rootItems: Array<string | DataItem>, initiallyE
       }
     }
 
-    console.log("Tree update summary:")
+    // TODO deleting root items crashes
+
+    console.groupCollapsed("Tree update summary:")
     console.log("  Previously contained ids: ", itemIds)
     console.log("  Changes processed: ", changes)
     console.log("  Updated items: ", updated)
@@ -178,15 +166,23 @@ export const useTreeStructure = (rootItems: Array<string | DataItem>, initiallyE
       setItems(i => [
         ...i
           .filter(item => !removed.includes(item.id))
-          .filter(item => !items.find(potentialParent => potentialParent.childIds.includes(item.id)))
+          .filter(item => {
+            // const removedDueToNoParent = !i.find(potentialParent => potentialParent.childIds.includes(item.id));
+            const removedDueToNoParent = i.find(potentialParent => potentialParent.childIds.includes(item.id));
+            return rootItemIds.includes(item.id) || removedDueToNoParent
+            // if (removedDueToNoParent) console.log("Removed due to no parent")
+            // return removedDueToNoParent;
+          })
           .map(item => updated.find(updatedItem => updatedItem.id === item.id) || item),
         ...added
       ]);
+      console.log("  New item structure:", items);
     }
 
     if (removed.length && doArraysIntersect(removed, expandedIds)) { // TODO properly handle
       setExpandedIds(ids => ids.filter(id => !removed.includes(id)));
     }
+    console.groupEnd();
   }, [rootItems, items, dataInterface]);
 
   const expand = useCallback(async (id: string) => {

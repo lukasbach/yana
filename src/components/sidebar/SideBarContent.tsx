@@ -9,8 +9,8 @@ import { useEffect } from 'react';
 export const SideBarContent: React.FC<{}> = props => {
   const dataInterface = useDataInterface();
   const rootCollections = useRefreshedSearch({ exactParents: [] });
-  console.log("RELOAD SIDEBARCONTENT")
-  useEffect(() => console.log("RELOAD ROOT COLLCTIONS"), [rootCollections])
+
+  useEffect(() => console.log(`Changed root collections`, rootCollections), [rootCollections])
 
   return (
     <>

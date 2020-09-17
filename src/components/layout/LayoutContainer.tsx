@@ -50,7 +50,6 @@ const styles = {
 };
 
 export const LayoutContainer: React.FC<{}> = props => {
-  console.log(remote.getCurrentWindow());
   return (
     <div className={styles.mainContainer}>
       <div className={styles.tobBar} style={{ webkitAppRegion: 'drag' } as any}>

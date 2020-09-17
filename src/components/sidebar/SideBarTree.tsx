@@ -23,7 +23,6 @@ export const SideBarTree: React.FC<{
   useEffect(() => console.log("Root items changed: ", props.rootItems), [props.rootItems]);
   const { items, collapse, expand, expandedIds } = useTreeStructure(props.rootItems);
 
-
   const [treeData, setTreeData] = useState<TreeData>({
     rootId: 'root',
     items: {
@@ -40,7 +39,7 @@ export const SideBarTree: React.FC<{
     const newTree: TreeData = {
       rootId: 'root',
       items: {
-        root: { id: 'root', hasChildren: true, data: {}, children: !items.length? [] : props.rootItems.map(item => item.id) },
+        root: { id: 'root', hasChildren: true, data: {}, children: !items.length? [] : props.rootItems.filter(item => itemIds.includes(item.id)).map(item => item.id) },
         ...Object.fromEntries(items.map(item => [
           item.id,
           {
@@ -53,10 +52,8 @@ export const SideBarTree: React.FC<{
         ]))
       }
     };
-    console.log(`Rebuild tree.`, newTree);
-    console.log(`Items are`, items);
+    console.log(`Rebuild tree.`, newTree, items);
     setTreeData(newTree);
-    console.log(treeData);
   }, [items, expandedIds]);
 
   /*
