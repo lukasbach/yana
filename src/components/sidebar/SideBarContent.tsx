@@ -2,13 +2,14 @@ import * as React from 'react';
 import { WorkSpaceSelection } from './WorkSpaceSelection';
 import { SideBarTree } from './SideBarTree';
 import { Button } from '@blueprintjs/core';
-import { useDataInterface, useRefreshedSearch } from '../../datasource/DataInterface';
 import { DataItemKind } from '../../types';
 import { useEffect } from 'react';
+import { useDataSearch } from '../../datasource/useDataSearch';
+import { useDataInterface } from '../../datasource/DataInterfaceContext';
 
 export const SideBarContent: React.FC<{}> = props => {
   const dataInterface = useDataInterface();
-  const rootCollections = useRefreshedSearch({ exactParents: [] });
+  const rootCollections = useDataSearch({ exactParents: [] });
 
   useEffect(() => console.log(`Changed root collections`, rootCollections), [rootCollections])
 

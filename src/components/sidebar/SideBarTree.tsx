@@ -2,12 +2,11 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import Tree from '@atlaskit/tree';
 import cxs from 'cxs';
-import { Button, Icon } from '@blueprintjs/core';
-import { useDataInterface, useRefreshedItems, useTreeStructure } from '../../datasource/DataInterface';
 import { DataItem, DataItemKind } from '../../types';
 import { TreeData } from '@atlaskit/tree/types';
-import { useAsyncEffect } from '../../utils';
 import { SideBarTreeItem } from './SideBarTreeItem';
+import { useDataTree } from '../../datasource/useDataTree';
+import { useDataInterface } from '../../datasource/DataInterfaceContext';
 
 const styles = {
   expandButton: cxs({
@@ -21,7 +20,7 @@ export const SideBarTree: React.FC<{
 }> = props => {
   const dataInterface = useDataInterface();
   useEffect(() => console.log("Root items changed: ", props.rootItems), [props.rootItems]);
-  const { items, collapse, expand, expandedIds } = useTreeStructure(props.rootItems);
+  const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems);
 
   const [treeData, setTreeData] = useState<TreeData>({
     rootId: 'root',
@@ -77,7 +76,7 @@ export const SideBarTree: React.FC<{
     <div>
       <Tree
         offsetPerLevel={16}
-        isDragEnabled={false}
+        isDragEnabled={true}
         tree={treeData}
         onExpand={(itemId) => expand(itemId as string)}
         onCollapse={(itemId) => collapse(itemId as string)}

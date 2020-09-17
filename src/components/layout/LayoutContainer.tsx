@@ -4,6 +4,8 @@ import cxs from 'cxs';
 import Color from 'color';
 import { remote } from 'electron';
 import { SideBarContent } from '../sidebar/SideBarContent';
+import cx from 'classnames';
+import { useTheme } from '../../common/theming';
 
 const styles = {
   mainContainer: cxs({
@@ -12,7 +14,6 @@ const styles = {
     height: '100%',
   }),
   tobBar: cxs({
-    backgroundColor: Color(Colors.primary).darken(0.1).toString(),
     height: '32px',
   }),
   tobBarControls: cxs({
@@ -41,7 +42,6 @@ const styles = {
     display: 'flex',
   }),
   sidebar: cxs({
-    backgroundColor: Colors.primary,
     width: '320px',
   }),
   mainContent: cxs({
@@ -50,9 +50,18 @@ const styles = {
 };
 
 export const LayoutContainer: React.FC<{}> = props => {
+  const theme = useTheme();
   return (
     <div className={styles.mainContainer}>
-      <div className={styles.tobBar} style={{ webkitAppRegion: 'drag' } as any}>
+      <div
+        className={cx(
+          styles.tobBar,
+          cxs({
+            backgroundColor: theme.topBarColor,
+          })
+        )}
+        style={{ webkitAppRegion: 'drag' } as any}
+      >
         <div className={styles.tobBarControls} style={{ webkitAppRegion: 'no-drag' } as any}>
           <button className={styles.topBarControlButton} onClick={() => remote.getCurrentWindow().minimize()}>
             &#xE921;
@@ -69,7 +78,14 @@ export const LayoutContainer: React.FC<{}> = props => {
         </div>
       </div>
       <div className={styles.centralContainer}>
-        <div className={styles.sidebar}>
+        <div
+          className={cx(
+            styles.sidebar,
+            cxs({
+              backgroundColor: theme.sidebarColor
+            })
+          )}
+        >
           <SideBarContent />
         </div>
         <div className={styles.mainContent}>main</div>

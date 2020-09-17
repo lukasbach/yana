@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { DataItem, DataItemKind } from '../../types';
-import { Alert, Button, FormGroup, Icon, InputGroup } from '@blueprintjs/core';
-import { useDataInterface } from '../../datasource/DataInterface';
+import { Alert, Button, FormGroup, Icon, InputGroup, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import { useState } from 'react';
+import { useDataInterface } from '../../datasource/DataInterfaceContext';
+import { SideBarTreeItemUi } from './SideBarTreeItemUi';
 
 export const SideBarTreeItem: React.FC<{
   item: DataItem,
@@ -15,8 +16,74 @@ export const SideBarTreeItem: React.FC<{
   const { item, hasChildren, isExpanded, onExpand, onCollapse } = props;
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState(item.name);
+  const [isRenaming, setIsRenaming] = useState(false);
+
+  const deleteItem = () => {
+    dataInterface.removeItem(item.id);
+  };
+
+  const createSubCollection = () => {
+    dataInterface.createDataItemUnderParent({
+      name: 'New Collection',
+      childIds: [],
+      kind: DataItemKind.Collection,
+      lastChange: new Date().getTime(),
+      created: new Date().getTime(),
+      tags: []
+    }, item.id);
+  };
+
+  const createSubNote = () => {
+    dataInterface.createDataItemUnderParent({
+      name: 'New Note Item',
+      childIds: [],
+      kind: DataItemKind.NoteItem,
+      lastChange: new Date().getTime(),
+      created: new Date().getTime(),
+      tags: []
+    }, item.id)
+  };
+
+  let menu: JSX.Element;
+
+  if (item.kind === DataItemKind.Collection) {
+    menu = (
+      <Menu>
+        <MenuItem text="Open" />
+        <MenuItem text="Rename" onClick={() => setIsRenaming(true)} />
+        <MenuItem text="Delete" onClick={deleteItem} />
+        <MenuDivider />
+        <MenuItem text="Create new collection" onClick={createSubCollection} />
+        <MenuItem text="Create new note item" onClick={createSubNote} />
+      </Menu>
+    );
+  } else {
+    menu = (
+      <Menu>
+        <MenuItem text="Open" />
+        <MenuItem text="Rename" onClick={() => setIsRenaming(true)} />
+        <MenuItem text="Delete" onClick={deleteItem} />
+      </Menu>
+    );
+  }
 
   return (
+    <SideBarTreeItemUi
+      text={item.name}
+      isExpandable={item.kind === DataItemKind.Collection}
+      isExpanded={isExpanded}
+      onExpand={onExpand}
+      onCollapse={onCollapse}
+      isRenaming={isRenaming}
+      onRename={name => {
+        dataInterface.changeItem(item.id, { ...item, name });
+        setIsRenaming(false);
+      }}
+      menu={menu}
+    />
+  )
+
+  /*return (
     <>
       <Alert
         isOpen={isEditingName}
@@ -74,5 +141,5 @@ export const SideBarTreeItem: React.FC<{
         )
       }
     </>
-  );
+  );*/
 };
