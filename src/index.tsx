@@ -4,6 +4,7 @@ import { LayoutContainer } from './components/layout/LayoutContainer';
 import { AppDataProvider } from './appdata/AppDataProvider';
 import { DataInterfaceProvider } from './datasource/DataInterfaceContext';
 import { defaultTheme, ThemeContext } from './common/theming';
+import { MainContentContextProvider } from './components/mainContent/context';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
@@ -14,7 +15,9 @@ ReactDOM.render(
   <ThemeContext.Provider value={defaultTheme}>
     <AppDataProvider>
       <DataInterfaceProvider>
-        <LayoutContainer>abc</LayoutContainer>
+        <MainContentContextProvider>
+          <LayoutContainer>abc</LayoutContainer>
+        </MainContentContextProvider>
       </DataInterfaceProvider>
     </AppDataProvider>
   </ThemeContext.Provider>,

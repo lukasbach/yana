@@ -16,9 +16,8 @@ export interface DataItem<K extends DataItemKind = any> {
   lastChange: number;
 }
 
-export interface NoteDataItem<T extends string, C extends object> extends DataItem<DataItemKind.NoteItem> {
+export interface NoteDataItem<T extends string> extends DataItem<DataItemKind.NoteItem> {
   noteType: T;
-  content: C;
 }
 
 export interface CollectionDataItem extends DataItem<DataItemKind.Collection> {}

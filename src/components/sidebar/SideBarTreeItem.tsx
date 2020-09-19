@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { DataItem, DataItemKind } from '../../types';
+import { DataItem, DataItemKind, NoteDataItem } from '../../types';
 import { Alert, Button, FormGroup, Icon, InputGroup, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import { useState } from 'react';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { SideBarTreeItemUi } from './SideBarTreeItemUi';
+import { useMainContentContext } from '../mainContent/context';
 
 export const SideBarTreeItem: React.FC<{
   item: DataItem,
@@ -13,6 +14,7 @@ export const SideBarTreeItem: React.FC<{
   onCollapse: () => void,
 }> = props => {
   const dataInterface = useDataInterface();
+  const mainContent = useMainContentContext();
   const { item, hasChildren, isExpanded, onExpand, onCollapse } = props;
   const [isEditingName, setIsEditingName] = useState(false);
   const [newName, setNewName] = useState(item.name);
@@ -40,8 +42,9 @@ export const SideBarTreeItem: React.FC<{
       kind: DataItemKind.NoteItem,
       lastChange: new Date().getTime(),
       created: new Date().getTime(),
-      tags: []
-    }, item.id)
+      tags: [],
+      noteType: 'atlaskit-editor-note'
+    } as any, item.id)
   };
 
   let menu: JSX.Element;
@@ -49,7 +52,8 @@ export const SideBarTreeItem: React.FC<{
   if (item.kind === DataItemKind.Collection) {
     menu = (
       <Menu>
-        <MenuItem text="Open" />
+        <MenuItem text="Open" onClick={() => mainContent.openInCurrentTab(item)} />
+        <MenuItem text="Open in new Tab" onClick={() => mainContent.newTab(item)} />
         <MenuItem text="Rename" onClick={() => setIsRenaming(true)} />
         <MenuItem text="Delete" onClick={deleteItem} />
         <MenuDivider />
@@ -60,7 +64,8 @@ export const SideBarTreeItem: React.FC<{
   } else {
     menu = (
       <Menu>
-        <MenuItem text="Open" />
+        <MenuItem text="Open" onClick={() => mainContent.openInCurrentTab(item)} />
+        <MenuItem text="Open in new Tab" onClick={() => mainContent.newTab(item)} />
         <MenuItem text="Rename" onClick={() => setIsRenaming(true)} />
         <MenuItem text="Delete" onClick={deleteItem} />
       </Menu>
@@ -79,6 +84,8 @@ export const SideBarTreeItem: React.FC<{
         dataInterface.changeItem(item.id, { ...item, name });
         setIsRenaming(false);
       }}
+      onClick={() => mainContent.openInCurrentTab(item)}
+      onDoubleClick={() => mainContent.newTab(item)}
       menu={menu}
     />
   )

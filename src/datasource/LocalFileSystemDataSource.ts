@@ -45,11 +45,17 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   constructor(private options: LocalFileSystemDataSourceOptions) {}
 
   public static async init(options: LocalFileSystemDataSourceOptions) {
-    console.log(options.sourcePath)
-    if (!fsLib.existsSync(options.sourcePath)) {
-      fsLib.mkdirSync(options.sourcePath, { recursive: true });
+    const sourcePath = options.sourcePath;
+    const noteDataPath = path.join(sourcePath, NOTES_DIR);
+
+    if (!fsLib.existsSync(sourcePath)) {
+      fsLib.mkdirSync(sourcePath, { recursive: true });
     }
-    console.log(path.join(options.sourcePath, STRUCTURE_FILE))
+
+    if (!fsLib.existsSync(noteDataPath)) {
+      fsLib.mkdirSync(noteDataPath, { recursive: true });
+    }
+
     fsLib.writeFileSync(
       path.join(options.sourcePath, STRUCTURE_FILE),
       JSON.stringify({
@@ -68,10 +74,12 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
 
   public async getNoteItemContent<C extends object>(id: string): Promise<C> {
     const content = fsLib.readFileSync(this.resolvePath(NOTES_DIR, id + '.json'), { encoding: UTF8 });
+    console.log("!!", content, id, this.resolvePath(NOTES_DIR, id + '.json'))
     return JSON.parse(content);
   }
 
   public async writeNoteItemContent<C extends object>(id: string, content: C): Promise<DataSourceActionResult> {
+    console.log("Writing,", id, content)
     fsLib.writeFileSync(this.resolvePath(NOTES_DIR, id + '.json'), JSON.stringify(content));
   }
 

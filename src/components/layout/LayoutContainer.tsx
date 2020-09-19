@@ -6,6 +6,7 @@ import { remote } from 'electron';
 import { SideBarContent } from '../sidebar/SideBarContent';
 import cx from 'classnames';
 import { useTheme } from '../../common/theming';
+import { MainContainer } from '../mainContent/MainContainer';
 
 const styles = {
   mainContainer: cxs({
@@ -88,7 +89,9 @@ export const LayoutContainer: React.FC<{}> = props => {
         >
           <SideBarContent />
         </div>
-        <div className={styles.mainContent}>main</div>
+        <div className={styles.mainContent}>
+          <MainContainer />
+        </div>
       </div>
     </div>
   );

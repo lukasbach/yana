@@ -2,6 +2,7 @@ import Color from 'color';
 import React, { useContext } from 'react';
 
 export interface Theme {
+  primaryColor: string;
   sidebarColor: string;
   sidebarHoverColor: string;
   sidebarTextColor: string;
@@ -11,6 +12,7 @@ export interface Theme {
 const defaultPrimaryColor = '#2c3e50';
 
 export const defaultTheme: Theme = {
+  primaryColor: '#377cc3',
   sidebarColor: defaultPrimaryColor,
   sidebarHoverColor: Color(defaultPrimaryColor).lighten(.1).toString(),
   sidebarTextColor: Color(defaultPrimaryColor).lighten(2).mix(new Color('#444'), .3).toString(),

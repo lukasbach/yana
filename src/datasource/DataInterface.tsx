@@ -2,6 +2,8 @@ import * as React from 'react';
 import { AbstractDataSource } from './AbstractDataSource';
 import { DataItem, DataItemKind, DataSourceActionResult, SearchQuery } from '../types';
 import { EventEmitter } from '../common/EventEmitter';
+import { EditorRegistry } from '../editors/EditorRegistry';
+import { isNoteItem } from '../utils';
 
 export enum ItemChangeEventReason {
   Created = 'created',
@@ -19,6 +21,7 @@ export class DataInterface implements AbstractDataSource {
   private cache: { [key: string]: any } = {};
   private cachedKeys: string[] = [];
   private cachedKeysIt = 0;
+  private editors = EditorRegistry.Instance;
 
   public onChangeItems = new EventEmitter<ItemChangeEvent[]>();
 
@@ -70,6 +73,7 @@ export class DataInterface implements AbstractDataSource {
 
   public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>): Promise<DataItem<K>> {
     const result = await this.dataSource.createDataItem<K>(item);
+    await this.initializeNoteContent(result);
     this.onChangeItems.emit([{ id: result.id, reason: ItemChangeEventReason.Created }]);
     return result;
   }
@@ -82,6 +86,7 @@ export class DataInterface implements AbstractDataSource {
     }
 
     const itemResult = await this.dataSource.createDataItem<K>(item);
+    await this.initializeNoteContent(itemResult);
     const overwriteParent = {...parent, childIds: [...parent.childIds, itemResult.id]};
     await this.dataSource.changeItem(parentId, overwriteParent);
     this.updateCache(parentId, overwriteParent);
@@ -141,6 +146,18 @@ export class DataInterface implements AbstractDataSource {
 
   public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {
     return await this.dataSource.getParentsOf(childId);
+  }
+
+  private async initializeNoteContent(item: DataItem) {
+    if (isNoteItem(item)) {
+      const editor = this.editors.getEditorWithId(item.noteType);
+
+      if (!editor) {
+        throw Error(`Cannot initialize note content, editor ${item.noteType} is unknown.`);
+      }
+
+      await this.dataSource.writeNoteItemContent(item.id, editor.initializeContent());
+    }
   }
 
   // TODO bulk operations such as changeItems, removeItems, ...

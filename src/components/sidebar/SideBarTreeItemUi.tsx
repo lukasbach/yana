@@ -14,13 +14,13 @@ const styles = {
     display: 'flex',
     ':hover': {
       '> .more': {
-        display: 'block'
+        opacity: 1
       }
     }
   }),
   itemContainerActive: cxs({
     '> .more': {
-      display: 'block'
+      opacity: 1
     }
   }),
   chevronContainer: cxs({
@@ -36,7 +36,7 @@ const styles = {
     }
   }),
   contextMenuContainer: cxs({
-    display: 'none'
+    opacity: 0
   }),
   nameChangeContainer: cxs({
     display: 'flex',
@@ -68,6 +68,9 @@ export const SideBarTreeItemUi: React.FC<{
   onRename?: (newName: string) => any;
   onExpand?: () => any;
   onCollapse?: () => any;
+  onClick?: () => any;
+  onDoubleClick?: () => any;
+  onTitleClick?: () => any;
   menu?: JSX.Element;
   isActive?: boolean;
 }> = props => {
@@ -95,7 +98,16 @@ export const SideBarTreeItemUi: React.FC<{
           }
         }),
       )}
-      onClick={() => props.isExpanded ? props.onCollapse?.() : props.onExpand?.()}
+      onClick={() => {
+        if (props.isExpandable) {
+          props.isExpanded ? props.onCollapse?.() : props.onExpand?.();
+        } else {
+          props.onClick?.();
+        }
+      }}
+      onDoubleClick={() => {
+        props.onDoubleClick?.();
+      }}
     >
       <div
         className={styles.chevronContainer}
@@ -132,6 +144,11 @@ export const SideBarTreeItemUi: React.FC<{
               <span
                 onClick={e => {
                   e.stopPropagation();
+                  if (props.onTitleClick) {
+                    props.onTitleClick();
+                  } else {
+                    props.onClick?.();
+                  }
                 }}
               >
                 { props.text }
