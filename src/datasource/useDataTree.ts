@@ -4,6 +4,9 @@ import { arrayIntersection, doArraysIntersect, useAsyncEffect } from '../utils';
 import { useEventChangeHandler } from '../common/useEventChangeHandler';
 import { ItemChangeEventReason} from './DataInterface';
 import { useDataInterface } from './DataInterfaceContext';
+import { LogService } from '../common/LogService';
+
+const logger = LogService.getLogger('useDataTree');
 
 export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpanded: string[] = []) => {
   const dataInterface = useDataInterface();
@@ -46,13 +49,13 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
       }
     }
 
-    console.groupCollapsed("Tree update summary:")
-    console.log("  Previously contained ids: ", itemIds)
-    console.log("  Changes processed: ", changes)
-    console.log("  Updated items: ", updated)
-    console.log("  Removed items: ", removed)
-    console.log("  Added items: ", added)
-    console.log("  Total items before: ", items.length)
+    // console.groupCollapsed("Tree update summary:")
+    // console.log("  Previously contained ids: ", itemIds)
+    // console.log("  Changes processed: ", changes)
+    // console.log("  Updated items: ", updated)
+    // console.log("  Removed items: ", removed)
+    // console.log("  Added items: ", added)
+    // console.log("  Total items before: ", items.length)
 
     if (removed.length || updated.length || added.length) {
       setItems(i => [
@@ -65,13 +68,24 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
           .map(item => updated.find(updatedItem => updatedItem.id === item.id) || item),
         ...added
       ]);
-      console.log("  New item structure:", items);
+      // console.log("  New item structure:", items);
     }
 
     if (removed.length && doArraysIntersect(removed, expandedIds)) { // TODO properly handle
       setExpandedIds(ids => ids.filter(id => !removed.includes(id)));
     }
-    console.groupEnd();
+
+
+    logger.out(`Tree update for ${changes.length} changes, ${removed.length + updated.length + added.length} operations made`, [] , {
+      "Previously contained ids": itemIds,
+      "Changes processed": changes,
+      "Updated items": updated,
+      "Removed items": removed,
+      "Added items": added,
+      "New item structure": items,
+      "Expanded Ids": expandedIds,
+    });
+    // console.groupEnd();
   }, [rootItems, items, dataInterface]);
 
   const expand = useCallback(async (id: string) => {

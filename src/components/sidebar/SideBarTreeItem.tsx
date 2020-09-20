@@ -85,7 +85,7 @@ export const SideBarTreeItem: React.FC<{
         setIsRenaming(false);
       }}
       onClick={() => mainContent.openInCurrentTab(item)}
-      onDoubleClick={() => mainContent.newTab(item)}
+      onMiddleClick={() => mainContent.newTab(item)}
       menu={menu}
     />
   )

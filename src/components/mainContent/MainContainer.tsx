@@ -4,10 +4,13 @@ import { useMainContentContext } from './context';
 import { EditorRegistry } from '../../editors/EditorRegistry';
 import { isNoteItem } from '../../utils';
 import { EditorContainer } from './EditorContainer';
+import { LogService } from '../../common/LogService';
+
+const logger = LogService.getLogger('MainContainer');
 
 export const MainContainer: React.FC<{}> = props => {
   const mainContent = useMainContentContext();
-  console.log(mainContent, "mainContent")
+  logger.log("rerender", [], {mainContent})
 
   return (
     <div>
@@ -18,7 +21,12 @@ export const MainContainer: React.FC<{}> = props => {
             <EditorContainer
               noteItem={mainContent.openTab.dataItem}
               currentContent={mainContent.openTab.currentContent}
-              onChangeContent={newContent => {}}
+              onChangeContent={(noteId, newContent) => {
+                const savingTab = mainContent.tabs.findIndex(tab => tab.dataItem.id === noteId);
+                if (savingTab) {
+                  mainContent.changeTabContent(savingTab, newContent);
+                }
+              }}
             />
           )
         )

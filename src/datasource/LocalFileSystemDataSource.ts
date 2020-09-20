@@ -74,12 +74,10 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
 
   public async getNoteItemContent<C extends object>(id: string): Promise<C> {
     const content = fsLib.readFileSync(this.resolvePath(NOTES_DIR, id + '.json'), { encoding: UTF8 });
-    console.log("!!", content, id, this.resolvePath(NOTES_DIR, id + '.json'))
     return JSON.parse(content);
   }
 
   public async writeNoteItemContent<C extends object>(id: string, content: C): Promise<DataSourceActionResult> {
-    console.log("Writing,", id, content)
     fsLib.writeFileSync(this.resolvePath(NOTES_DIR, id + '.json'), JSON.stringify(content));
   }
 

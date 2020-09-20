@@ -69,7 +69,7 @@ export const SideBarTreeItemUi: React.FC<{
   onExpand?: () => any;
   onCollapse?: () => any;
   onClick?: () => any;
-  onDoubleClick?: () => any;
+  onMiddleClick?: () => any;
   onTitleClick?: () => any;
   menu?: JSX.Element;
   isActive?: boolean;
@@ -98,15 +98,20 @@ export const SideBarTreeItemUi: React.FC<{
           }
         }),
       )}
-      onClick={() => {
+      onClick={(e) => {
         if (props.isExpandable) {
           props.isExpanded ? props.onCollapse?.() : props.onExpand?.();
         } else {
           props.onClick?.();
         }
       }}
-      onDoubleClick={() => {
-        props.onDoubleClick?.();
+      onMouseDown={e => {
+        if (e.button === 1) {
+          // Middle click
+          e.stopPropagation();
+          e.preventDefault();
+          props.onMiddleClick?.();
+        }
       }}
     >
       <div

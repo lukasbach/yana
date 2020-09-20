@@ -4,6 +4,9 @@ import { DataItem, DataItemKind, DataSourceActionResult, SearchQuery } from '../
 import { EventEmitter } from '../common/EventEmitter';
 import { EditorRegistry } from '../editors/EditorRegistry';
 import { isNoteItem } from '../utils';
+import { LogService } from '../common/LogService';
+
+const logger = LogService.getLogger('DataInterface');
 
 export enum ItemChangeEventReason {
   Created = 'created',
@@ -67,6 +70,7 @@ export class DataInterface implements AbstractDataSource {
 
   public async writeNoteItemContent<C extends object>(id: string, content: C): Promise<DataSourceActionResult> {
     const result = await this.dataSource.writeNoteItemContent<C>(id, content);
+    logger.out("Writing contents to file for ", [id], {content});
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.ChangedNoteContents }]);
     return result;
   }
@@ -132,7 +136,7 @@ export class DataInterface implements AbstractDataSource {
   public async searchImmediate(search: SearchQuery): Promise<Array<DataItem>> {
     const items: DataItem[] = [];
     await this.search(search, result => items.push(...result));
-    console.log("Search: ", search, items)
+    logger.out("Performing immediate search", [], { search, items });
     return items;
   }
 
