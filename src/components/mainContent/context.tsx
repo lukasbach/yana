@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { useAsyncEffect } from '../../utils';
 import { LogService } from '../../common/LogService';
+import { useEventChangeHandler } from '../../common/useEventChangeHandler';
+import { ItemChangeEventReason } from '../../datasource/DataInterface';
 
 const logger = LogService.getLogger('MainContainerContext');
 
@@ -130,7 +132,29 @@ export const MainContentContextProvider: React.FC = props => {
     actions.newTab(await dataInterface.getDataItem('newnote item'));
     actions.newTab(await dataInterface.getDataItem('newnote item2'));
     actions.newTab(await dataInterface.getDataItem('newnote item3'));
-  }, [])
+  }, []);
+
+  useEventChangeHandler(dataInterface.onChangeItems, async payload => {
+    for (const { reason, id } of payload) {
+      switch (reason) {
+        case ItemChangeEventReason.Removed:
+          if (get.tabs.find(tab => tab.dataItem.id === id)) {
+            set(value => ({ ...value, tabs: value.tabs.filter(tab => tab.dataItem.id !== id) }));
+          }
+          break;
+        case ItemChangeEventReason.Changed:
+          if (get.tabs.find(tab => tab.dataItem.id === id)) {
+            const changed = await dataInterface.getDataItem(id);
+            set(value => ({ ...value, tabs: value.tabs.map(tab => tab.dataItem.id === id ? ({ ...tab, dataItem: changed }) : tab) }));
+          }
+          break;
+        case ItemChangeEventReason.ChangedNoteContents:
+          // TODO handle here instead of action above?
+          break;
+
+      }
+    }
+  }, [get]);
 
   return (
     <MainContentContext.Provider value={{ ...get, ...actions, openTab: get.tabs[get.openTabId] }}>

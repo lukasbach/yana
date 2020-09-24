@@ -6,7 +6,7 @@ import { useDataInterface } from './DataInterfaceContext';
 export const useDataItems = (
   items: DataItem[],
   onChangedItems?: (changedItemIds: string[]) => void,
-): [DataItem[], (newItemsOrHandler: DataItem[] | ((oldItems: DataItem[]) => DataItem[])) => void] => {
+): [DataItem[],] => {
   const dataInterface = useDataInterface();
   const [initialItems, setInitialItems] = useState(items);
   const [refreshedItems, setRefreshedItems] = useState(items);
@@ -44,12 +44,5 @@ export const useDataItems = (
 
   return [
     refreshedItems,
-    (newItemsOrHandler: DataItem[] | ((oldItems: DataItem[]) => DataItem[])) => {
-      if (Array.isArray(newItemsOrHandler)) {
-        setInitialItems(newItemsOrHandler);
-      } else {
-        setInitialItems(newItemsOrHandler(refreshedItems));
-      }
-    }
   ];
 };

@@ -13,6 +13,9 @@ export interface AbstractDataSource {
   getParentsOf: <K extends DataItemKind>(childId: string) => Promise<DataItem<K>[]>;
   search: (search: SearchQuery, onFind: (result: Array<DataItem<any>>) => any) => Promise<DataSourceActionResult>;
 
+  storeStructure: (id: string, structure: any) => Promise<DataSourceActionResult>;
+  getStructure: (id: string) => Promise<any>;
+
   loadMediaItemContent: (id: string) => Promise<Buffer | Blob>;
 
   persist: () => Promise<DataSourceActionResult>;

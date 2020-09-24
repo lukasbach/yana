@@ -50,6 +50,7 @@ export const TabList: React.FC<{}> = props => {
       {
         mainContent.tabs.map((tab, id) => (
           <div
+            key={tab.dataItem.id + id}
             className={cx(
               styles.tabContainer,
               mainContent.openTabId === id && styles.activeTabContainer,

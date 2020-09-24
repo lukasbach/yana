@@ -49,7 +49,7 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
           <Menu>
             {
               appData.workspaces.map(workspace => (
-                <MenuItem text={workspace.name} onClick={() => appData.setWorkSpace(workspace)} />
+                <MenuItem key={workspace.name} text={workspace.name} onClick={() => appData.setWorkSpace(workspace)} />
               ))
             }
             <MenuItem text="Create Workspace" onClick={() => setWorkspaceDialogOpen(true)} />

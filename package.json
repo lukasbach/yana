@@ -36,6 +36,7 @@
     "@atlaskit/tree": "^8.1.1",
     "@blueprintjs/core": "^3.31.0",
     "@blueprintjs/icons": "^3.20.1",
+    "@blueprintjs/select": "^3.13.7",
     "@emotion/core": "^10.0.35",
     "@emotion/css": "^10.0.27",
     "@types/chalk": "^2.2.0",
@@ -52,6 +53,7 @@
     "react-router-dom": "^5.2.0",
     "remirror": "^0.13.1",
     "rxjs-compat": "^6.6.3",
+    "s-ago": "^2.2.0",
     "styled-components": "3.4.6"
   },
   "devDependencies": {

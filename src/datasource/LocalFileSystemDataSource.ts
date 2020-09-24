@@ -22,6 +22,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     // collections: { [key: string]: NoteItemCollection };
     // mediaItems: { [key: string]: MediaItem };
     items: { [key: string]: DataItem<any> };
+    structures: { [key: string]: any };
   };
 
   private resolvePath(...p: string[]) {
@@ -132,5 +133,15 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
 
   public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {
     return Object.values(this.structure.items).filter(item => item.childIds.includes(childId));
+  }
+
+  public async storeStructure(id: string, structure: any): Promise<DataSourceActionResult> {
+    if (!this.structure.structures) this.structure.structures = {};
+    this.structure.structures[id] = structure;
+  }
+
+  public async getStructure(id: string): Promise<any> {
+    if (!this.structure.structures) this.structure.structures = {};
+    return this.structure.structures[id];
   }
 }

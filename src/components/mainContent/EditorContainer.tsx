@@ -29,15 +29,23 @@ export const EditorContainer: React.FC<{
   //   setCurrentNote(props.noteItem);
   // }, [props.noteItem]);
 
-  const save = useCallback(async () => {
+  const clearSaveHandler = () => {
+    clearTimeout(saveHandler.current);
+    saveHandler.current = undefined;
+  }
+
+  const save = async () => {
     if (!grabContentHandler.current) {
       throw Error('Trying to save before editor has registered.');
     }
+    if (saveHandler.current) {
+      clearSaveHandler();
+    }
     const content = await grabContentHandler.current();
-    logger.log("Saving editor contents for ", [currentNote.id, currentNote.name]);
+    logger.log("Saving editor contents for ", [currentNote.id, currentNote.name], {currentNote, content});
     props.onChangeContent(currentNote.id, content);
     await dataInterface.writeNoteItemContent(currentNote.id, content);
-  }, [currentNote.id]);
+  };
 
   useAsyncEffect(async () => {
     logger.log("Note ID changed", [], props);
@@ -79,6 +87,7 @@ export const EditorContainer: React.FC<{
   return (
     <div>
       <EditorComponent
+        key={currentNote.id} // cleanly remount component on changing item
         content={currentContent}
         item={currentNote}
         onRegister={grabContent => {
@@ -89,7 +98,7 @@ export const EditorContainer: React.FC<{
           if (grabContentHandler.current) {
             logger.log("change detected, grabContentHandler registered");
             if (saveHandler.current) {
-              clearTimeout(saveHandler.current);
+              clearSaveHandler();
             }
             saveHandler.current = setTimeout(() => save(), 3000) as unknown as number;
           } else {

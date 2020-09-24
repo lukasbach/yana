@@ -32,6 +32,9 @@ export class DataInterface implements AbstractDataSource {
 
   public async load() {
     await this.dataSource.load();
+    if (!await this.dataSource.getStructure('tags')) {
+      await this.dataSource.storeStructure('tags', {});
+    }
     setInterval(() => this.dataSource.persist(), 10000);
   }
 
@@ -72,6 +75,8 @@ export class DataInterface implements AbstractDataSource {
     const result = await this.dataSource.writeNoteItemContent<C>(id, content);
     logger.out("Writing contents to file for ", [id], {content});
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.ChangedNoteContents }]);
+    const currentItemContent = await this.getDataItem(id);
+    await this.changeItem(id, { ...currentItemContent, lastChange: (new Date()).getTime() });
     return result;
   }
 
@@ -120,6 +125,40 @@ export class DataInterface implements AbstractDataSource {
     id: string,
     overwriteItem: DataItem<K>
   ): Promise<DataSourceActionResult> {
+    const old = await this.dataSource.getDataItem(id);
+
+    if (!old) {
+      throw Error(`Dataitem with id ${id} does not exist.`);
+    }
+
+    if (overwriteItem.tags && old.tags.sort().toString() !== overwriteItem.tags.sort().toString()) {
+      // TODO factor into its own method, use constant for 'tags'
+      const removedTags = old.tags.filter(tag => !overwriteItem.tags.includes(tag));
+      const addedTags = overwriteItem.tags.filter(tag => !old.tags.includes(tag));
+      const tagsStructure = await this.getStructure('tags');
+
+      for (const removedTag of removedTags) {
+        if (tagsStructure[removedTag]) {
+          tagsStructure[removedTag].count--;
+          if (tagsStructure[removedTag].count === 0) {
+            delete tagsStructure[removedTag];
+          }
+        }
+      }
+
+      for (const addedTag of addedTags) {
+        if (tagsStructure[addedTag]) {
+          tagsStructure[addedTag].count++;
+        } else {
+          tagsStructure[addedTag] = {
+            count: 1
+          };
+        }
+      }
+
+      await this.storeStructure('tags', tagsStructure);
+    }
+
     const result = await this.dataSource.changeItem(id, overwriteItem);
     this.updateCache(id, overwriteItem);
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Changed }]);
@@ -162,6 +201,19 @@ export class DataInterface implements AbstractDataSource {
 
       await this.dataSource.writeNoteItemContent(item.id, editor.initializeContent());
     }
+  }
+
+  public async getStructure(id: string): Promise<any> {
+    return await this.dataSource.getStructure(id); // TODO cache?
+  }
+
+  public async storeStructure(id: string, structure: any): Promise<DataSourceActionResult> {
+    return await this.dataSource.storeStructure(id, structure);
+  }
+
+  public async getAvailableTags(): Promise<Array<{ value: string }>> {
+    console.log("getAvailableTags", await this.getStructure('tags'));
+    return Object.entries(await this.getStructure('tags')).map(([value, data]: any) => ({ value, ...data }));
   }
 
   // TODO bulk operations such as changeItems, removeItems, ...

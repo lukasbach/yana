@@ -9,9 +9,11 @@ const styles = {
   itemContainer: cxs({
     margin: '0 10px 0 10px',
     padding: '4px 12px',
-    borderRadius: '4px',
+    borderRadius: '8px',
+    fontWeight: 600,
     cursor: 'pointer',
     display: 'flex',
+    transition: '.1s all ease',
     ':hover': {
       '> .more': {
         opacity: 1
@@ -19,6 +21,8 @@ const styles = {
     }
   }),
   itemContainerActive: cxs({
+    backgroundColor: 'white',
+    color: '#333',
     '> .more': {
       opacity: 1
     }
@@ -36,7 +40,8 @@ const styles = {
     }
   }),
   contextMenuContainer: cxs({
-    opacity: 0
+    opacity: 0,
+    transition: '.1s all ease',
   }),
   nameChangeContainer: cxs({
     display: 'flex',
@@ -94,7 +99,7 @@ export const SideBarTreeItemUi: React.FC<{
         cxs({
           color: theme.sidebarTextColor,
           ':hover': {
-            backgroundColor: theme.sidebarHoverColor,
+            backgroundColor: !props.isActive ? theme.sidebarHoverColor : undefined,
           }
         }),
       )}
