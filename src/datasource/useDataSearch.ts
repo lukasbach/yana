@@ -4,15 +4,19 @@ import { useEventChangeHandler } from '../common/useEventChangeHandler';
 import { SearchHelper } from './SearchHelper';
 import { ItemChangeEventReason} from './DataInterface';
 import { useDataInterface } from './DataInterfaceContext';
+import { LogService } from '../common/LogService';
+
+const logger = LogService.getLogger('useDataSearch');
 
 export const useDataSearch = (search: SearchQuery) => {
   const dataInterface = useDataInterface();
   const [refreshedItems, setRefreshedItems] = useState<Array<DataItem<any>>>([]);
 
   useEffect(() => {
+    logger.log('search query changed', [JSON.stringify(search)], {refreshedItems, search})
     setRefreshedItems([]);
     dataInterface.search(search, items => setRefreshedItems(oldItems => [...oldItems, ...items]));
-  }, [])
+  }, [JSON.stringify(search)]) // TODO dont stringify? causes infinite loop
 
   useEventChangeHandler(dataInterface.onChangeItems, async (changes) => {
     const refreshedItemIds = refreshedItems.map(item => item.id);
@@ -38,6 +42,7 @@ export const useDataSearch = (search: SearchQuery) => {
     }
 
     if (addItems.length || changedItems.length || removeItemIds.length) {
+      logger.log('Changes found to current search', [JSON.stringify(search)], {search, addItems, changedItems, removeItemIds, refreshedItems})
       setRefreshedItems(i => [
         ...addItems,
         ...i

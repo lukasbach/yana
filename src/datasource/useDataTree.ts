@@ -36,6 +36,13 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
           removed.push(id);
         } else if (reason === ItemChangeEventReason.Changed) {
           updated.push(await dataInterface.getDataItem(id));
+          const missingChildIds = updated
+            .map(item => item.childIds)
+            .reduce((a, b) => [...a, ...b], [])
+            .filter(id => !itemIds.includes(id));
+          for (const id of missingChildIds) {
+            added.push(await dataInterface.getDataItem(id)); // TODO verify
+          }
         }
       } else if (reason === ItemChangeEventReason.Created) {
         const changedItem = await dataInterface.getDataItem(id);
@@ -49,6 +56,13 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
       }
     }
 
+    // Make sure newly added childs are present in the tree
+    // const requiredIds = [
+    //   ...updated.map(updatedItem => updatedItem.childIds).reduce((a, b) => [...a, ...b], []),
+    //   ...added.map(updatedItem => updatedItem.childIds).reduce((a, b) => [...a, ...b], []),
+    // ];
+    // const missingIds =
+
     // console.groupCollapsed("Tree update summary:")
     // console.log("  Previously contained ids: ", itemIds)
     // console.log("  Changes processed: ", changes)
@@ -57,24 +71,29 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
     // console.log("  Added items: ", added)
     // console.log("  Total items before: ", items.length)
 
+    let changedItemStructure: DataItem[] = [];
+
     if (removed.length || updated.length || added.length) {
-      setItems(i => [
-        ...i
-          .filter(item => !removed.includes(item.id))
-          .filter(item => {
-            const removedDueToNoParent = i.find(potentialParent => potentialParent.childIds.includes(item.id));
-            return rootItemIds.includes(item.id) || removedDueToNoParent
-          })
-          .map(item => updated.find(updatedItem => updatedItem.id === item.id) || item),
-        ...added
-      ]);
-      // console.log("  New item structure:", items);
+      setItems(i => {
+        changedItemStructure = [
+          ...i
+            .filter(item => !removed.includes(item.id))
+            .map(item => updated.find(updatedItem => updatedItem.id === item.id) || item),
+          ...added
+        ];
+
+        changedItemStructure = changedItemStructure.filter(item => {
+          const removedDueToNoParent = changedItemStructure.find(potentialParent => potentialParent.childIds.includes(item.id));
+          return changedItemStructure.map(item => item.id).includes(item.id) || removedDueToNoParent;
+        })
+
+        return changedItemStructure;
+      });
     }
 
     if (removed.length && doArraysIntersect(removed, expandedIds)) { // TODO properly handle
       setExpandedIds(ids => ids.filter(id => !removed.includes(id)));
     }
-
 
     logger.out(`Tree update for ${changes.length} changes, ${removed.length + updated.length + added.length} operations made`, [] , {
       "Previously contained ids": itemIds,
@@ -82,7 +101,8 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
       "Updated items": updated,
       "Removed items": removed,
       "Added items": added,
-      "New item structure": items,
+      "New item structure": changedItemStructure,
+      "Old item structure": items,
       "Expanded Ids": expandedIds,
     });
     // console.groupEnd();

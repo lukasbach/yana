@@ -6,6 +6,7 @@ import path from 'path';
 import { useAsyncEffect } from '../utils';
 import * as fsLib from 'fs';
 import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
+import { initializeWorkspace } from './initializeWorkspace';
 
 const fs = fsLib.promises;
 
@@ -54,21 +55,16 @@ export const AppDataProvider: React.FC = props => {
         currentWorkspace: currentWorkspace,
         setWorkSpace: setCurrentWorkspace,
         createWorkSpace: async (name, path) => {
+          const workspace = await initializeWorkspace(name, path);
+
           const newAppData: AppData = {
             ...appData,
             workspaces: [
               ...appData.workspaces,
-              {
-                name,
-                dataSourceType: 'fs',
-                dataSourceOptions: {
-                  sourcePath: path,
-                },
-              },
+              workspace,
             ],
           };
 
-          await LocalFileSystemDataSource.init({ sourcePath: path });
           fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
           setAppData(newAppData);
         },

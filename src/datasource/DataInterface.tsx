@@ -121,9 +121,30 @@ export class DataInterface implements AbstractDataSource {
     return result;
   }
 
+  public async moveItem(id: string, originalParentId: string, targetParentId: string, targetIndex: number) {
+    // const item = await this.getDataItem(id);
+    const originalParent = await this.getDataItem(originalParentId);
+
+    await this.changeItem(originalParentId, {
+      ...originalParent,
+      childIds: originalParent.childIds.filter(childId => id !== childId)
+    });
+
+    const targetParent = await this.getDataItem(targetParentId);
+
+    await this.changeItem(targetParentId, {
+      ...targetParent,
+      childIds: [
+        ...targetParent.childIds.filter((childId, index) => index < targetIndex),
+        id,
+        ...targetParent.childIds.filter((childId, index) => index >= targetIndex),
+      ]
+    });
+  }
+
   public async changeItem<K extends DataItemKind>(
     id: string,
-    overwriteItem: DataItem<K>
+    overwriteItem: Partial<DataItem<K>> // TODO update uses to use partial
   ): Promise<DataSourceActionResult> {
     const old = await this.dataSource.getDataItem(id);
 
@@ -133,7 +154,7 @@ export class DataInterface implements AbstractDataSource {
 
     if (overwriteItem.tags && old.tags.sort().toString() !== overwriteItem.tags.sort().toString()) {
       // TODO factor into its own method, use constant for 'tags'
-      const removedTags = old.tags.filter(tag => !overwriteItem.tags.includes(tag));
+      const removedTags = old.tags.filter(tag => !overwriteItem.tags?.includes(tag));
       const addedTags = overwriteItem.tags.filter(tag => !old.tags.includes(tag));
       const tagsStructure = await this.getStructure('tags');
 
@@ -159,8 +180,10 @@ export class DataInterface implements AbstractDataSource {
       await this.storeStructure('tags', tagsStructure);
     }
 
-    const result = await this.dataSource.changeItem(id, overwriteItem);
-    this.updateCache(id, overwriteItem);
+    const completeOverwriteItem = { ...old, ...overwriteItem };
+    logger.log('Updating item', [id], { old, update: overwriteItem, newItem: completeOverwriteItem })
+    const result = await this.dataSource.changeItem(id, completeOverwriteItem);
+    this.updateCache(id, completeOverwriteItem);
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Changed }]);
     return result;
   }
@@ -169,6 +192,7 @@ export class DataInterface implements AbstractDataSource {
     search: SearchQuery,
     onFind: (result: Array<DataItem<any>>) => any
   ): Promise<DataSourceActionResult> {
+    if (Object.keys(search).length === 0) return;
     return await this.dataSource.search(search, onFind);
   }
 

@@ -7,6 +7,10 @@ import { TreeData } from '@atlaskit/tree/types';
 import { SideBarTreeItem } from './SideBarTreeItem';
 import { useDataTree } from '../../datasource/useDataTree';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
+import { SideBarTreeHeader } from './SideBarTreeHeader';
+import { LogService } from '../../common/LogService';
+
+const logger = LogService.getLogger('SideBarTree');
 
 const styles = {
   expandButton: cxs({
@@ -16,10 +20,14 @@ const styles = {
 }
 
 export const SideBarTree: React.FC<{
+  title: string;
   rootItems: DataItem[];
+  masterItem?: DataItem;
 }> = props => {
   const dataInterface = useDataInterface();
   useEffect(() => console.log("Root items changed: ", props.rootItems), [props.rootItems]);
+
+  const [isExpanded, setIsExpanded] = useState(true);
   const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems);
 
   const [treeData, setTreeData] = useState<TreeData>({
@@ -74,33 +82,55 @@ export const SideBarTree: React.FC<{
 
   return (
     <div>
-      <Tree
-        offsetPerLevel={16}
-        isDragEnabled={true}
-        tree={treeData}
-        onExpand={(itemId) => expand(itemId as string)}
-        onCollapse={(itemId) => collapse(itemId as string)}
-        renderItem={({ item, onExpand, onCollapse, provided, depth }) => (
-          <div
-            className={[
-              cxs({
-              })
-            ].join(' ')}
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            title={item.id}
-          >
-            <SideBarTreeItem
-              item={item.data}
-              hasChildren={!!item.hasChildren}
-              isExpanded={!!item.isExpanded}
-              onExpand={() => onExpand(item.id)}
-              onCollapse={() => onCollapse(item.id)}
-            />
-          </div>
-        )}
+      <SideBarTreeHeader
+        title={props.title}
+        isExpanded={isExpanded}
+        onChangeIsExpanded={setIsExpanded}
+        masterItem={props.masterItem}
       />
+      {
+        isExpanded && (
+          <Tree
+            offsetPerLevel={16}
+            isDragEnabled={true}
+            tree={treeData}
+            onExpand={(itemId) => expand(itemId as string)}
+            onCollapse={(itemId) => collapse(itemId as string)}
+            onDragEnd={(source, destination) => {
+              if (destination && destination.index !== undefined) {
+                const itemId = treeData.items[source.parentId].children[source.index] as string;
+                const originalParentId = source.parentId as string;
+                const targetParentId = destination.parentId as string;
+                const targetIndex = destination.index;
+                logger.log('onDragEnd', [], {source, destination, itemId, originalParentId, targetParentId, targetIndex})
+                dataInterface.moveItem(itemId, originalParentId, targetParentId, targetIndex)
+              } else {
+                logger.log('Skipping onDragEnd, because destination or destination.index is undefined', [], {source, destination})
+              }
+            }}
+            renderItem={({ item, onExpand, onCollapse, provided, depth }) => (
+              <div
+                className={[
+                  cxs({
+                  })
+                ].join(' ')}
+                ref={provided.innerRef}
+                {...provided.draggableProps}
+                {...provided.dragHandleProps}
+                title={item.id}
+              >
+                <SideBarTreeItem
+                  item={item.data}
+                  hasChildren={!!item.hasChildren}
+                  isExpanded={!!item.isExpanded}
+                  onExpand={() => onExpand(item.id)}
+                  onCollapse={() => onCollapse(item.id)}
+                />
+              </div>
+            )}
+          />
+        )
+      }
     </div>
   );
 };

@@ -32,7 +32,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   private createId(name: string, counter?: number): string {
     let id = name
       .toLocaleLowerCase()
-      .replace(' ', '_')
+      .replace('\s', '_')
       .replace(/[^a-zA-Z ]/g, '');
     id += counter || '';
 

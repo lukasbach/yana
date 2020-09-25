@@ -128,11 +128,11 @@ export const MainContentContextProvider: React.FC = props => {
   };
 
   // TODO remove
-  useAsyncEffect(async () => {
-    actions.newTab(await dataInterface.getDataItem('newnote item'));
-    actions.newTab(await dataInterface.getDataItem('newnote item2'));
-    actions.newTab(await dataInterface.getDataItem('newnote item3'));
-  }, []);
+  // useAsyncEffect(async () => {
+  //   actions.newTab(await dataInterface.getDataItem('newnote item'));
+  //   actions.newTab(await dataInterface.getDataItem('newnote item2'));
+  //   actions.newTab(await dataInterface.getDataItem('newnote item3'));
+  // }, []);
 
   useEventChangeHandler(dataInterface.onChangeItems, async payload => {
     for (const { reason, id } of payload) {
