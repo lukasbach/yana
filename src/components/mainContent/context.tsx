@@ -83,7 +83,17 @@ export const MainContentContextProvider: React.FC = props => {
           ]
         }));
       } else {
-        // TODO
+        set(old => ({
+          ...old,
+          openTabId: old.tabs.length,
+          tabs: [
+            ...old.tabs,
+            {
+              dataItem,
+              scrollPosition: 0
+            }
+          ]
+        }));
       }
     },
     openInCurrentTab: async (dataItem) => {
@@ -107,7 +117,13 @@ export const MainContentContextProvider: React.FC = props => {
           }),
         }));
       } else {
-        // TODO
+        set(old => ({
+          ...old,
+          tabs: old.tabs.map((tab, id) => id !== old.openTabId ? tab : {
+            dataItem,
+            scrollPosition: 0
+          }),
+        }));
       }
     },
     closeTab: async (tabId) => {
@@ -128,11 +144,12 @@ export const MainContentContextProvider: React.FC = props => {
   };
 
   // TODO remove
-  // useAsyncEffect(async () => {
-  //   actions.newTab(await dataInterface.getDataItem('newnote item'));
-  //   actions.newTab(await dataInterface.getDataItem('newnote item2'));
-  //   actions.newTab(await dataInterface.getDataItem('newnote item3'));
-  // }, []);
+  useAsyncEffect(async () => {
+    actions.newTab(await dataInterface.getDataItem('new note item2'));
+    actions.newTab(await dataInterface.getDataItem('new note item3'));
+    actions.newTab(await dataInterface.getDataItem('welcometo yana'));
+    actions.newTab(await dataInterface.getDataItem('new collection3'));
+  }, []);
 
   useEventChangeHandler(dataInterface.onChangeItems, async payload => {
     for (const { reason, id } of payload) {

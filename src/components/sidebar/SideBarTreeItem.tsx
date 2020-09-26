@@ -87,7 +87,10 @@ export const SideBarTreeItem: React.FC<{
       }}
       onClick={() => mainContent.openInCurrentTab(item)}
       onMiddleClick={() => mainContent.newTab(item)}
+      onTitleClick={() => mainContent.openInCurrentTab(item)}
       menu={menu}
+      icon={item.icon || (item.kind === DataItemKind.NoteItem ? 'document' : 'folder-open') as any}
+      iconColor={item.color}
     />
   )
 

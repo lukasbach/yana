@@ -2,7 +2,7 @@ import * as React from 'react';
 import cxs from 'cxs';
 import cx from 'classnames';
 import { useTheme } from '../../common/theming';
-import { Icon, Popover } from '@blueprintjs/core';
+import { Icon, IconName, Popover } from '@blueprintjs/core';
 import { useEffect, useRef, useState } from 'react';
 
 const styles = {
@@ -33,7 +33,10 @@ const styles = {
   }),
   textContainer: cxs({
     flexGrow: 1,
-    '> span': {
+    '> .bp3-icon': {
+      marginRight: '4px'
+    },
+    '> span:not(.bp3-icon)': {
       ':hover': {
         textDecoration: 'underline'
       }
@@ -78,6 +81,8 @@ export const SideBarTreeItemUi: React.FC<{
   onTitleClick?: () => any;
   menu?: JSX.Element;
   isActive?: boolean;
+  icon: IconName;
+  iconColor?: string;
 }> = props => {
   const theme = useTheme();
   const [isActive, setIsActive] = useState(props.isActive || false);
@@ -134,6 +139,7 @@ export const SideBarTreeItemUi: React.FC<{
       <div
         className={styles.textContainer}
       >
+        <Icon icon={props.icon} color={props.iconColor} />
           {
             props.isRenaming ? (
               <form

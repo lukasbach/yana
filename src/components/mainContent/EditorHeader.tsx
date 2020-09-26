@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { NoteDataItem } from '../../types';
-import { Button, EditableText, H1, Icon, Tag } from '@blueprintjs/core';
+import { Button, Drawer, EditableText, H1, Icon, Tag } from '@blueprintjs/core';
 import cxs from 'cxs';
 import { useEffect, useState } from 'react';
 import Color from 'color';
 import { TagList } from './TagList';
 import ago from 's-ago';
+import { useEditItemDrawer } from '../drawers/editItemDrawer/useEditItemDrawer';
+import { MainContentHeader } from './MainContentHeader';
 
 const styles = {
   container: cxs({
@@ -43,13 +45,55 @@ export const EditorHeader: React.FC<{
   const { lastChange, created } = props.dataItem;
   const [titleValue, setTitleValue] = useState(props.dataItem.name);
   const [isEditingTags, setIsEditingTags] = useState(false);
+  const { EditItemDrawer, onOpenEditItemDrawer } = useEditItemDrawer(props.dataItem.id);
   useEffect(() => setTitleValue(props.dataItem.name), [props.dataItem.id]);
 
   return (
+    <>
+      <MainContentHeader
+        title={(
+          <EditableText
+            value={titleValue}
+            onChange={setTitleValue}
+            onConfirm={name => props.onChange({...props.dataItem, name})}
+          />
+        )}
+        icon={props.dataItem.icon as any || 'document'}
+        iconColor={props.dataItem.color}
+        titleSubtext={(
+          <>
+            Edited{' '}
+            <span title={new Date(lastChange).toLocaleString()}>{ ago(new Date(lastChange)) }</span>,{' '}
+            created{' '}
+            <span title={new Date(created).toLocaleString()}>{ ago(new Date(created)) }</span>.
+          </>
+        )}
+        rightContent={(
+          <>
+            <div>
+              <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>Edit Tags</Button>{' '}
+              <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>Configure document</Button>{' '}
+            </div>
+            <div>
+              <TagList
+                dataItem={props.dataItem}
+                isEditing={isEditingTags}
+                onStopEditing={() => setIsEditingTags(false)}
+              />
+            </div>
+          </>
+        )}
+      />
+    <EditItemDrawer />
+    </>
+  )
+
+  /*return (
     <div className={styles.container}>
+      <EditItemDrawer />
       <div className={styles.leftContainer}>
         <h1 className={styles.title}>
-          <Icon icon={'document'} iconSize={32} />
+          <Icon icon={props.dataItem.icon as any || 'document'} color={props.dataItem.color} iconSize={32} />
           <EditableText
             value={titleValue}
             onChange={setTitleValue}
@@ -66,7 +110,7 @@ export const EditorHeader: React.FC<{
       <div className={styles.rightContainer}>
         <div>
           <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>Edit Tags</Button>{' '}
-          <Button outlined icon={'cog'}>Configure document</Button>{' '}
+          <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>Configure document</Button>{' '}
         </div>
         <div>
           <TagList
@@ -77,5 +121,5 @@ export const EditorHeader: React.FC<{
         </div>
       </div>
     </div>
-  );
+  );*/
 };

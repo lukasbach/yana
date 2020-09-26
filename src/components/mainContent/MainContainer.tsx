@@ -2,11 +2,12 @@ import * as React from 'react';
 import { TabList } from './TabList';
 import { useMainContentContext } from './context';
 import { EditorRegistry } from '../../editors/EditorRegistry';
-import { isNoteItem } from '../../utils';
+import { isCollectionItem, isNoteItem } from '../../utils';
 import { EditorContainer } from './EditorContainer';
 import { LogService } from '../../common/LogService';
 import { EditorHeader } from './EditorHeader';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
+import { CollectionContainer } from './CollectionContainer';
 
 const logger = LogService.getLogger('MainContainer');
 
@@ -16,10 +17,10 @@ export const MainContainer: React.FC<{}> = props => {
   logger.log("rerender", [], {mainContent})
 
   return (
-    <div>
+    <>
       {
         mainContent.openTab && (
-          isNoteItem(mainContent.openTab.dataItem) && (
+          isNoteItem(mainContent.openTab.dataItem) ? (
             <>
               <EditorHeader
                 dataItem={mainContent.openTab.dataItem}
@@ -36,9 +37,13 @@ export const MainContainer: React.FC<{}> = props => {
                 }}
               />
             </>
+          ) : isCollectionItem(mainContent.openTab.dataItem) ? (
+            <CollectionContainer dataItem={mainContent.openTab.dataItem} />
+          ) : (
+            <>Unknown data type</>
           )
         )
       }
-    </div>
+    </>
   );
 };

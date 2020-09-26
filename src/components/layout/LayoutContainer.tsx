@@ -48,6 +48,7 @@ const styles = {
   }),
   mainContent: cxs({
     flexGrow: 1,
+    height: '100%'
   }),
 };
 
@@ -56,7 +57,7 @@ export const LayoutContainer: React.FC<{}> = props => {
   return (
     <div className={styles.mainContainer}>
       <TopBar />
-      <div className={styles.centralContainer}>
+      <div className={cx(styles.centralContainer, 'app-central-container')}>
         <div
           className={cx(
             styles.sidebar,

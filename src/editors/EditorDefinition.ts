@@ -8,9 +8,15 @@ export interface EditorComponentProps<C extends object> {
   onRegister: (grabContent: () => Promise<C>) => void;
 }
 
+export interface EditorSmallPreviewProps<C extends object> {
+  content: C;
+  item: NoteDataItem<any>;
+}
+
 export interface EditorDefinition<T extends string, C extends object> {
   id: T;
   name: string;
   initializeContent: () => C;
   editorComponent: React.FC<EditorComponentProps<C>>;
+  smallPreviewComponent?: React.FC<EditorSmallPreviewProps<C>>;
 }

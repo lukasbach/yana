@@ -14,6 +14,8 @@ export interface DataItem<K extends DataItemKind = any> {
   childIds: string[];
   created: number;
   lastChange: number;
+  icon?: string;
+  color?: string;
 }
 
 export interface NoteDataItem<T extends string> extends DataItem<DataItemKind.NoteItem> {
