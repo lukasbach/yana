@@ -85,39 +85,44 @@ export const TopBar: React.FC<{}> = props => {
         style={{ WebkitAppRegion: 'no-drag' } as any}
       >
         {
-          mainContent.tabs.map((tab, idx) => (
-            <div
-              key={tab.dataItem.id + idx}
-              className={cx(
-                styles.tab,
-                cxs({
-                  color: mainContent.openTabId === idx ? 'white' : Color(theme.topBarColor).lighten(1).toString(),
-                  borderBottom: mainContent.openTabId === idx ? `4px solid ${theme.primaryColor}` : undefined,
-                  fontWeight: mainContent.openTabId === idx ? 'bold' : 'normal',
-                  ':hover': {
-                    borderBottom: mainContent.openTabId !== idx ? `4px solid white` : undefined,
-                  }
-                })
-              )}
-              onClick={() => mainContent.activateTab(idx)}
-            >
-              { tab.dataItem.name.substr(0, 12) }{ tab.dataItem.name.length > 12 ? '...' : '' }
+          mainContent.tabs.map((tab, idx) => {
+            const id = tab.dataItem?.id ?? tab.page ?? 'unknown';
+            const name = tab.dataItem?.name ?? tab.page ?? 'Unknown name';
+
+            return (
               <div
+                key={id + idx}
                 className={cx(
-                  styles.closeContainer,
+                  styles.tab,
                   cxs({
-                    backgroundColor: theme.topBarColor
+                    color: mainContent.openTabId === idx ? 'white' : Color(theme.topBarColor).lighten(1).toString(),
+                    borderBottom: mainContent.openTabId === idx ? `4px solid ${theme.primaryColor}` : undefined,
+                    fontWeight: mainContent.openTabId === idx ? 'bold' : 'normal',
+                    ':hover': {
+                      borderBottom: mainContent.openTabId !== idx ? `4px solid white` : undefined,
+                    }
                   })
                 )}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  mainContent.closeTab(idx)
-                }}
+                onClick={() => mainContent.activateTab(idx)}
               >
-                <Icon icon={'cross'} />
+                { name.substr(0, 12) }{ name.length > 12 ? '...' : '' }
+                <div
+                  className={cx(
+                    styles.closeContainer,
+                    cxs({
+                      backgroundColor: theme.topBarColor
+                    })
+                  )}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    mainContent.closeTab(idx)
+                  }}
+                >
+                  <Icon icon={'cross'} />
+                </div>
               </div>
-            </div>
-          ))
+            );
+          })
         }
       </div>
       <div className={styles.dragArea} />

@@ -1,3 +1,4 @@
+/*
 import * as React from 'react';
 import { useMainContentContext } from './context';
 import cxs from 'cxs';
@@ -76,3 +77,4 @@ export const TabList: React.FC<{}> = props => {
     </div>
   );
 };
+*/

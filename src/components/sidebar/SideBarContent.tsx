@@ -8,6 +8,7 @@ import { useDataSearch } from '../../datasource/useDataSearch';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { InternalTag } from '../../datasource/InternalTag';
 import { SideBarTreeOnIds } from './SideBarTreeOnIds';
+import { NavigationTree } from './NavigationTree';
 
 export const SideBarContent: React.FC<{}> = props => {
   const dataInterface = useDataInterface();
@@ -23,16 +24,7 @@ export const SideBarContent: React.FC<{}> = props => {
     <>
       <WorkSpaceSelection />
 
-      <SideBarTree
-        title="Yana"
-        rootItems={[
-          { id: '__home', name: 'Home', ...dummyItemContent },
-          { id: '__starred', name: 'Starred', ...dummyItemContent },
-          { id: '__files', name: 'Files', ...dummyItemContent },
-          { id: '__drafts', name: 'Drafts', ...dummyItemContent },
-          { id: '__allitems', name: 'All Items', ...dummyItemContent },
-        ]}
-      />
+      <NavigationTree />
 
       {
         rootChilds.map(rootChild => (

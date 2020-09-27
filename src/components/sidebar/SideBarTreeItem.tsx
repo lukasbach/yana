@@ -80,7 +80,7 @@ export const SideBarTreeItem: React.FC<{
       onExpand={onExpand}
       onCollapse={onCollapse}
       isRenaming={isRenaming}
-      isActive={mainContent.openTab?.dataItem.id === item.id}
+      isActive={mainContent.openTab?.dataItem?.id === item.id}
       onRename={name => {
         dataInterface.changeItem(item.id, { ...item, name });
         setIsRenaming(false);

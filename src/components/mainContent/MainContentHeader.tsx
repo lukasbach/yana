@@ -24,7 +24,8 @@ const styles = {
     fontSize: '32px',
     margin: 0,
     '> span': {
-      margin: '2px 14px 0 0px'
+      margin: '0 14px 0 0px',
+      transform: 'translateY(-4px)'
     }
   }),
   titleSubtext: cxs({

@@ -8,6 +8,7 @@ import { TagList } from './TagList';
 import ago from 's-ago';
 import { useEditItemDrawer } from '../drawers/editItemDrawer/useEditItemDrawer';
 import { MainContentHeader } from './MainContentHeader';
+import { InternalTag } from '../../datasource/InternalTag';
 
 const styles = {
   container: cxs({
@@ -48,15 +49,30 @@ export const EditorHeader: React.FC<{
   const { EditItemDrawer, onOpenEditItemDrawer } = useEditItemDrawer(props.dataItem.id);
   useEffect(() => setTitleValue(props.dataItem.name), [props.dataItem.id]);
 
+  const isStarred = props.dataItem.tags.includes(InternalTag.Starred);
+
   return (
     <>
       <MainContentHeader
         title={(
-          <EditableText
-            value={titleValue}
-            onChange={setTitleValue}
-            onConfirm={name => props.onChange({...props.dataItem, name})}
-          />
+          <>
+            <EditableText
+              value={titleValue}
+              onChange={setTitleValue}
+              onConfirm={name => props.onChange({...props.dataItem, name})}
+            />
+            <Button
+              style={{ marginLeft: '12px' }}
+              icon={isStarred ? 'star' : 'star-empty'}
+              onClick={() => props.onChange({
+                ...props.dataItem,
+                tags: isStarred ? props.dataItem.tags.filter(tag => tag !== InternalTag.Starred)
+                  : [...props.dataItem.tags, InternalTag.Starred]
+              })}
+              minimal
+              large
+            />
+          </>
         )}
         icon={props.dataItem.icon as any || 'document'}
         iconColor={props.dataItem.color}
