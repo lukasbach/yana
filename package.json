@@ -51,6 +51,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-intl": "2.6.0",
+    "react-resize-panel": "^0.3.5",
     "react-router-dom": "^5.2.0",
     "react-virtualized": "^9.22.2",
     "remirror": "^0.13.1",

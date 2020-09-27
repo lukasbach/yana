@@ -8,6 +8,8 @@ import cx from 'classnames';
 import { useTheme } from '../../common/theming';
 import { MainContainer } from '../mainContent/MainContainer';
 import { TopBar } from './TopBar';
+// @ts-ignore
+import ResizePanel from "react-resize-panel";
 
 const styles = {
   mainContainer: cxs({
@@ -44,7 +46,17 @@ const styles = {
     display: 'flex',
   }),
   sidebar: cxs({
-    width: '320px',
+    height: '100%',
+    width: '100%'
+  }),
+  sidebarResizeBorder: cxs({
+    width: '6px',
+    cursor: 'e-resize',
+    backgroundColor: 'transparent',
+    transform: 'translateX(-6px)'
+  }),
+  sidebarResizeHandle: cxs({
+    display: 'none'
   }),
   mainContent: cxs({
     flexGrow: 1,
@@ -58,16 +70,30 @@ export const LayoutContainer: React.FC<{}> = props => {
     <div className={styles.mainContainer}>
       <TopBar />
       <div className={cx(styles.centralContainer, 'app-central-container')}>
-        <div
-          className={cx(
-            styles.sidebar,
+        <ResizePanel
+          direction="e"
+          handleClass={styles.sidebarResizeHandle}
+          borderClass={cx(
+            styles.sidebarResizeBorder,
             cxs({
-              backgroundColor: theme.sidebarColor
+              ':hover': {
+                backgroundColor: theme.primaryColor
+              }
             })
           )}
+          style={{ width: '320px', minWidth: '220px', marginRight: '-6px' }}
         >
-          <SideBarContent />
-        </div>
+          <div
+            className={cx(
+              styles.sidebar,
+              cxs({
+                backgroundColor: theme.sidebarColor
+              })
+            )}
+          >
+            <SideBarContent />
+          </div>
+        </ResizePanel>
         <div className={styles.mainContent}>
           <MainContainer />
         </div>
