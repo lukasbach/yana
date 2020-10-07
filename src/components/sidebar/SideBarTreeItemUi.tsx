@@ -4,6 +4,7 @@ import cx from 'classnames';
 import { useTheme } from '../../common/theming';
 import { Icon, IconName, Popover } from '@blueprintjs/core';
 import { useEffect, useRef, useState } from 'react';
+import { useContextMenu } from '../useContextMenu';
 
 const styles = {
   itemContainer: cxs({
@@ -88,6 +89,7 @@ export const SideBarTreeItemUi: React.FC<{
   const [isActive, setIsActive] = useState(props.isActive || false);
   const [name, setName] = useState(props.text);
   const renameInputRef = useRef<HTMLInputElement>(null);
+  const contextMenuProps = useContextMenu(props.menu);
   useEffect(() => setIsActive(props.isActive !== undefined ? props.isActive : isActive), [props.isActive]);
   useEffect(() => {
     if (props.isRenaming) {
@@ -123,6 +125,7 @@ export const SideBarTreeItemUi: React.FC<{
           props.onMiddleClick?.();
         }
       }}
+      {...contextMenuProps}
     >
       <div
         className={styles.chevronContainer}

@@ -16,6 +16,7 @@ export interface EditorSmallPreviewProps<C extends object> {
 export interface EditorDefinition<T extends string, C extends object> {
   id: T;
   name: string;
+  canInsertFiles: boolean;
   initializeContent: () => C;
   editorComponent: React.FC<EditorComponentProps<C>>;
   smallPreviewComponent?: React.FC<EditorSmallPreviewProps<C>>;

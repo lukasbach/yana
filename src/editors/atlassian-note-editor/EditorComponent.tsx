@@ -1,11 +1,16 @@
 import * as React from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { EditorComponentProps } from '../EditorDefinition';
 import { AtlassianNoteEditorContent } from './AtlaskitNoteEditor';
 import { Editor, EditorActions, EditorContext, WithEditorActions } from '@atlaskit/editor-core';
 import cxs from 'cxs';
-import { useEffect, useRef, useState } from 'react';
 import { LogService } from '../../common/LogService';
 import { IgnoreErrorBoundary } from '../../common/IgnoreErrorBoundary';
+import { useDataInterface } from '../../datasource/DataInterfaceContext';
+import { FindItemsDrawer } from '../../components/drawers/findItemsDrawer/FindItemsDrawer';
+import { DataItemKind, MediaItem } from '../../types';
+import { InsertedImageProperties } from '@atlaskit/editor-common/dist/cjs/provider-factory/image-upload-provider';
+import { isMediaItem } from '../../utils';
 
 const logger = LogService.getLogger('AtlaskitEditorComponent');
 
@@ -19,7 +24,8 @@ const styles = {
 
 export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorContent>> = props => {
   const editorRef = useRef<EditorActions | null>(null);
-  // const isChangingNote = useRef(false);
+  const [insertImageFn, setInsertImageFn] = useState< { fn: (props: InsertedImageProperties) => void } | undefined>();
+  const dataInterface = useDataInterface();
 
   useEffect(() => logger.log("Remount", [props.item.id], {content: props.content}), [])
 
@@ -36,6 +42,27 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
 
   return (
     <div className={styles.container}>
+      <FindItemsDrawer
+        title={"Insert file"}
+        icon={'insert'}
+        hiddenSearch={{ kind: DataItemKind.MediaItem }}
+        isOpen={!!insertImageFn}
+        onSetIsOpen={open => !open && setInsertImageFn(undefined)}
+        onClickItem={(item) => {
+          console.log("????");
+          (async () => {
+            if (insertImageFn) {
+              if (isMediaItem(item)) {
+                const src = await dataInterface.loadMediaItemContentAsPath(item.id);
+                insertImageFn.fn({ src, alt: item.name, title: item.name });
+                setInsertImageFn(undefined);
+              } else {
+                throw Error('Cannot insert data item which is not a media item.');
+              }
+            }
+          })();
+        }}
+      />
       <IgnoreErrorBoundary>
         <EditorContext>
           <WithEditorActions
@@ -50,6 +77,13 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                   }}
                   codeBlock={{
                   }}
+                  media={{
+                    allowMediaSingle: true,
+                  }}
+                  legacyImageUploadProvider={new Promise(res => res((e: Event | undefined, insertImageFn: (props: InsertedImageProperties) => void) => {
+                    console.log("!!!", insertImageFn);
+                    setInsertImageFn({ fn: insertImageFn });
+                  }))}
                   allowExpand={true}
                   insertMenuItems={[]}
                   quickInsert={true}

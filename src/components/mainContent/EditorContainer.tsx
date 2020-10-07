@@ -29,6 +29,10 @@ export const EditorContainer: React.FC<{
   //   setCurrentNote(props.noteItem);
   // }, [props.noteItem]);
 
+  useEffect(() => {
+
+  }, []);
+
   const clearSaveHandler = () => {
     clearTimeout(saveHandler.current);
     saveHandler.current = undefined;
@@ -47,18 +51,24 @@ export const EditorContainer: React.FC<{
     await dataInterface.writeNoteItemContent(currentNote.id, content);
   };
 
-  useAsyncEffect(async () => {
-    logger.log("Note ID changed", [], props);
+  useEffect(() => {
+    (async () => {
+      logger.log("Note ID changed", [], props);
 
-    if (grabContentHandler.current && saveHandler.current) {
-      logger.log("Old note is still unsaved, saving...");
-      await save();
-    }
+      if (grabContentHandler.current && saveHandler.current) {
+        logger.log("Old note is still unsaved, saving...");
+        await save();
+      }
 
-    setCurrentContent(props.currentContent);
-    setCurrentNote(props.noteItem);
-    // grabContentHandler.current = undefined; // TODO
+      setCurrentContent(props.currentContent);
+      setCurrentNote(props.noteItem);
+      // grabContentHandler.current = undefined; // TODO
+    })();
   }, [props.noteItem.id]);
+
+  // useEffect(() => {
+  //   return () => { save(); } // TODO this does more damage than it helps!!!!!!!
+  // }, [])
 
   // useEffect(() => {
   //   return () => {

@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { AbstractDataSource } from './AbstractDataSource';
-import { DataItem, DataItemKind, DataSourceActionResult, SearchQuery } from '../types';
+import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery } from '../types';
 import { EventEmitter } from '../common/EventEmitter';
 import { EditorRegistry } from '../editors/EditorRegistry';
-import { isNoteItem } from '../utils';
+import { isMediaItem, isNoteItem } from '../utils';
 import { LogService } from '../common/LogService';
 
 const logger = LogService.getLogger('DataInterface');
@@ -18,6 +18,13 @@ export enum ItemChangeEventReason {
 export interface ItemChangeEvent {
   id: string;
   reason: ItemChangeEventReason;
+  // TODO: just send item data with it, its usually available anyways and saves tons of reads
+}
+
+export interface FileAddEvent {
+  id: string;
+  item: MediaItem;
+  insertIntoActiveEditor: boolean;
 }
 
 export class DataInterface implements AbstractDataSource {
@@ -27,6 +34,7 @@ export class DataInterface implements AbstractDataSource {
   private editors = EditorRegistry.Instance;
 
   public onChangeItems = new EventEmitter<ItemChangeEvent[]>();
+  public onAddFiles = new EventEmitter<FileAddEvent[]>();
 
   constructor(public dataSource: AbstractDataSource, private cacheLength: number = 50) {}
 
@@ -105,6 +113,12 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async removeItem(id: string): Promise<DataSourceActionResult> {
+    const data = await this.dataSource.getDataItem(id);
+
+    if (!data) {
+      throw Error(`Cannot remove dataitem ${id}, it does not exist.`);
+    }
+
     const result = await this.dataSource.removeItem(id);
     this.updateCache(id, undefined);
 
@@ -115,6 +129,10 @@ export class DataInterface implements AbstractDataSource {
         ...parent,
         childIds: parent.childIds.filter(childId => childId !== id)
       });
+    }
+
+    if (isMediaItem(data)) {
+      await this.dataSource.removeMediaItemContent(data);
     }
 
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Removed }]);
@@ -205,6 +223,22 @@ export class DataInterface implements AbstractDataSource {
 
   public async loadMediaItemContent(id: string): Promise<Buffer | Blob> {
     return await this.dataSource.loadMediaItemContent(id);
+  }
+
+  public async loadMediaItemContentAsPath(id: string): Promise<string> {
+    return await this.dataSource.loadMediaItemContentAsPath(id);
+  }
+
+  public async loadMediaItemContentThumbnailAsPath(id: string): Promise<string | undefined> {
+    return await this.dataSource.loadMediaItemContentThumbnailAsPath(id);
+  }
+
+  public async storeMediaItemContent(id: string, localPath: string, thumbnail: { width?: number; height?: number } | undefined): Promise<DataSourceActionResult> {
+    return await this.dataSource.storeMediaItemContent(id, localPath, thumbnail);
+  }
+
+  public removeMediaItemContent(item: MediaItem): Promise<DataSourceActionResult> {
+    throw Error('Do not call DataInterface.removeMediaItemContent() directly, DataInterface.removeItem() will delete media data automatically.');
   }
 
   public async persist(): Promise<DataSourceActionResult> {

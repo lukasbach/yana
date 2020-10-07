@@ -5,9 +5,14 @@ import { searchViewCellDimensions } from './searchViewCellDimensions';
 import { DataItem } from '../../../types';
 import ago from 's-ago';
 import { Icon } from '@blueprintjs/core';
-import { isNoteItem } from '../../../utils';
+import { isMediaItem, isNoteItem, useAsyncEffect } from '../../../utils';
 import { DataItemSmallPreviewContainer } from './DataItemSmallPreviewContainer';
 import { useMainContentContext } from '../context';
+import { useContextMenu } from '../../useContextMenu';
+import { DataItemContextMenu } from '../../menus/DataItemContextMenu';
+import { Bp3MenuRenderer } from '../../menus/Bp3MenuRenderer';
+import { useDataInterface } from '../../../datasource/DataInterfaceContext';
+import { useEffect, useState } from 'react';
 
 const styles = {
   itemCard: cxs({
@@ -38,6 +43,7 @@ const styles = {
   cardMiddle: cxs({
     padding: '16px',
     backgroundColor: '#eee',
+    backgroundPosition: 'center',
     flexGrow: 1,
     overflow: 'hidden',
   }),
@@ -54,8 +60,25 @@ export const SearchViewCard: React.FC<{
   cellProps: GridCellProps,
   dataItem: DataItem,
   additionalLeftMargin: number,
-}> = ({ cellProps, dataItem, additionalLeftMargin }) => {
+  onClick?: () => void,
+}> = ({ cellProps, dataItem, additionalLeftMargin, onClick }) => {
   const mainContent = useMainContentContext();
+  const dataInterface = useDataInterface();
+  const contextMenuProps = useContextMenu(<DataItemContextMenu item={dataItem} renderer={Bp3MenuRenderer} mainContent={mainContent} dataInterface={dataInterface} />);
+  const [thumbnail, setThumbnail] = useState<string | undefined>();
+
+  console.log(thumbnail)
+
+
+  useAsyncEffect(async () => {
+    console.log(dataItem, isMediaItem(dataItem))
+    if (isMediaItem(dataItem) && dataItem.hasThumbnail) {
+      setThumbnail(await dataInterface.loadMediaItemContentThumbnailAsPath(dataItem.id));
+      console.log(await dataInterface.loadMediaItemContentThumbnailAsPath(dataItem.id), thumbnail)
+    } else {
+      setThumbnail(undefined);
+    }
+  }, [dataItem.id]);
 
   return (
     <div
@@ -64,7 +87,8 @@ export const SearchViewCard: React.FC<{
         ...cellProps.style,
         transform: `translateX(${additionalLeftMargin}px)`
       }}
-      onClick={() => mainContent.openInCurrentTab(dataItem)}
+      onClick={onClick || (() => mainContent.openInCurrentTab(dataItem))}
+      {...contextMenuProps}
     >
       <div className={styles.itemCard}>
         <div className={styles.cardHeader}>
@@ -73,7 +97,7 @@ export const SearchViewCard: React.FC<{
             { dataItem.name }
           </h4>
         </div>
-        <div className={styles.cardMiddle}>
+        <div className={styles.cardMiddle} style={{ backgroundImage: thumbnail && `url("file:///${thumbnail.replace(/\\/g, '/')}")` }}>
           { isNoteItem(dataItem) && <DataItemSmallPreviewContainer noteItem={dataItem} /> }
         </div>
         <div className={styles.cardFooter}>

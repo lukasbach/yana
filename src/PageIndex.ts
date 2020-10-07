@@ -5,5 +5,6 @@ export enum PageIndex {
   DraftItems = '__draft_items',
   AllItems = '__all_items',
   Settings = '__settings',
-  Search = '__search'
+  Search = '__search',
+  Trash = '__trash',
 }

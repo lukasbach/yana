@@ -11,6 +11,7 @@ export class AtlaskitNoteEditor implements EditorDefinition<'atlaskit-editor-not
   public name = "Note";
   public editorComponent = EditorComponent;
   public smallPreviewComponent = SmallPreviewComponent;
+  public canInsertFiles = false;
 
   public initializeContent(): AtlassianNoteEditorContent {
     return {

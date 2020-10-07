@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Button, Classes, Dialog, FormGroup, InputGroup, Menu, MenuItem, Popover } from '@blueprintjs/core';
 import { useState } from 'react';
+import { Button, Classes, Dialog, FormGroup, Icon, InputGroup, Menu, MenuItem, Popover } from '@blueprintjs/core';
 import { useAppData } from '../../appdata/AppDataProvider';
 import { remote } from 'electron';
 import path from 'path';
@@ -8,6 +8,10 @@ import cxs from 'cxs';
 import cx from 'classnames';
 import { useTheme } from '../../common/theming';
 import Color from 'color';
+import { useDataInterface } from '../../datasource/DataInterfaceContext';
+import { useMainContentContext } from '../mainContent/context';
+import { InternalTag } from '../../datasource/InternalTag';
+import { DataItemKind, NoteDataItem } from '../../types';
 
 const style = {
   popoverContainer: cxs({
@@ -40,18 +44,34 @@ const style = {
     fontSize: '14px'
   }),
   actionsContainer: cxs({
-    margin: '14px 14px 14px 0'
+    margin: '14px 14px 14px 0',
+    display: 'flex',
+    alignItems: 'center'
   }),
+  actionsButton: cxs({
+    border: 'none',
+    backgroundColor: 'transparent',
+    cursor: 'pointer'
+  })
 }
 
 export const WorkSpaceSelection: React.FC<{}> = props => {
   const appData = useAppData();
+  const dataInterface = useDataInterface();
+  const mainContent = useMainContentContext();
   const theme = useTheme();
   const [createWorkspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
   const [createWorkspaceName, setCreateWorkspaceName] = useState('New Workspace');
   const [createWorkspacePath, setCreateWorkspacePath] = useState(
     path.join(remote.app.getPath('home'), 'yana-workspace')
   );
+
+  const actionsButtonClass = cxs({
+    color: theme.sidebarTextColor,
+    ':hover': {
+      color: Color(theme.sidebarTextColor).lighten(.3).toString(),
+    }
+  })
 
   return (
     <>
@@ -118,8 +138,31 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
               { appData.currentWorkspace.name }
             </div>
             <div className={style.actionsContainer}>
-              <Button icon={'cog'} minimal />
-              <Button icon={'add'} minimal />
+              <button
+                className={cx(actionsButtonClass, style.actionsButton)}
+                onClick={e => {
+                  e.stopPropagation();
+                }}
+              >
+                <Icon icon="cog" />
+              </button>
+              <button
+                className={cx(actionsButtonClass, style.actionsButton)}
+                onClick={e => {
+                  e.stopPropagation();
+                  dataInterface.createDataItem({
+                    name: 'New Draft',
+                    tags: [InternalTag.Draft],
+                    kind: DataItemKind.NoteItem,
+                    childIds: [],
+                    lastChange: new Date().getTime(),
+                    created: new Date().getTime(),
+                    noteType: 'atlaskit-editor-note'
+                  } as any).then(item => mainContent.newTab(item));
+                }}
+              >
+                <Icon icon="add" />
+              </button>
             </div>
           </div>
         </Popover>

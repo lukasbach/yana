@@ -5,6 +5,10 @@ import { useState } from 'react';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { SideBarTreeItemUi } from './SideBarTreeItemUi';
 import { useMainContentContext } from '../mainContent/context';
+import { NoteItemContextMenu } from '../menus/NoteItemContextMenu';
+import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
+import { isCollectionItem, isNoteItem } from '../../utils';
+import { DataItemContextMenu } from '../menus/DataItemContextMenu';
 
 export const SideBarTreeItem: React.FC<{
   item: DataItem,
@@ -20,57 +24,15 @@ export const SideBarTreeItem: React.FC<{
   const [newName, setNewName] = useState(item.name);
   const [isRenaming, setIsRenaming] = useState(false);
 
-  const deleteItem = () => {
-    dataInterface.removeItem(item.id);
-  };
-
-  const createSubCollection = () => {
-    dataInterface.createDataItemUnderParent({
-      name: 'New Collection',
-      childIds: [],
-      kind: DataItemKind.Collection,
-      lastChange: new Date().getTime(),
-      created: new Date().getTime(),
-      tags: []
-    }, item.id);
-  };
-
-  const createSubNote = () => {
-    dataInterface.createDataItemUnderParent({
-      name: 'New Note Item',
-      childIds: [],
-      kind: DataItemKind.NoteItem,
-      lastChange: new Date().getTime(),
-      created: new Date().getTime(),
-      tags: [],
-      noteType: 'atlaskit-editor-note'
-    } as any, item.id)
-  };
-
-  let menu: JSX.Element;
-
-  if (item.kind === DataItemKind.Collection) {
-    menu = (
-      <Menu>
-        <MenuItem text="Open" onClick={() => mainContent.openInCurrentTab(item)} />
-        <MenuItem text="Open in new Tab" onClick={() => mainContent.newTab(item)} />
-        <MenuItem text="Rename" onClick={() => setIsRenaming(true)} />
-        <MenuItem text="Delete" onClick={deleteItem} />
-        <MenuDivider />
-        <MenuItem text="Create new collection" onClick={createSubCollection} />
-        <MenuItem text="Create new note item" onClick={createSubNote} />
-      </Menu>
-    );
-  } else {
-    menu = (
-      <Menu>
-        <MenuItem text="Open" onClick={() => mainContent.openInCurrentTab(item)} />
-        <MenuItem text="Open in new Tab" onClick={() => mainContent.newTab(item)} />
-        <MenuItem text="Rename" onClick={() => setIsRenaming(true)} />
-        <MenuItem text="Delete" onClick={deleteItem} />
-      </Menu>
-    );
-  }
+  const menu = (
+    <DataItemContextMenu
+      item={item}
+      renderer={Bp3MenuRenderer}
+      onStartRename={() => setIsRenaming(true)}
+      dataInterface={dataInterface}
+      mainContent={mainContent}
+    />
+  );
 
   return (
     <SideBarTreeItemUi
@@ -92,65 +54,5 @@ export const SideBarTreeItem: React.FC<{
       icon={item.icon || (item.kind === DataItemKind.NoteItem ? 'document' : 'folder-open') as any}
       iconColor={item.color}
     />
-  )
-
-  /*return (
-    <>
-      <Alert
-        isOpen={isEditingName}
-        canOutsideClickCancel={true}
-        onClose={() => setIsEditingName(false)}
-        onConfirm={() => {
-          dataInterface.changeItem(item.id, {
-            ...item,
-            name: newName
-          })
-        }}
-      >
-        <FormGroup label="New name">
-          <InputGroup onChange={(e: any) => setNewName(e.target.value)} value={newName} />
-        </FormGroup>
-      </Alert>
-      {
-        hasChildren && (
-          <Button minimal={true} small={true} onClick={() => isExpanded ? onCollapse() : onExpand()}>
-            <Icon icon={isExpanded ? 'chevron-down' : 'chevron-right'} />
-          </Button>
-        )
-      }
-      { item.name }
-      {
-        item.kind === DataItemKind.Collection && (
-          <>
-            <Button minimal={true} small={true} onClick={() => setIsEditingName(true)}>
-              <Icon icon={'edit'} />
-            </Button>
-            <Button minimal={true} small={true} onClick={() => dataInterface.createDataItemUnderParent({
-              name: 'New Collection',
-              childIds: [],
-              kind: DataItemKind.Collection,
-              lastChange: new Date().getTime(),
-              created: new Date().getTime(),
-              tags: []
-            }, item.id)}>
-              <Icon icon={'folder-new'} />
-            </Button>
-            <Button minimal={true} small={true} onClick={() => dataInterface.createDataItemUnderParent({
-              name: 'New Note Item',
-              childIds: [],
-              kind: DataItemKind.NoteItem,
-              lastChange: new Date().getTime(),
-              created: new Date().getTime(),
-              tags: []
-            }, item.id)}>
-              <Icon icon={'new-object'} />
-            </Button>
-            <Button minimal={true} small={true} onClick={() => dataInterface.removeItem(item.id)}>
-              <Icon icon={'trash'} />
-            </Button>
-          </>
-        )
-      }
-    </>
-  );*/
+  );
 };

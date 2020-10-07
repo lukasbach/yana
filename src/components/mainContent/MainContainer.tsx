@@ -10,6 +10,9 @@ import { CollectionContainer } from './CollectionContainer';
 import { NoteContainer } from './NoteContainer';
 import { PageIndex } from '../../PageIndex';
 import { StarredItems } from './StarredItems';
+import { DraftItems } from './DraftItems';
+import { FileItems } from './FileItems';
+import { AllItems } from './AllItems';
 
 const logger = LogService.getLogger('MainContainer');
 
@@ -21,7 +24,13 @@ export const MainContainer: React.FC<{}> = props => {
   if (mainContent.openTab?.page) {
     switch(mainContent.openTab.page) {
       case PageIndex.StarredItems:
-        return <StarredItems />
+        return <StarredItems />;
+      case PageIndex.DraftItems:
+        return <DraftItems />;
+      case PageIndex.FileItems:
+        return <FileItems />;
+      case PageIndex.AllItems:
+        return <AllItems />
       default:
         return <>Unknown page</>;
     }

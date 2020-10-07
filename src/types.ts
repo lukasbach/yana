@@ -25,10 +25,11 @@ export interface NoteDataItem<T extends string> extends DataItem<DataItemKind.No
 export interface CollectionDataItem extends DataItem<DataItemKind.Collection> {}
 
 export interface MediaItem extends DataItem<DataItemKind.MediaItem> {
-  added: string;
+  referencePath?: string;
   size: number;
   type: 'image' | 'text' | 'folder';
   extension: string;
+  hasThumbnail: boolean;
 }
 
 export class UiError extends Error {
@@ -47,6 +48,7 @@ export interface SearchQuery {
   exactParents?: string[];
   childs?: string[];
   kind?: DataItemKind;
+  all?: boolean;
 }
 
 export interface WorkSpace {

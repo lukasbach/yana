@@ -6,15 +6,17 @@ import { DataItemKind } from '../../types';
 import { IconName } from '@blueprintjs/core';
 import { PageIndex } from '../../PageIndex';
 import { useMainContentContext } from '../mainContent/context';
+import { pages } from '../../pages';
 
-const pages: Array<{ title: string, pageId: PageIndex, icon: IconName }> = [
-  { title: 'Home', pageId: PageIndex.Home, icon: 'home' },
-  { title: 'Starred', pageId: PageIndex.StarredItems, icon: 'star' },
-  { title: 'Files', pageId: PageIndex.FileItems, icon: 'archive' },
-  { title: 'Drafts', pageId: PageIndex.DraftItems, icon: 'edit' },
-  { title: 'All Items', pageId: PageIndex.AllItems, icon: 'console' },
-  { title: 'Search', pageId: PageIndex.Search, icon: 'search' },
-]
+const navTreePageIndices = [
+  PageIndex.Home,
+  PageIndex.StarredItems,
+  PageIndex.FileItems,
+  PageIndex.DraftItems,
+  PageIndex.AllItems,
+  PageIndex.Search,
+  PageIndex.Trash
+];
 
 export const NavigationTree: React.FC<{}> = props => {
   const [isExpanded, setIsExpanded] = useState(true);
@@ -29,13 +31,13 @@ export const NavigationTree: React.FC<{}> = props => {
       />
 
       {
-        isExpanded && pages.map(page => (
+        isExpanded && navTreePageIndices.map(idx => [idx, pages[idx]] as const).map(([idx, page]) => (
           <SideBarTreeItemUi
-            key={page.pageId}
+            key={idx}
             text={page.title}
             isExpandable={false}
             isExpanded={false}
-            onClick={() => mainContent.openInCurrentTab(page.pageId)}
+            onClick={() => mainContent.openInCurrentTab(idx)}
             icon={page.icon}
           />
         ))

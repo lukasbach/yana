@@ -2,7 +2,7 @@ import * as React from 'react';
 import cxs from 'cxs';
 import { IconName, InputGroup } from '@blueprintjs/core';
 import { AutoSizer, Grid } from 'react-virtualized';
-import { SearchQuery } from '../../../types';
+import { DataItem, SearchQuery } from '../../../types';
 import { MainContentHeader } from '../MainContentHeader';
 import { useEffect, useRef, useState } from 'react';
 import { useDataSearch } from '../../../datasource/useDataSearch';
@@ -34,6 +34,7 @@ export const SearchView: React.FC<{
   iconColor?: string,
   hiddenSearch: SearchQuery,
   defaultSearch: SearchQuery,
+  onClickItem?: (item: DataItem) => void;
 }> = props => {
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({ ...props.hiddenSearch, ...props.defaultSearch });
   const items = useDataSearch(searchQuery);
@@ -83,6 +84,7 @@ export const SearchView: React.FC<{
                       cellProps={cellProps}
                       dataItem={items[itemId]}
                       additionalLeftMargin={(width - columnCount * searchViewCellDimensions.cellWidth) / 2}
+                      onClick={props.onClickItem ? (() => props.onClickItem?.(items[itemId])) : undefined}
                     />
                   );
                 }}

@@ -5,6 +5,7 @@ import { useAsyncEffect } from '../../utils';
 import { LogService } from '../../common/LogService';
 import { useEventChangeHandler } from '../../common/useEventChangeHandler';
 import { ItemChangeEventReason } from '../../datasource/DataInterface';
+import { PageIndex } from '../../PageIndex';
 
 const logger = LogService.getLogger('MainContainerContext');
 
@@ -23,14 +24,16 @@ export interface MainContentContextActions {
   activateTab: (tabId: number) => Promise<void>;
 }
 
+export type MainContentContextType = MainContentContextValue & MainContentContextActions;
+
 export interface TabData {
   dataItem?: DataItem;
-  page?: string;
+  page?: PageIndex;
   currentContent?: any;
   scrollPosition: number;
 }
 
-export const MainContentContext = React.createContext<MainContentContextValue & MainContentContextActions>(null as any);
+export const MainContentContext = React.createContext<MainContentContextType>(null as any);
 
 export const useMainContentContext = () => useContext(MainContentContext);
 
@@ -76,7 +79,7 @@ export const MainContentContextProvider: React.FC = props => {
           tabs: [
             ...old.tabs,
             {
-              page: dataItemOrPage,
+              page: dataItemOrPage as PageIndex,
               scrollPosition: 0
             }
           ]
@@ -123,7 +126,7 @@ export const MainContentContextProvider: React.FC = props => {
         set(old => ({
           ...old,
           tabs: old.tabs.map((tab, id) => id !== old.openTabId ? tab : {
-            page: dataItemOrPage,
+            page: dataItemOrPage as PageIndex,
             scrollPosition: 0
           }),
         }));
@@ -155,7 +158,35 @@ export const MainContentContextProvider: React.FC = props => {
       }));
     },
     reorderTab: async (from, to) => {
-      // TODO
+      set(old => {
+        let openTabId = old.openTabId;
+
+        if (openTabId === from) {
+          logger.log("User is moving currently opened tab", [], {openTabId, from, to, oldOpenTabId: old.openTabId});
+          openTabId = to;
+        } else if (from < openTabId && to < openTabId) {
+          logger.log("User is moving tab from and to in front of open tab, noop", [], {openTabId, from, to, oldOpenTabId: old.openTabId});
+        } else if (to > openTabId && from > openTabId) {
+          logger.log("User is moving tab from and to after end of open tab, noop", [], {openTabId, from, to, oldOpenTabId: old.openTabId});
+        } else if (from < openTabId && to >= openTabId) {
+          openTabId--;
+          logger.log("User is moving tab from before to after open tab", [], {openTabId, from, to, oldOpenTabId: old.openTabId});
+        } else if (from > openTabId && to <= openTabId) {
+          openTabId++;
+          logger.log("User is moving tab from after to before open tab", [], {openTabId, from, to, oldOpenTabId: old.openTabId});
+        }
+
+        return {
+          ...old,
+          // openTabId: old.openTabId === from ? to : to > old.openTabId ? old.openTabId + 1 : from < old.openTabId ? old.openTabId - 1 : old.openTabId,
+          openTabId,
+          tabs: [
+            ...old.tabs.filter((tab, idx) => idx !== from).filter((tab, idx) => idx < to),
+            old.tabs[from],
+            ...old.tabs.filter((tab, idx) => idx !== from).filter((tab, idx) => idx >= to),
+          ]
+        };
+      })
     },
     activateTab: async (tabId) => {
       set(old => ({

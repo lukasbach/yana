@@ -17,6 +17,11 @@ export interface AbstractDataSource {
   getStructure: (id: string) => Promise<any>;
 
   loadMediaItemContent: (id: string) => Promise<Buffer | Blob>;
+  loadMediaItemContentAsPath: (id: string) => Promise<string>;
+  storeMediaItemContent: (id: string, localPath: string, thumbnail?: { width?: number, height?: number }) => Promise<DataSourceActionResult>;
+  loadMediaItemContentThumbnailAsPath: (id: string) => Promise<string | undefined>;
+  removeMediaItemContent: (item: MediaItem) => Promise<DataSourceActionResult>;
+  // storeMediaItemContent: (id: string, path: string)
 
   persist: () => Promise<DataSourceActionResult>;
 }

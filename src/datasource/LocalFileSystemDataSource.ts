@@ -4,6 +4,10 @@ import * as fsLib from 'fs';
 import * as path from 'path';
 import { isMediaItem, isNoteItem } from '../utils';
 import { SearchHelper } from './SearchHelper';
+import Jimp from 'jimp/dist';
+import { LogService } from '../common/LogService';
+
+const logger = LogService.getLogger('LocalFileSystemDataSource');
 
 const fs = fsLib.promises;
 
@@ -18,12 +22,18 @@ export interface LocalFileSystemDataSourceOptions {
 
 export class LocalFileSystemDataSource implements AbstractDataSource {
   private structure!: {
-    // notes: { [key: string]: Omit<NoteItem<any, any>, 'content'> };
-    // collections: { [key: string]: NoteItemCollection };
-    // mediaItems: { [key: string]: MediaItem };
     items: { [key: string]: DataItem<any> };
     structures: { [key: string]: any };
   };
+
+  private thumbnailExtensions: string[] = [
+    'png',
+    'jpg',
+    'gif',
+    'jpeg',
+    'bmp',
+    'tiff'
+  ]
 
   private resolvePath(...p: string[]) {
     return path.join(this.options.sourcePath, ...p);
@@ -32,7 +42,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   private createId(name: string, counter?: number): string {
     let id = name
       .toLocaleLowerCase()
-      .replace('\s', '_')
+      .replace(/\s/g, '_')
       .replace(/[^a-zA-Z ]/g, '');
     id += counter || '';
 
@@ -48,6 +58,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   public static async init(options: LocalFileSystemDataSourceOptions) {
     const sourcePath = options.sourcePath;
     const noteDataPath = path.join(sourcePath, NOTES_DIR);
+    const mediaDataPath = path.join(sourcePath, MEDIA_DIR);
 
     if (!fsLib.existsSync(sourcePath)) {
       fsLib.mkdirSync(sourcePath, { recursive: true });
@@ -55,6 +66,10 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
 
     if (!fsLib.existsSync(noteDataPath)) {
       fsLib.mkdirSync(noteDataPath, { recursive: true });
+    }
+
+    if (!fsLib.existsSync(mediaDataPath)) {
+      fsLib.mkdirSync(mediaDataPath, { recursive: true });
     }
 
     fsLib.writeFileSync(
@@ -112,6 +127,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     onFind: (collections: Array<DataItem<any>>) => any
   ): Promise<DataSourceActionResult> {
     const result: DataItem[] = [];
+    console.log("Search")
 
     for (const item of Object.values(this.structure.items)) {
       if (await SearchHelper.satisfiesSearch(item, search, this)) {
@@ -125,6 +141,56 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   public async loadMediaItemContent(id: string): Promise<Buffer | Blob> {
     const mediaItem = this.structure.items[id] as MediaItem;
     return fsLib.readFileSync(this.resolvePath(MEDIA_DIR, id + '.' + mediaItem.extension));
+  }
+
+  public async loadMediaItemContentAsPath(id: string): Promise<string> {
+    const mediaItem = this.structure.items[id] as MediaItem;
+    return mediaItem.referencePath || this.resolvePath(MEDIA_DIR, id + '.' + mediaItem.extension);
+  }
+
+  public async loadMediaItemContentThumbnailAsPath(id: string): Promise<string | undefined> {
+    const mediaItem = this.structure.items[id] as MediaItem;
+    if (this.thumbnailExtensions.includes(mediaItem.extension)) {
+      const thumbnailPath = this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension);
+      if (fsLib.existsSync(thumbnailPath)) {
+        return thumbnailPath;
+      } else {
+        return undefined;
+      }
+    } else {
+      return undefined;
+    }
+  }
+
+  public async storeMediaItemContent(id: string, localPath: string, thumbnail: { width?: number; height?: number } | undefined): Promise<DataSourceActionResult> {
+    const mediaItem = this.structure.items[id] as MediaItem;
+    logger.log("Storing media item content", [], {id, localPath, mediaItem, thumbnail});
+    if (!mediaItem.referencePath) {
+      fsLib.copyFileSync(localPath, this.resolvePath(MEDIA_DIR, id + '.' + mediaItem.extension));
+    }
+
+    if (thumbnail && (thumbnail.width || thumbnail?.height) && this.thumbnailExtensions.includes(mediaItem.extension)) {
+      logger.log("Preparing thumbnail", [], {thumbnail, mediaItem, localPath});
+      const file = fsLib.readFileSync(localPath);
+      const jimpImage = await Jimp.read(file);
+      logger.log("Read original image", [], {jimpImage});
+      const resized = await jimpImage.resize(thumbnail.width || Jimp.AUTO, thumbnail.height || Jimp.AUTO);
+      const buffer = await resized.getBufferAsync(resized.getMIME());
+      fsLib.writeFileSync(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension), buffer);
+       // .writeAsync(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension));
+      logger.log("Resized image and stored thumbnail", [], {});
+    }
+  }
+
+  public async removeMediaItemContent(item: MediaItem): Promise<DataSourceActionResult> {
+    const mediaPath = this.resolvePath(MEDIA_DIR, item.id + '.' + item.extension);
+    const thumbPath = this.resolvePath(MEDIA_DIR, item.id + '.thumb.' + item.extension);
+    logger.log("Removing media contents", [], {item, mediaPath, thumbPath, hasThumb: item.hasThumbnail});
+    fsLib.unlinkSync(mediaPath);
+
+    if (item.hasThumbnail) {
+      fsLib.unlinkSync(thumbPath);
+    }
   }
 
   public async persist() {
