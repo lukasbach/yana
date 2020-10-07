@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { DataItem } from '../../types';
-import { Icon } from '@blueprintjs/core';
+import { Icon, Popover } from '@blueprintjs/core';
 import cxs from 'cxs';
 import cx from 'classnames';
 import { useTheme } from '../../common/theming';
 import Color from 'color';
+import { TreeAddIconContextMenu } from '../menus/TreeAddIconContextMenu';
+import { useState } from 'react';
+import { useMainContentContext } from '../mainContent/context';
+import { useDataInterface } from '../../datasource/DataInterfaceContext';
+import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
 
 const styles = {
   container: cxs({
@@ -45,9 +50,12 @@ export const SideBarTreeHeader: React.FC<{
   title: string;
   isExpanded: boolean;
   onChangeIsExpanded: (isExpanded: boolean) => void;
+  onCreatedItem?: (item: DataItem) => void;
   masterItem?: DataItem;
 }> = props => {
   const theme = useTheme();
+  const mainContent = useMainContentContext();
+  const dataInterface = useDataInterface();
 
   return (
     <div className={cx(
@@ -67,12 +75,31 @@ export const SideBarTreeHeader: React.FC<{
       <div className={styles.titleContainer}>
         { props.title }
       </div>
-      <div className={cx(
-        styles.addContainer,
-        'add-container'
-      )}>
-        <Icon icon={'plus'} />
-      </div>
+
+      { props.masterItem && (
+        <Popover
+          content={(
+            <TreeAddIconContextMenu
+              item={props.masterItem}
+              mainContent={mainContent}
+              dataInterface={dataInterface}
+              renderer={Bp3MenuRenderer}
+              onCreatedItem={props.onCreatedItem}
+            />
+          )}
+          position={'bottom-right'}
+          minimal
+        >
+          <div
+            className={cx(
+              styles.addContainer,
+              'add-container'
+            )}
+          >
+            <Icon icon={'plus'} />
+          </div>
+        </Popover>
+      )}
     </div>
   );
 };

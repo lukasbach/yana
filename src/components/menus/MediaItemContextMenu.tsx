@@ -15,9 +15,6 @@ export const MediaItemContextMenu: React.FC<{
   mainContent: MainContentContextType;
   dataInterface: DataInterface;
 }> = ({ renderer, item, onStartRename, dataInterface, mainContent }) => {
-  // const mainContent = useMainContentContext();
-  // const dataInterface = useDataInterface();
-
   const Renderer = renderer;
 
   return (

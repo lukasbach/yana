@@ -25,8 +25,7 @@ export const SideBarTree: React.FC<{
   masterItem?: DataItem;
 }> = props => {
   const dataInterface = useDataInterface();
-  useEffect(() => console.log("Root items changed: ", props.rootItems), [props.rootItems]);
-
+  const [renamingItemId, setRenamingItemId] = useState<undefined | string>();
   const [isExpanded, setIsExpanded] = useState(true);
   const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems);
 
@@ -59,26 +58,8 @@ export const SideBarTree: React.FC<{
         ]))
       }
     };
-    console.log(`Rebuild tree.`, newTree, items);
     setTreeData(newTree);
   }, [items, expandedIds]);
-
-  /*
-  {
-          items: {
-            root: { id: 'root', hasChildren: true, data: { name: 'root' }, children: ['coll1', 'coll2'] },
-            coll1: { id: 'coll1', hasChildren: true, data: { name: 'Collection 1' }, children: ['coll3', 'note1', 'note2'] },
-            coll2: { id: 'coll2', hasChildren: true, data: { name: 'Collection 2' }, children: ['note3', 'note4'] },
-            coll3: { id: 'coll3', hasChildren: true, data: { name: 'Collection 3' }, children: ['note5'] },
-            note1: { id: 'note1', hasChildren: false, data: { name: 'Note 1' }, children: [''] },
-            note2: { id: 'note2', hasChildren: false, data: { name: 'Note 2' }, children: [''] },
-            note3: { id: 'note3', hasChildren: false, data: { name: 'Note 3' }, children: [''] },
-            note4: { id: 'note4', hasChildren: false, data: { name: 'Note 4' }, children: [''] },
-            note5: { id: 'note5', hasChildren: false, data: { name: 'Note 5' }, children: [''] },
-          },
-          rootId: 'root'
-        }
-   */
 
   return (
     <div>
@@ -87,6 +68,7 @@ export const SideBarTree: React.FC<{
         isExpanded={isExpanded}
         onChangeIsExpanded={setIsExpanded}
         masterItem={props.masterItem}
+        onCreatedItem={item => setRenamingItemId(item.id)}
       />
       {
         isExpanded && (
@@ -125,6 +107,8 @@ export const SideBarTree: React.FC<{
                   isExpanded={!!item.isExpanded}
                   onExpand={() => onExpand(item.id)}
                   onCollapse={() => onCollapse(item.id)}
+                  isRenaming={item.id === renamingItemId}
+                  onStartRenameItem={setRenamingItemId}
                 />
               </div>
             )}

@@ -2,7 +2,7 @@ import * as React from 'react';
 import cxs from 'cxs';
 import cx from 'classnames';
 import { useTheme } from '../../common/theming';
-import { Icon, IconName, Popover } from '@blueprintjs/core';
+import { Classes, Icon, IconName, Popover } from '@blueprintjs/core';
 import { useEffect, useRef, useState } from 'react';
 import { useContextMenu } from '../useContextMenu';
 
@@ -34,21 +34,33 @@ const styles = {
   }),
   textContainer: cxs({
     flexGrow: 1,
+    display: 'flex',
     '> .bp3-icon': {
       marginRight: '4px'
-    },
+    }
+  }),
+  nameContainer: cxs({
+    position: 'relative',
+    flexGrow: 1,
+  }),
+  nameContainerInner: cxs({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     '> span:not(.bp3-icon)': {
       ':hover': {
         textDecoration: 'underline'
       }
-    }
+    },
   }),
   contextMenuContainer: cxs({
     opacity: 0,
     transition: '.1s all ease',
   }),
   nameChangeContainer: cxs({
-    display: 'flex',
+    display: 'inline-flex',
     margin: 0,
     '> input': {
       flexGrow: 1,
@@ -160,18 +172,24 @@ export const SideBarTreeItemUi: React.FC<{
                 </button>
               </form>
             ) : (
-              <span
-                onClick={e => {
-                  e.stopPropagation();
-                  if (props.onTitleClick) {
-                    props.onTitleClick();
-                  } else {
-                    props.onClick?.();
-                  }
-                }}
-              >
-                { props.text }
-              </span>
+              <div className={styles.nameContainer}>
+                <span
+                  className={cx(Classes.TEXT_OVERFLOW_ELLIPSIS, styles.nameContainerInner)}
+                >
+                  <span
+                    onClick={e => {
+                      e.stopPropagation();
+                      if (props.onTitleClick) {
+                        props.onTitleClick();
+                      } else {
+                        props.onClick?.();
+                      }
+                    }}
+                  >
+                    { props.text }
+                  </span>
+                </span>
+              </div>
             )
           }
       </div>

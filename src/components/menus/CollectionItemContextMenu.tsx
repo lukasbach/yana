@@ -14,9 +14,6 @@ export const CollectionItemContextMenu: React.FC<{
   mainContent: MainContentContextType;
   dataInterface: DataInterface;
 }> = ({ renderer, item, onStartRename, mainContent, dataInterface, onCreatedItem }) => {
-  // const mainContent = useMainContentContext();
-  // const dataInterface = useDataInterface();
-
   const Renderer = renderer;
 
   return (
