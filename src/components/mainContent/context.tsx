@@ -198,10 +198,10 @@ export const MainContentContextProvider: React.FC = props => {
 
   // TODO remove
   useAsyncEffect(async () => {
-    actions.newTab(await dataInterface.getDataItem('new note item2'));
-    actions.newTab(await dataInterface.getDataItem('new note item3'));
-    actions.newTab(await dataInterface.getDataItem('welcometo yana'));
-    actions.newTab(await dataInterface.getDataItem('new collection3'));
+    // actions.newTab(await dataInterface.getDataItem('new note item2'));
+    // actions.newTab(await dataInterface.getDataItem('new note item3'));
+    // actions.newTab(await dataInterface.getDataItem('welcometo yana'));
+    actions.newTab(PageIndex.ManageWorkspaces);
   }, []);
 
   useEventChangeHandler(dataInterface.onChangeItems, async payload => {

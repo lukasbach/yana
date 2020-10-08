@@ -1,6 +1,17 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { Button, Classes, Dialog, FormGroup, Icon, InputGroup, Menu, MenuItem, Popover } from '@blueprintjs/core';
+import {
+  Button,
+  Classes,
+  Dialog,
+  FormGroup,
+  Icon,
+  InputGroup,
+  Menu,
+  MenuDivider,
+  MenuItem,
+  Popover,
+} from '@blueprintjs/core';
 import { useAppData } from '../../appdata/AppDataProvider';
 import { remote } from 'electron';
 import path from 'path';
@@ -12,6 +23,7 @@ import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { useMainContentContext } from '../mainContent/context';
 import { InternalTag } from '../../datasource/InternalTag';
 import { DataItemKind, NoteDataItem } from '../../types';
+import { PageIndex } from '../../PageIndex';
 
 const style = {
   popoverContainer: cxs({
@@ -60,11 +72,6 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
   const dataInterface = useDataInterface();
   const mainContent = useMainContentContext();
   const theme = useTheme();
-  const [createWorkspaceDialogOpen, setWorkspaceDialogOpen] = useState(false);
-  const [createWorkspaceName, setCreateWorkspaceName] = useState('New Workspace');
-  const [createWorkspacePath, setCreateWorkspacePath] = useState(
-    path.join(remote.app.getPath('home'), 'yana-workspace')
-  );
 
   const actionsButtonClass = cxs({
     color: theme.sidebarTextColor,
@@ -75,46 +82,23 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
 
   return (
     <>
-      <Dialog
-        isOpen={createWorkspaceDialogOpen}
-        onClose={() => setWorkspaceDialogOpen(false)}
-        title="Create new workspace"
-      >
-        <div className={Classes.DIALOG_BODY}>
-          <FormGroup label="Path to workspace">
-            <InputGroup onChange={(e: any) => setCreateWorkspacePath(e.target.value)} value={createWorkspacePath} />
-          </FormGroup>
-          <FormGroup label="Workspace Name">
-            <InputGroup onChange={(e: any) => setCreateWorkspaceName(e.target.value)} value={createWorkspaceName} />
-          </FormGroup>
-        </div>
-        <div className={Classes.DIALOG_FOOTER}>
-          <div className={Classes.DIALOG_FOOTER_ACTIONS}>
-            <Button
-              intent={'primary'}
-              onClick={() => {
-                appData
-                  .createWorkSpace(createWorkspaceName, createWorkspacePath)
-                  .then(() => setWorkspaceDialogOpen(false));
-              }}
-            >
-              Create
-            </Button>
-          </div>
-        </div>
-      </Dialog>
-
       <div className={style.popoverContainer}>
         <Popover
           minimal
           content={
             <Menu>
+              <MenuDivider title="Switch Workspace" />
               {
                 appData.workspaces.map(workspace => (
                   <MenuItem key={workspace.name} text={workspace.name} onClick={() => appData.setWorkSpace(workspace)} />
                 ))
               }
-              <MenuItem text="Create Workspace" onClick={() => setWorkspaceDialogOpen(true)} />
+              <MenuDivider title="Manage Workspaces" />
+              <MenuItem
+                text="Manage Workspaces"
+                icon="cog"
+                onClick={() => mainContent.openInCurrentTab(PageIndex.ManageWorkspaces)}
+              />
             </Menu>
           }
         >
@@ -131,6 +115,7 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
             </div>
             <div
               className={cx(
+                Classes.TEXT_OVERFLOW_ELLIPSIS,
                 style.titleContainer,
                 cxs({ color: Color(theme.sidebarTextColor).lighten(.3).toString() })
               )}

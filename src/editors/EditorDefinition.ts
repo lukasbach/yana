@@ -6,6 +6,7 @@ export interface EditorComponentProps<C extends object> {
   item: NoteDataItem<any>;
   onChange: () => void;
   onRegister: (grabContent: () => Promise<C>) => void;
+  onDismount: (content: C) => void;
 }
 
 export interface EditorSmallPreviewProps<C extends object> {

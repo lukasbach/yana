@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SearchView } from './searchView/SearchView';
+import { SearchView } from '../mainContent/searchView/SearchView';
 
 export const AllItems: React.FC<{}> = props => {
   return (

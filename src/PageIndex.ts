@@ -7,4 +7,5 @@ export enum PageIndex {
   Settings = '__settings',
   Search = '__search',
   Trash = '__trash',
+  ManageWorkspaces = '__workspaces',
 }

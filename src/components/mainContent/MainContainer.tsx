@@ -1,18 +1,16 @@
 import * as React from 'react';
 import { useMainContentContext } from './context';
-import { EditorRegistry } from '../../editors/EditorRegistry';
 import { isCollectionItem, isNoteItem } from '../../utils';
-import { EditorContainer } from './EditorContainer';
 import { LogService } from '../../common/LogService';
-import { EditorHeader } from './EditorHeader';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { CollectionContainer } from './CollectionContainer';
 import { NoteContainer } from './NoteContainer';
 import { PageIndex } from '../../PageIndex';
-import { StarredItems } from './StarredItems';
-import { DraftItems } from './DraftItems';
-import { FileItems } from './FileItems';
-import { AllItems } from './AllItems';
+import { StarredItems } from '../pages/StarredItems';
+import { DraftItems } from '../pages/DraftItems';
+import { FileItems } from '../pages/FileItems';
+import { AllItems } from '../pages/AllItems';
+import { ManageWorkspaces } from '../pages/ManageWorkspaces';
 
 const logger = LogService.getLogger('MainContainer');
 
@@ -30,7 +28,9 @@ export const MainContainer: React.FC<{}> = props => {
       case PageIndex.FileItems:
         return <FileItems />;
       case PageIndex.AllItems:
-        return <AllItems />
+        return <AllItems />;
+      case PageIndex.ManageWorkspaces:
+        return <ManageWorkspaces />
       default:
         return <>Unknown page</>;
     }

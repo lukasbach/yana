@@ -29,42 +29,49 @@ export const EditorContainer: React.FC<{
   //   setCurrentNote(props.noteItem);
   // }, [props.noteItem]);
 
-  useEffect(() => {
-
-  }, []);
-
   const clearSaveHandler = () => {
-    clearTimeout(saveHandler.current);
-    saveHandler.current = undefined;
+    if (saveHandler.current) {
+      logger.log("Clearning save handler");
+      clearTimeout(saveHandler.current);
+      saveHandler.current = undefined;
+    }
   }
 
-  const save = async () => {
-    if (!grabContentHandler.current) {
-      throw Error('Trying to save before editor has registered.');
-    }
+  const save = async (contentToSave?: object) => {
+    logger.log("Invoking save()");
     if (saveHandler.current) {
       clearSaveHandler();
+    } else {
+      logger.log("Skipping save, editor was not dirty.", [], {...props, currentNote, contentToSave, saveHandler, saveHandlerCurrent: saveHandler.current, existsSaveHandler: !!saveHandler.current});
+      return;
     }
-    const content = await grabContentHandler.current();
-    logger.log("Saving editor contents for ", [currentNote.id, currentNote.name], {currentNote, content});
-    props.onChangeContent(currentNote.id, content);
-    await dataInterface.writeNoteItemContent(currentNote.id, content);
+    if (!grabContentHandler.current && !contentToSave) {
+      throw Error('Trying to save before editor has registered.');
+    }
+    const content = contentToSave || await grabContentHandler.current?.();
+    if (!!content && Object.keys(content).length > 0) {
+      logger.log("Saving editor contents for ", [currentNote.id, currentNote.name], {currentNote, content});
+      props.onChangeContent(currentNote.id, content);
+      await dataInterface.writeNoteItemContent(currentNote.id, content);
+    } else {
+      logger.error("Not saving editor contents, no content retrieved", [], {currentNote, content});
+    }
   };
 
-  useEffect(() => {
-    (async () => {
-      logger.log("Note ID changed", [], props);
-
-      if (grabContentHandler.current && saveHandler.current) {
-        logger.log("Old note is still unsaved, saving...");
-        await save();
-      }
-
-      setCurrentContent(props.currentContent);
-      setCurrentNote(props.noteItem);
-      // grabContentHandler.current = undefined; // TODO
-    })();
-  }, [props.noteItem.id]);
+  // useEffect(() => {
+  //   (async () => {
+  //     logger.log("Note ID changed", [], props);
+//
+  //     if (grabContentHandler.current && saveHandler.current) {
+  //       logger.log("Old note is still unsaved, saving...");
+  //       await save();
+  //     }
+//
+  //     setCurrentContent(props.currentContent);
+  //     setCurrentNote(props.noteItem);
+  //     // grabContentHandler.current = undefined; // TODO
+  //   })();
+  // }, [props.noteItem.id]);
 
   // useEffect(() => {
   //   return () => { save(); } // TODO this does more damage than it helps!!!!!!!
@@ -100,6 +107,7 @@ export const EditorContainer: React.FC<{
         key={currentNote.id} // cleanly remount component on changing item
         content={currentContent}
         item={currentNote}
+        onDismount={content => save(content)}
         onRegister={grabContent => {
           logger.log("Registered")
           grabContentHandler.current = grabContent;
@@ -107,9 +115,7 @@ export const EditorContainer: React.FC<{
         onChange={() => {
           if (grabContentHandler.current) {
             logger.log("change detected, grabContentHandler registered");
-            if (saveHandler.current) {
-              clearSaveHandler();
-            }
+            clearSaveHandler();
             saveHandler.current = setTimeout(() => save(), 3000) as unknown as number;
           } else {
             logger.log("change detected, but no grabContentHandler registered");

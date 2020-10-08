@@ -7,6 +7,8 @@ import { useAsyncEffect } from '../utils';
 import * as fsLib from 'fs';
 import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { initializeWorkspace } from './initializeWorkspace';
+import rimraf from 'rimraf';
+import { Alerter } from '../components/Alerter';
 
 const fs = fsLib.promises;
 
@@ -15,10 +17,11 @@ const appDataFile = path.join(userDataFolder, 'workspaces.json');
 
 console.log('AppDataFile located at', appDataFile);
 
-interface AppDataContextValue extends AppData {
+export interface AppDataContextValue extends AppData {
   createWorkSpace: (name: string, path: string) => Promise<void>;
   setWorkSpace: (workspace: WorkSpace) => void;
   currentWorkspace: WorkSpace;
+  deleteWorkspace(workspace: WorkSpace): void;
 }
 
 export const AppDataContext = React.createContext<AppDataContextValue>(null as any);
@@ -68,9 +71,26 @@ export const AppDataProvider: React.FC = props => {
           fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
           setAppData(newAppData);
         },
+        deleteWorkspace(workspace: WorkSpace) {
+          rimraf(workspace.dataSourceOptions.sourcePath, error => {
+            if (error) {
+              Alerter.Instance.alert({ content: 'Error: ' + error.message });
+            }
+
+            const newAppData: AppData = {
+              ...appData,
+              workspaces: appData.workspaces.filter(w => w.name !== workspace.name),
+            };
+
+            fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+            setAppData(newAppData);
+          });
+        },
       }}
     >
-      {props.children}
+      <div key={currentWorkspace?.dataSourceOptions?.sourcePath || '__'} style={{ height: '100%' }}>
+        {props.children}
+      </div>
     </AppDataContext.Provider>
   );
 };

@@ -1,9 +1,7 @@
 import * as React from 'react';
 import cxs from 'cxs';
 import Color from 'color';
-import { Button, EditableText, Icon, IconName } from '@blueprintjs/core';
-import ago from 's-ago';
-import { TagList } from './TagList';
+import { Icon, IconName } from '@blueprintjs/core';
 
 const styles = {
   container: cxs({
@@ -20,12 +18,22 @@ const styles = {
     }
   }),
   title: cxs({
+    position: 'relative',
     fontWeight: 400,
     fontSize: '32px',
     margin: 0,
-    '> span': {
+    height: '42px'
+  }),
+  titleInner: cxs({
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: '100px',
+    bottom: 0,
+    display: 'flex',
+    '> span.bp3-icon': {
       margin: '0 14px 0 0px',
-      transform: 'translateY(-4px)'
+      transform: 'translateY(4px)'
     }
   }),
   titleSubtext: cxs({
@@ -38,7 +46,7 @@ const styles = {
   })
 };
 
-export const MainContentHeader: React.FC<{
+export const PageHeader: React.FC<{
   title: string | React.ReactNode;
   icon?: IconName;
   iconColor?: string;
@@ -52,8 +60,10 @@ export const MainContentHeader: React.FC<{
       <div className={styles.container}>
         <div className={styles.leftContainer}>
           <h1 className={styles.title}>
-            { props.icon && <Icon icon={props.icon} color={props.iconColor} iconSize={32} /> }
-            { props.title }
+            <div className={styles.titleInner}>
+              { props.icon && <Icon icon={props.icon} color={props.iconColor} iconSize={32} /> }
+              { props.title }
+            </div>
           </h1>
           <p className={styles.titleSubtext}>
             { props.titleSubtext }

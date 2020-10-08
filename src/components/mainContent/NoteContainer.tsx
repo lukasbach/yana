@@ -19,6 +19,7 @@ export const NoteContainer: React.FC<{
         onChange={changed => dataInterface.changeItem(changed.id, changed)}
       />
       <EditorContainer
+        key={dataItem.id} // TODO inefficient but required for properly rerendering editors?
         noteItem={dataItem}
         currentContent={currentContent}
         onChangeContent={(noteId, newContent) => {

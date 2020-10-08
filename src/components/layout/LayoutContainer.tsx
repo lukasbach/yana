@@ -10,12 +10,27 @@ import { MainContainer } from '../mainContent/MainContainer';
 import { TopBar } from './TopBar';
 // @ts-ignore
 import ResizePanel from "react-resize-panel";
+import { ResizeSensor } from '@blueprintjs/core';
+import { useState } from 'react';
 
 const styles = {
   mainContainer: cxs({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    ' ::-webkit-scrollbar': {
+      width: '8px',
+    },
+    ' ::-webkit-scrollbar-track': {
+      backgroundColor: 'transparent'
+    },
+    ' ::-webkit-scrollbar-thumb': {
+      borderRadius: '4px',
+      backgroundColor: '#999'
+    },
+    ' ::-webkit-scrollbar-thumb:hover': {
+      backgroundColor: '#666'
+    },
   }),
   tobBar: cxs({
     height: '32px',
@@ -44,10 +59,12 @@ const styles = {
   centralContainer: cxs({
     flexGrow: 1,
     display: 'flex',
+    overflow: 'auto',
   }),
   sidebar: cxs({
     height: '100%',
-    width: '100%'
+    width: '100%',
+    overflow: 'auto',
   }),
   sidebarResizeBorder: cxs({
     width: '6px',
@@ -60,12 +77,15 @@ const styles = {
   }),
   mainContent: cxs({
     flexGrow: 1,
-    height: '100%'
+    height: '100%',
+    overflow: 'auto'
   }),
 };
 
 export const LayoutContainer: React.FC<{}> = props => {
   const theme = useTheme();
+  const [sidebarTooSmall, setSidebarTooSmall] = useState(false);
+
   return (
     <div className={styles.mainContainer}>
       <TopBar />
@@ -81,7 +101,7 @@ export const LayoutContainer: React.FC<{}> = props => {
               }
             })
           )}
-          style={{ width: '320px', minWidth: '220px', marginRight: '-6px' }}
+          style={{ width: '320px', minWidth: 'auto', marginRight: '-6px' }}
         >
           <div
             className={cx(
@@ -91,7 +111,15 @@ export const LayoutContainer: React.FC<{}> = props => {
               })
             )}
           >
-            <SideBarContent />
+            <ResizeSensor onResize={e => {
+              if (sidebarTooSmall && e[0].contentRect.width > 160) {
+                setSidebarTooSmall(false);
+              } else if (!sidebarTooSmall && e[0].contentRect.width <= 160) {
+                setSidebarTooSmall(true);
+              }
+            }}>
+              { !sidebarTooSmall ? <SideBarContent /> : <div /> }
+            </ResizeSensor>
           </div>
         </ResizePanel>
         <div className={styles.mainContent}>

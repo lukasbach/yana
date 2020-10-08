@@ -10,4 +10,5 @@ export const pages: { [key in PageIndex]: { title: string, icon: IconName } } = 
   [PageIndex.Search]: { title: 'Search', icon: 'search' },
   [PageIndex.Trash]: { title: 'Trash', icon: 'trash' },
   [PageIndex.Settings]: { title: 'Settings', icon: 'cog' },
+  [PageIndex.ManageWorkspaces]: { title: 'Workspaces', icon: 'cog' },
 }

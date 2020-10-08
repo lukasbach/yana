@@ -50,6 +50,10 @@ const config: webpack.Configuration = {
       template: './index.html',
     }),
   ],
+  externals: {
+    "archiver": "require('archiver')",
+    "unzip": "require('unzip')"
+  }
 };
 
 export default config;

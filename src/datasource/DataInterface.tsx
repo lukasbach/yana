@@ -32,6 +32,7 @@ export class DataInterface implements AbstractDataSource {
   private cachedKeys: string[] = [];
   private cachedKeysIt = 0;
   private editors = EditorRegistry.Instance;
+  private dirty = false;
 
   public onChangeItems = new EventEmitter<ItemChangeEvent[]>();
   public onAddFiles = new EventEmitter<FileAddEvent[]>();
@@ -71,6 +72,10 @@ export class DataInterface implements AbstractDataSource {
     this.cache[id] = newValue;
   }
 
+  private makeDirty() {
+    this.dirty = true;
+  }
+
   public async getDataItem<K extends DataItemKind>(id: string): Promise<DataItem<K>> {
     return await this.tryCache(id, () => this.dataSource.getDataItem(id));
   }
@@ -92,6 +97,7 @@ export class DataInterface implements AbstractDataSource {
     const result = await this.dataSource.createDataItem<K>(item);
     await this.initializeNoteContent(result);
     this.onChangeItems.emit([{ id: result.id, reason: ItemChangeEventReason.Created }]);
+    this.makeDirty();
     return result;
   }
 
@@ -136,6 +142,7 @@ export class DataInterface implements AbstractDataSource {
     }
 
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Removed }]);
+    this.makeDirty();
     return result;
   }
 
@@ -203,6 +210,7 @@ export class DataInterface implements AbstractDataSource {
     const result = await this.dataSource.changeItem(id, completeOverwriteItem);
     this.updateCache(id, completeOverwriteItem);
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Changed }]);
+    this.makeDirty();
     return result;
   }
 
@@ -242,7 +250,10 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async persist(): Promise<DataSourceActionResult> {
-    return await this.dataSource.persist();
+    if (this.dirty) {
+      this.dirty = false;
+      return await this.dataSource.persist();
+    }
   }
 
   public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {
@@ -266,6 +277,7 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async storeStructure(id: string, structure: any): Promise<DataSourceActionResult> {
+    this.makeDirty();
     return await this.dataSource.storeStructure(id, structure);
   }
 

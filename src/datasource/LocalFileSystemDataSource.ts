@@ -98,7 +98,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   }
 
   public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>): Promise<DataItem<K>> {
-    let itemCopy: DataItem<K> = { ...item, id: this.createId(item.name) };
+    let itemCopy: DataItem<K> = { ...item, id: (item as any).id || this.createId(item.name) };
     this.structure.items[itemCopy.id] = itemCopy;
     return itemCopy;
   }

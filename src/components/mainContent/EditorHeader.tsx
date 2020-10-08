@@ -4,10 +4,10 @@ import { Button, Drawer, EditableText, H1, Icon, Tag } from '@blueprintjs/core';
 import cxs from 'cxs';
 import { useEffect, useState } from 'react';
 import Color from 'color';
-import { TagList } from './TagList';
+import { TagList } from '../common/TagList';
 import ago from 's-ago';
 import { useEditItemDrawer } from '../drawers/editItemDrawer/useEditItemDrawer';
-import { MainContentHeader } from './MainContentHeader';
+import { PageHeader } from '../common/PageHeader';
 import { InternalTag } from '../../datasource/InternalTag';
 
 const styles = {
@@ -53,7 +53,7 @@ export const EditorHeader: React.FC<{
 
   return (
     <>
-      <MainContentHeader
+      <PageHeader
         title={(
           <>
             <EditableText

@@ -6,7 +6,7 @@ import { IconName } from '@blueprintjs/icons';
 import { useDataItem } from '../../../datasource/useDataItem';
 import { useDataInterface } from '../../../datasource/DataInterfaceContext';
 import { IconNames } from '../../../common/IconNames';
-import { TagList } from '../../mainContent/TagList';
+import { TagList } from '../../common/TagList';
 import { useState } from 'react';
 
 export const EditItemDrawer: React.FC<{ isOpen: boolean, onSetIsOpen: (open: boolean) => void, itemId: string }> = props => {

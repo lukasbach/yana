@@ -44,7 +44,7 @@ app.on('ready', () => {
   });
 });
 
-app.allowRendererProcessReuse = true;
+app.allowRendererProcessReuse = false;
 // TODO maybe set to false?
 // https://github.com/electron/electron/issues/22119
 

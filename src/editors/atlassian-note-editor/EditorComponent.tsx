@@ -28,6 +28,14 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
   const dataInterface = useDataInterface();
 
   useEffect(() => logger.log("Remount", [props.item.id], {content: props.content}), [])
+  useEffect(() => () => {
+    if (editorRef.current) {
+      editorRef.current.getValue().then(adf => {
+        console.log("1234asdf", adf);
+        props.onDismount({adf});
+      });
+    }
+  }, [])
 
   // useEffect(() => {
   //   isChangingNote.current = true;

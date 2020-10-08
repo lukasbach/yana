@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SearchView } from './searchView/SearchView';
+import { SearchView } from '../mainContent/searchView/SearchView';
 import { InternalTag } from '../../datasource/InternalTag';
 
 export const DraftItems: React.FC<{}> = props => {

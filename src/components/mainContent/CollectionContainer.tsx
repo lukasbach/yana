@@ -1,6 +1,6 @@
 import * as React from 'react';
 import cxs from 'cxs';
-import { MainContentHeader } from './MainContentHeader';
+import { PageHeader } from '../common/PageHeader';
 import { CollectionDataItem } from '../../types';
 import { InputGroup } from '@blueprintjs/core';
 import { AutoSizer, Grid } from 'react-virtualized';
