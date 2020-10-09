@@ -3,15 +3,22 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { NoteDataItem } from '../../types';
 import { EditorRegistry } from '../../editors/EditorRegistry';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
-import { useAsyncEffect } from '../../utils';
 import { LogService } from '../../common/LogService';
 
 const logger = LogService.getLogger('EditorContainer');
+
+export enum SaveIndicatorState {
+  Saved,
+  Unsaved,
+  Saving,
+  RecentlySaved,
+}
 
 export const EditorContainer: React.FC<{
   noteItem: NoteDataItem<any>;
   currentContent: any;
   onChangeContent: (noteId: string, newContent: any) => void;
+  onChangeSaveIndicatorState?: (state: SaveIndicatorState) => void;
 }> = props => {
   const dataInterface = useDataInterface();
   const editor = EditorRegistry.Instance.getEditorWithId(props.noteItem.noteType);
@@ -45,6 +52,9 @@ export const EditorContainer: React.FC<{
       logger.log("Skipping save, editor was not dirty.", [], {...props, currentNote, contentToSave, saveHandler, saveHandlerCurrent: saveHandler.current, existsSaveHandler: !!saveHandler.current});
       return;
     }
+
+    props.onChangeSaveIndicatorState?.(SaveIndicatorState.Saving);
+
     if (!grabContentHandler.current && !contentToSave) {
       throw Error('Trying to save before editor has registered.');
     }
@@ -53,6 +63,7 @@ export const EditorContainer: React.FC<{
       logger.log("Saving editor contents for ", [currentNote.id, currentNote.name], {currentNote, content});
       props.onChangeContent(currentNote.id, content);
       await dataInterface.writeNoteItemContent(currentNote.id, content);
+      props.onChangeSaveIndicatorState?.(SaveIndicatorState.Saved);
     } else {
       logger.error("Not saving editor contents, no content retrieved", [], {currentNote, content});
     }
@@ -115,6 +126,7 @@ export const EditorContainer: React.FC<{
         onChange={() => {
           if (grabContentHandler.current) {
             logger.log("change detected, grabContentHandler registered");
+            props.onChangeSaveIndicatorState?.(SaveIndicatorState.Unsaved);
             clearSaveHandler();
             saveHandler.current = setTimeout(() => save(), 3000) as unknown as number;
           } else {

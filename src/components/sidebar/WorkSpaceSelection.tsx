@@ -10,7 +10,7 @@ import {
   Menu,
   MenuDivider,
   MenuItem,
-  Popover,
+  Popover, Tooltip,
 } from '@blueprintjs/core';
 import { useAppData } from '../../appdata/AppDataProvider';
 import { remote } from 'electron';
@@ -24,6 +24,8 @@ import { useMainContentContext } from '../mainContent/context';
 import { InternalTag } from '../../datasource/InternalTag';
 import { DataItemKind, NoteDataItem } from '../../types';
 import { PageIndex } from '../../PageIndex';
+// @ts-ignore
+import brand from '../../logo.png';
 
 const style = {
   popoverContainer: cxs({
@@ -40,11 +42,8 @@ const style = {
   }),
   iconContainer: cxs({
     margin: '14px 8px 14px 14px',
-    '> div': {
-      width: '30px',
+    '> img': {
       height: '30px',
-      borderRadius: 9999,
-      backgroundColor: '#fff'
     }
   }),
   titleContainer: cxs({
@@ -111,7 +110,7 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
             })
           )}>
             <div className={style.iconContainer}>
-              <div />
+              <img src={brand} />
             </div>
             <div
               className={cx(
@@ -120,34 +119,39 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
                 cxs({ color: Color(theme.sidebarTextColor).lighten(.3).toString() })
               )}
             >
-              { appData.currentWorkspace.name }
+              { appData.currentWorkspace.name }&nbsp;&nbsp;
+              <Icon icon={'chevron-down'} iconSize={12} />
             </div>
             <div className={style.actionsContainer}>
-              <button
-                className={cx(actionsButtonClass, style.actionsButton)}
-                onClick={e => {
-                  e.stopPropagation();
-                }}
-              >
-                <Icon icon="cog" />
-              </button>
-              <button
-                className={cx(actionsButtonClass, style.actionsButton)}
-                onClick={e => {
-                  e.stopPropagation();
-                  dataInterface.createDataItem({
-                    name: 'New Draft',
-                    tags: [InternalTag.Draft],
-                    kind: DataItemKind.NoteItem,
-                    childIds: [],
-                    lastChange: new Date().getTime(),
-                    created: new Date().getTime(),
-                    noteType: 'atlaskit-editor-note'
-                  } as any).then(item => mainContent.newTab(item));
-                }}
-              >
-                <Icon icon="add" />
-              </button>
+              <Tooltip position={'bottom'} content={'Settings'}>
+                <button
+                  className={cx(actionsButtonClass, style.actionsButton)}
+                  onClick={e => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <Icon icon="cog" />
+                </button>
+              </Tooltip>
+              <Tooltip position={'bottom'} content={'Create new draft note'}>
+                <button
+                  className={cx(actionsButtonClass, style.actionsButton)}
+                  onClick={e => {
+                    e.stopPropagation();
+                    dataInterface.createDataItem({
+                      name: 'New Draft',
+                      tags: [InternalTag.Draft],
+                      kind: DataItemKind.NoteItem,
+                      childIds: [],
+                      lastChange: new Date().getTime(),
+                      created: new Date().getTime(),
+                      noteType: 'atlaskit-editor-note'
+                    } as any).then(item => mainContent.newTab(item));
+                  }}
+                >
+                  <Icon icon="add" />
+                </button>
+              </Tooltip>
             </div>
           </div>
         </Popover>

@@ -1,14 +1,15 @@
 import * as React from 'react';
-import { NoteDataItem } from '../../types';
-import { Button, Drawer, EditableText, H1, Icon, Tag } from '@blueprintjs/core';
-import cxs from 'cxs';
 import { useEffect, useState } from 'react';
+import { NoteDataItem } from '../../types';
+import { Button, EditableText, Icon, IconName, Intent, Popover, Tag, Tooltip } from '@blueprintjs/core';
+import cxs from 'cxs';
 import Color from 'color';
 import { TagList } from '../common/TagList';
 import ago from 's-ago';
 import { useEditItemDrawer } from '../drawers/editItemDrawer/useEditItemDrawer';
 import { PageHeader } from '../common/PageHeader';
 import { InternalTag } from '../../datasource/InternalTag';
+import { SaveIndicatorState } from './EditorContainer';
 
 const styles = {
   container: cxs({
@@ -42,12 +43,49 @@ const styles = {
 export const EditorHeader: React.FC<{
   dataItem: NoteDataItem<any>,
   onChange: (changed: NoteDataItem<any>) => Promise<void>,
+  saveIndicator?: SaveIndicatorState,
 }> = props => {
   const { lastChange, created } = props.dataItem;
   const [titleValue, setTitleValue] = useState(props.dataItem.name);
   const [isEditingTags, setIsEditingTags] = useState(false);
   const { EditItemDrawer, onOpenEditItemDrawer } = useEditItemDrawer(props.dataItem.id);
+  const [saveIndicator, setSaveIndicator] = useState<SaveIndicatorState>(SaveIndicatorState.Saved);
   useEffect(() => setTitleValue(props.dataItem.name), [props.dataItem.id]);
+
+  useEffect(() => {
+    if (props.saveIndicator === SaveIndicatorState.Saved && saveIndicator !== SaveIndicatorState.Saved) {
+      setSaveIndicator(SaveIndicatorState.RecentlySaved);
+      const timeout = setTimeout(() => setSaveIndicator(SaveIndicatorState.Saved), 1000);
+      return () => clearTimeout(timeout);
+    } else if (props.saveIndicator) {
+      setSaveIndicator(props.saveIndicator);
+    }
+  }, [props.saveIndicator]);
+
+  let saveIndicatorText: string = 'Unknown save state';
+  let saveIndicatorIcon: IconName | undefined;
+  let saveIndicatorIntent: Intent = 'none';
+
+  switch (saveIndicator) {
+    case SaveIndicatorState.Saved:
+      saveIndicatorText = 'Unchanged';
+      break;
+    case SaveIndicatorState.Unsaved:
+      saveIndicatorText = 'Changed';
+      saveIndicatorIcon = 'edit';
+      break;
+    case SaveIndicatorState.Saving:
+      saveIndicatorText = 'Saving...';
+      saveIndicatorIcon = 'floppy-disk';
+      saveIndicatorIntent = 'primary';
+      break;
+    case SaveIndicatorState.RecentlySaved:
+      saveIndicatorText = 'Saved';
+      saveIndicatorIcon = 'tick-circle';
+      saveIndicatorIntent = 'success';
+      break;
+
+  }
 
   const isStarred = props.dataItem.tags.includes(InternalTag.Starred);
 
@@ -79,9 +117,10 @@ export const EditorHeader: React.FC<{
         titleSubtext={(
           <>
             Edited{' '}
-            <span title={new Date(lastChange).toLocaleString()}>{ ago(new Date(lastChange)) }</span>,{' '}
+            <Tooltip content={new Date(lastChange).toLocaleString()} position={'bottom'}>{ ago(new Date(lastChange)) }</Tooltip>,{' '}
             created{' '}
-            <span title={new Date(created).toLocaleString()}>{ ago(new Date(created)) }</span>.
+            <Tooltip content={new Date(created).toLocaleString()} position={'bottom'}>{ ago(new Date(created)) }</Tooltip>.{' '}
+            <Tag children={saveIndicatorText} intent={saveIndicatorIntent} icon={<Icon icon={saveIndicatorIcon} iconSize={10} />} minimal />
           </>
         )}
         rightContent={(
@@ -102,40 +141,5 @@ export const EditorHeader: React.FC<{
       />
     <EditItemDrawer />
     </>
-  )
-
-  /*return (
-    <div className={styles.container}>
-      <EditItemDrawer />
-      <div className={styles.leftContainer}>
-        <h1 className={styles.title}>
-          <Icon icon={props.dataItem.icon as any || 'document'} color={props.dataItem.color} iconSize={32} />
-          <EditableText
-            value={titleValue}
-            onChange={setTitleValue}
-            onConfirm={name => props.onChange({...props.dataItem, name})}
-          />
-        </h1>
-        <p className={styles.titleSubtext}>
-          Edited{' '}
-          <span title={new Date(lastChange).toLocaleString()}>{ ago(new Date(lastChange)) }</span>,{' '}
-          created{' '}
-          <span title={new Date(created).toLocaleString()}>{ ago(new Date(created)) }</span>.
-        </p>
-      </div>
-      <div className={styles.rightContainer}>
-        <div>
-          <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>Edit Tags</Button>{' '}
-          <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>Configure document</Button>{' '}
-        </div>
-        <div>
-          <TagList
-            dataItem={props.dataItem}
-            isEditing={isEditingTags}
-            onStopEditing={() => setIsEditingTags(false)}
-          />
-        </div>
-      </div>
-    </div>
-  );*/
+  );
 };

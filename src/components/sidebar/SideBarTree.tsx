@@ -81,8 +81,16 @@ export const SideBarTree: React.FC<{
             onDragEnd={(source, destination) => {
               if (destination && destination.index !== undefined) {
                 const itemId = treeData.items[source.parentId].children[source.index] as string;
-                const originalParentId = source.parentId as string;
-                const targetParentId = destination.parentId as string;
+                let originalParentId = source.parentId as string;
+                let targetParentId = destination.parentId as string;
+
+                if (originalParentId === 'root') {
+                  originalParentId = props.masterItem?.id || 'root';
+                }
+                if (targetParentId === 'root') {
+                  targetParentId = props.masterItem?.id || 'root';
+                }
+
                 const targetIndex = destination.index;
                 logger.log('onDragEnd', [], {source, destination, itemId, originalParentId, targetParentId, targetIndex})
                 dataInterface.moveItem(itemId, originalParentId, targetParentId, targetIndex)
