@@ -44,6 +44,7 @@ export type DataSourceActionResult = void;
 export interface SearchQuery {
   contains?: string[];
   tags?: string[];
+  notTags?: string[];
   parents?: string[];
   exactParents?: string[];
   childs?: string[];

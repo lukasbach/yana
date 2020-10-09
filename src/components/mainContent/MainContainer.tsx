@@ -11,6 +11,7 @@ import { DraftItems } from '../pages/DraftItems';
 import { FileItems } from '../pages/FileItems';
 import { AllItems } from '../pages/AllItems';
 import { ManageWorkspaces } from '../pages/ManageWorkspaces';
+import { TrashItems } from '../pages/TrashItems';
 
 const logger = LogService.getLogger('MainContainer');
 
@@ -30,7 +31,9 @@ export const MainContainer: React.FC<{}> = props => {
       case PageIndex.AllItems:
         return <AllItems />;
       case PageIndex.ManageWorkspaces:
-        return <ManageWorkspaces />
+        return <ManageWorkspaces />;
+      case PageIndex.Trash:
+        return <TrashItems />;
       default:
         return <>Unknown page</>;
     }

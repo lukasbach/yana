@@ -7,7 +7,7 @@ export const DraftItems: React.FC<{}> = props => {
     <SearchView
       title="Draft Items"
       icon="edit"
-      hiddenSearch={{ tags: [InternalTag.Draft] }}
+      hiddenSearch={{ tags: [InternalTag.Draft], notTags: [InternalTag.Trash] }}
       defaultSearch={{}}
     />
   );

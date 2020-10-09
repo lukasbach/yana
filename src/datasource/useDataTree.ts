@@ -5,6 +5,7 @@ import { useEventChangeHandler } from '../common/useEventChangeHandler';
 import { ItemChangeEventReason} from './DataInterface';
 import { useDataInterface } from './DataInterfaceContext';
 import { LogService } from '../common/LogService';
+import { InternalTag } from './InternalTag';
 
 const logger = LogService.getLogger('useDataTree');
 
@@ -119,5 +120,18 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
     setExpandedIds(ids => ids.filter(id2 => id2 !== id));
   }, []);
 
-  return { items, expandedIds, expand, collapse };
+  const trashItems = items.filter(item => item.tags.includes(InternalTag.Trash)).map(item => item.id);
+  return {
+    // items: items
+    //   .filter(item => !trashItemIds.includes(item.id))
+    //   .map(item => ({ ...item, childIds: item.childIds.filter(id => !trashItemIds.includes(id)) })),
+    // expandedIds: expandedIds.filter(id => !trashItemIds.includes(id)),
+    // items,
+    expandedIds,
+    items: items
+      .filter(item => !trashItems.includes(item.id))
+      .map(item => ({ ...item, childIds: item.childIds.filter(id => !trashItems.includes(id)) })),
+    expand,
+    collapse
+  };
 }

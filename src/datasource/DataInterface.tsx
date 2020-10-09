@@ -3,8 +3,9 @@ import { AbstractDataSource } from './AbstractDataSource';
 import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery } from '../types';
 import { EventEmitter } from '../common/EventEmitter';
 import { EditorRegistry } from '../editors/EditorRegistry';
-import { isMediaItem, isNoteItem } from '../utils';
+import { isMediaItem, isNoteItem, undup } from '../utils';
 import { LogService } from '../common/LogService';
+import { InternalTag } from './InternalTag';
 
 const logger = LogService.getLogger('DataInterface');
 
@@ -169,13 +170,15 @@ export class DataInterface implements AbstractDataSource {
 
   public async changeItem<K extends DataItemKind>(
     id: string,
-    overwriteItem: Partial<DataItem<K>> // TODO update uses to use partial
+    overwriteWith: Partial<DataItem<K>> | ((old: DataItem<K>) => Partial<DataItem<K>>)
   ): Promise<DataSourceActionResult> {
-    const old = await this.dataSource.getDataItem(id);
+    const old = await this.dataSource.getDataItem(id) as DataItem<K>;
 
     if (!old) {
       throw Error(`Dataitem with id ${id} does not exist.`);
     }
+
+    const overwriteItem = typeof overwriteWith === 'function' ? { ...old, ...overwriteWith(old) } : overwriteWith;
 
     if (overwriteItem.tags && old.tags.sort().toString() !== overwriteItem.tags.sort().toString()) {
       // TODO factor into its own method, use constant for 'tags'

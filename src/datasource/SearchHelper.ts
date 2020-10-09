@@ -28,6 +28,10 @@ export class SearchHelper {
       return false;
     }
 
+    if (search.notTags && !search.notTags.map(t => !item.tags.includes(t)).reduce((a, b) => a && b, true)) {
+      return false;
+    }
+
     if (search.contains && !search.contains.map(c => item.name.toLowerCase().includes(c.toLowerCase())).reduce((a, b) => a || b, false)) {
       return false;
     }

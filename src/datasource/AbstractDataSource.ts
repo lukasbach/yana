@@ -3,7 +3,7 @@ import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery,
 export interface AbstractDataSource {
   load: () => Promise<DataSourceActionResult>;
 
-  getDataItem: <K extends DataItemKind>(id: string) => Promise<null | Omit<DataItem<K>, 'content'>>;
+  getDataItem: <K extends DataItemKind>(id: string) => Promise<null | DataItem<K>>;
   getNoteItemContent: <C extends object>(id: string) => Promise<C>;
   writeNoteItemContent: <C extends object>(id: string, content: C) => Promise<DataSourceActionResult>;
   createDataItem: <K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>) => Promise<DataItem<K>>;

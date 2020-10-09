@@ -59,7 +59,7 @@ export const SideBarTree: React.FC<{
       }
     };
     setTreeData(newTree);
-  }, [items, expandedIds]);
+  }, [items.map(item => item.id).join('___'), expandedIds.join('___')]);
 
   return (
     <div>
