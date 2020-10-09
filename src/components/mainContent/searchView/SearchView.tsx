@@ -8,6 +8,7 @@ import { useDataSearch } from '../../../datasource/useDataSearch';
 import { searchViewCellDimensions } from './searchViewCellDimensions';
 import { SearchViewCard } from './SearchViewCard';
 import { PageContainer } from '../../common/PageContainer';
+import { SearchInput } from './SearchInput';
 
 export const SearchView: React.FC<{
   title: string,
@@ -17,11 +18,14 @@ export const SearchView: React.FC<{
   defaultSearch: SearchQuery,
   onClickItem?: (item: DataItem) => void;
 }> = props => {
-  const [searchQuery, setSearchQuery] = useState<SearchQuery>({ ...props.hiddenSearch, ...props.defaultSearch });
-  const items = useDataSearch(searchQuery);
-  const searchInputChangeHandler = useRef<number | undefined>();
+  const [hiddenSearch, setHiddenSearch] = useState(props.hiddenSearch);
+  const [userSearch, setUserSearch] = useState(props.defaultSearch);
+  // const [searchQuery, setSearchQuery] = useState<SearchQuery>({ ...props.hiddenSearch, ...props.defaultSearch });
+  const searchQuery = { ...hiddenSearch, ...userSearch };
+  const items = useDataSearch(Object.keys(searchQuery).length === 0 ? { all: true } : searchQuery);
 
-  useEffect(() => setSearchQuery(q => ({...q, ...props.hiddenSearch})), [props.hiddenSearch])
+  useEffect(() => setHiddenSearch(q => ({...q, ...props.hiddenSearch})), [props.hiddenSearch]);
+  useEffect(() => setUserSearch(q => ({...q, ...props.defaultSearch})), [props.defaultSearch]);
 
   return (
     <PageContainer header={(
@@ -30,21 +34,7 @@ export const SearchView: React.FC<{
         icon={props.icon}
         iconColor={props.iconColor}
         lowerContent={(
-          <InputGroup
-            type="search"
-            leftIcon="search"
-            onChange={(e: any) => {
-              if (searchInputChangeHandler.current) {
-                clearTimeout(searchInputChangeHandler.current);
-              }
-              const latestValue = e.target.value;
-              searchInputChangeHandler.current = setTimeout(() => {
-                setSearchQuery(q => ({ ...q, contains: latestValue.split(' ') })); // TODO
-                searchInputChangeHandler.current = undefined;
-              }, 500) as any;
-            }}
-            large
-          />
+          <SearchInput onChangeSearchQuery={setUserSearch} />
         )}
       />
     )}>

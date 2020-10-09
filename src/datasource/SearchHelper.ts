@@ -28,7 +28,7 @@ export class SearchHelper {
       return false;
     }
 
-    if (search.contains && !search.contains.map(c => item.name.includes(c)).reduce((a, b) => a || b, false)) {
+    if (search.contains && !search.contains.map(c => item.name.toLowerCase().includes(c.toLowerCase())).reduce((a, b) => a || b, false)) {
       return false;
     }
 

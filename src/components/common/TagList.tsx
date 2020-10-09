@@ -27,7 +27,7 @@ export const TagList: React.FC<{
   if (!props.isEditing) {
     return (
       <>
-        { dataItem.tags.map(tag => (
+        { dataItem.tags.filter(tag => !tag.startsWith('__')).map(tag => (
           <React.Fragment key={tag}>
             {' '}
             <Tag round={true}>
@@ -43,8 +43,8 @@ export const TagList: React.FC<{
         <TagMultiSelect
           fill={true}
           popoverProps={{ minimal: true }}
-          items={undup([...availableTags, ...tags])}
-          selectedItems={tags}
+          items={undup([...availableTags, ...tags].filter(tag => !tag.startsWith('__')))}
+          selectedItems={tags.filter(tag => !tag.startsWith('__'))}
           onItemSelect={tag => {
             if (tags.includes(tag)) {
               setTags(tags => tags.filter(tag_ => tag_ !== tag));
