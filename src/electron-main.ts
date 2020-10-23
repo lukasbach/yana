@@ -1,8 +1,11 @@
-import { app, BrowserWindow, protocol } from 'electron';
+import { app, BrowserWindow, ipcMain, protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
+import { IpcChannel } from './IpcChannel';
 
 console.log('process.env.NODE_ENV=', process.env.NODE_ENV);
+
+let isQuitting = false;
 
 app.whenReady().then(() => {
   protocol.registerFileProtocol('file', (request, callback) => {
@@ -38,6 +41,18 @@ app.on('ready', () => {
       })
     );
   }
+
+  mainWindow.on('close', e => {
+    if (!isQuitting) {
+      e.preventDefault();
+
+      ipcMain.once(IpcChannel.ConfirmQuit, e => {
+        isQuitting = true;
+        app.quit();
+      });
+      ipcMain.emit(IpcChannel.InitiateQuit);
+    }
+  })
 
   mainWindow.on('closed', () => {
     mainWindow = null;

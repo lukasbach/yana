@@ -39,17 +39,15 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     return path.join(this.options.sourcePath, ...p);
   }
 
-  private createId(name: string, counter?: number): string {
-    let id = name
-      .toLocaleLowerCase()
-      .replace(/\s/g, '_')
-      .replace(/[^a-zA-Z ]/g, '');
+  private createId(kind: string, counter?: number): string {
+    const now = new Date();
+    let id = `${kind}_${now.getFullYear()}-${now.getMonth()}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}`;
     id += counter || '';
 
     if (!(id in this.structure.items)) {
       return id;
     } else {
-      return this.createId(name, (counter || 1) + 1);
+      return this.createId(kind, (counter || 1) + 1);
     }
   }
 
@@ -84,6 +82,9 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     this.structure = JSON.parse(fsLib.readFileSync(this.resolvePath(STRUCTURE_FILE), { encoding: UTF8 }));
   }
 
+  public async unload() {
+  }
+
   public async getDataItem<K extends DataItemKind>(id: string): Promise<DataItem<K> | null> {
     return this.structure.items[id] || null;
   }
@@ -98,7 +99,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   }
 
   public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>): Promise<DataItem<K>> {
-    let itemCopy: DataItem<K> = { ...item, id: (item as any).id || this.createId(item.name) };
+    let itemCopy: DataItem<K> = { ...item, id: (item as any).id || this.createId(item.kind) };
     this.structure.items[itemCopy.id] = itemCopy;
     return itemCopy;
   }

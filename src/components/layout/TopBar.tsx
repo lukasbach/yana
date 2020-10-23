@@ -6,8 +6,6 @@ import cx from 'classnames';
 import { remote } from "electron";
 import { useTheme } from '../../common/theming';
 import { useMainContentContext } from '../mainContent/context';
-import { Icon } from '@blueprintjs/core';
-import { pages } from '../../pages';
 import { TabContainer } from './TabContainer';
 
 const styles = {
@@ -69,6 +67,9 @@ export const TopBar: React.FC<{}> = props => {
         </button>
         <button className={styles.topBarControlButton} onClick={() => remote.getCurrentWindow().close()}>
           &#xE8BB;
+          {/*<svg>
+            <path d="M1169 1024l879 -879l-145 -145l-879 879l-879 -879l-145 145l879 879l-879 879l145 145l879 -879l879 879l145 -145z" stroke="white" />
+          </svg>*/}
         </button>
       </div>
     </div>

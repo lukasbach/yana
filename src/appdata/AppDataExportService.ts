@@ -43,6 +43,8 @@ export class AppDataExportService {
       }
     }
 
+    await di.unload();
+
     onUpdate('Storing meta data');
     await fs.promises.writeFile(path.resolve(folder, 'media.json'), JSON.stringify(mediaItems));
     await fs.promises.writeFile(path.resolve(folder, 'workspace.json'), JSON.stringify({

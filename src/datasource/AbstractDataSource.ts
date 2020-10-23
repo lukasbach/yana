@@ -2,6 +2,7 @@ import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery,
 
 export interface AbstractDataSource {
   load: () => Promise<DataSourceActionResult>;
+  unload: () => Promise<DataSourceActionResult>;
 
   getDataItem: <K extends DataItemKind>(id: string) => Promise<null | DataItem<K>>;
   getNoteItemContent: <C extends object>(id: string) => Promise<C>;

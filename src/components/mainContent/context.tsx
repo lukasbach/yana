@@ -1,11 +1,12 @@
 import { DataItem, DataItemKind } from '../../types';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { useAsyncEffect } from '../../utils';
 import { LogService } from '../../common/LogService';
 import { useEventChangeHandler } from '../../common/useEventChangeHandler';
 import { ItemChangeEventReason } from '../../datasource/DataInterface';
 import { PageIndex } from '../../PageIndex';
+import { useCloseEvent } from '../../common/useCloseEvent';
 
 const logger = LogService.getLogger('MainContainerContext');
 
@@ -33,16 +34,39 @@ export interface TabData {
   scrollPosition: number;
 }
 
+interface SessionStructure {
+  tabs: Array<{ page?: string, dataItem?: string }>,
+  openTabId: number
+}
+
 export const MainContentContext = React.createContext<MainContentContextType>(null as any);
 
 export const useMainContentContext = () => useContext(MainContentContext);
 
 export const MainContentContextProvider: React.FC = props => {
   const dataInterface = useDataInterface();
+  const dirty = useRef(false);
+  const saveHandler = useRef<number | undefined>();
   const [get, set] = useState<Omit<MainContentContextValue, 'openTab'>>({
     tabs: [],
     openTabId: 0
   });
+  const currentState = useRef(get);
+  useEffect(() => { currentState.current = get; }, [get]);
+
+  const saveTabs = async () => {
+    logger.log("Start saving tabs", [], {tabs: currentState.current.tabs, openTabId: currentState.current.openTabId});
+    await dataInterface.storeStructure<SessionStructure>('sessiontabs', {
+      tabs: currentState.current.tabs.map(tab => ({ page: tab.page, dataItem: tab.dataItem?.id })),
+      openTabId: currentState.current.openTabId
+    });
+    logger.log("Finished saving tabs");
+  };
+
+  // useEffect(() => {
+  //   dirty.current = true;
+  //   saveHandler.current = setTimeout(() => saveTabs(), 10000) as any;
+  // }, [get]);
 
   const tryToOpenInExistingTab = (dataItemOrPage: DataItem | string) => {
     const tab = get.tabs.findIndex(tab => typeof dataItemOrPage === 'string'
@@ -196,13 +220,29 @@ export const MainContentContextProvider: React.FC = props => {
     }
   };
 
-  // TODO remove
-  useAsyncEffect(async () => {
-    // actions.newTab(await dataInterface.getDataItem('new note item2'));
-    // actions.newTab(await dataInterface.getDataItem('new note item3'));
-    // actions.newTab(await dataInterface.getDataItem('welcometo yana'));
-    actions.newTab(PageIndex.ManageWorkspaces);
+  useEffect(() => {
+    logger.log("context reload");
+    (async () => {
+      const session = await dataInterface.getStructure<SessionStructure>('sessiontabs');
+      for (const tab of session.tabs) {
+        if (tab.page || tab.dataItem) {
+          await actions.newTab(tab.page ?? await dataInterface.getDataItem(tab.dataItem!));
+        }
+      }
+      actions.activateTab(session.openTabId);
+    })();
+
+    return () => {
+      logger.log("context exit", [], {get, currentState});
+      saveTabs().then(() => dataInterface.persist());
+    }
   }, []);
+
+  useCloseEvent(async () => {
+    logger.log("app close", [], {get, currentState});
+    await saveTabs();
+    await dataInterface.persist();
+  }, [get]);
 
   useEventChangeHandler(dataInterface.onChangeItems, async payload => {
     for (const { reason, id } of payload) {

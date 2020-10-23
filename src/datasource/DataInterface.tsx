@@ -34,6 +34,7 @@ export class DataInterface implements AbstractDataSource {
   private cachedKeysIt = 0;
   private editors = EditorRegistry.Instance;
   private dirty = false;
+  private persistInterval?: number;
 
   public onChangeItems = new EventEmitter<ItemChangeEvent[]>();
   public onAddFiles = new EventEmitter<FileAddEvent[]>();
@@ -45,7 +46,14 @@ export class DataInterface implements AbstractDataSource {
     if (!await this.dataSource.getStructure('tags')) {
       await this.dataSource.storeStructure('tags', {});
     }
-    setInterval(() => this.dataSource.persist(), 10000);
+    this.persistInterval = setInterval(() => this.dataSource.persist(), 10000) as unknown as number;
+  }
+
+  public async unload() {
+    await this.dataSource.unload();
+    if (this.persistInterval) {
+      clearInterval(this.persistInterval);
+    }
   }
 
   private async tryCache<T>(id: string, orFetch: () => Promise<T>) {
@@ -254,8 +262,11 @@ export class DataInterface implements AbstractDataSource {
 
   public async persist(): Promise<DataSourceActionResult> {
     if (this.dirty) {
+      logger.log("Persisting", [], {source: this.dataSource});
       this.dirty = false;
       return await this.dataSource.persist();
+    } else {
+      logger.log("Skipping Persist, not dirty", [], {source: this.dataSource});
     }
   }
 
@@ -275,11 +286,14 @@ export class DataInterface implements AbstractDataSource {
     }
   }
 
-  public async getStructure(id: string): Promise<any> {
-    return await this.dataSource.getStructure(id); // TODO cache?
+  public async getStructure<K extends any = any>(id: string): Promise<K> {
+    const structure = await this.dataSource.getStructure(id);
+    logger.log('getStructure', [id], {structure});
+    return structure; // TODO cache?
   }
 
-  public async storeStructure(id: string, structure: any): Promise<DataSourceActionResult> {
+  public async storeStructure<K extends any = any>(id: string, structure: K): Promise<DataSourceActionResult> {
+    logger.log('storeStructure', [id], {structure});
     this.makeDirty();
     return await this.dataSource.storeStructure(id, structure);
   }

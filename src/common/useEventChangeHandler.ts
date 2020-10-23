@@ -1,7 +1,7 @@
 import { EventEmitter } from './EventEmitter';
 import { useEffect, useRef } from 'react';
 
-export const useEventChangeHandler = <T extends object>(eventEmitter: EventEmitter<T>, handler: (payload: T) => any, dependencies: any[]) => {
+export const useEventChangeHandler = <T extends object>(eventEmitter: EventEmitter<T>, handler: (payload: T) => void | Promise<void>, dependencies: any[]) => {
   const eventHandler = useRef<undefined | number>();
 
   useEffect(() => {
