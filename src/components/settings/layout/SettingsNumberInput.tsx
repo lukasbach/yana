@@ -14,10 +14,12 @@ export const SettingsNumberInput: React.FC<{
   step?: number,
   min?: number,
   max?: number,
+  divideFactor?: number,
 }> = props => {
   const settings = useSettingsPageContext();
   const id = props.label.toLowerCase().replace(/\s/g, '_');
   const val = settings.settings[props.settingsKey] as number;
+  const divideFactor = props.divideFactor ?? 1;
 
   return (
     <FormGroup
@@ -32,9 +34,9 @@ export const SettingsNumberInput: React.FC<{
           id={id}
           type="string"
           placeholder={props.placeholder || props.label}
-          value={'' + val}
+          value={'' + (val / divideFactor)}
           onChange={(e: any) => {
-            let newValue = (props.isFloat ? parseFloat : parseInt)(e.target.value);
+            let newValue = (props.isFloat ? parseFloat : parseInt)(e.target.value) * divideFactor;
             if (props.min) newValue = Math.max(props.min, newValue);
             if (props.max) newValue = Math.min(props.max, newValue);
             settings.changeSettings({ [props.settingsKey]: newValue });

@@ -1,6 +1,9 @@
 import { SettingsObject, SideBarItemAction } from './types';
+import path from "path";
+import { remote } from "electron";
 
 export const defaultSettings: SettingsObject = {
+  autoBackupLocation: path.join(remote.app.getPath('appData'), 'yana', 'backup'),
   autoBackupActive: true,
   autoBackupCount: 3,
   autoBackupIncludeMedia: true,
@@ -17,5 +20,5 @@ export const defaultSettings: SettingsObject = {
   sidebarMediaItemNameAction: SideBarItemAction.OpenInCurrentTab,
   sidebarNoteItemBackgroundAction: SideBarItemAction.OpenInCurrentTab,
   sidebarNoteItemMiddleClickAction: SideBarItemAction.OpenInNewTab,
-  sidebarNoteItemNameAction: SideBarItemAction.OpenInCurrentTab,
+  sidebarNoteItemNameAction: SideBarItemAction.OpenInCurrentTab
 }

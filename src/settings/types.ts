@@ -20,6 +20,7 @@ export interface SettingsObject {
   autoBackupIncludeMedia: boolean,
   autoBackupCount: number,
   autoBackupInterval: number,
+  autoBackupLocation: string,
   autoUpdateAppActive: boolean,
   autoUpdateAppBackupActive: boolean,
 }

@@ -82,6 +82,10 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     this.structure = JSON.parse(fsLib.readFileSync(this.resolvePath(STRUCTURE_FILE), { encoding: UTF8 }));
   }
 
+  public async reload() {
+    await this.load();
+  }
+
   public async unload() {
   }
 

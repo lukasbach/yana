@@ -49,6 +49,10 @@ export class DataInterface implements AbstractDataSource {
     this.persistInterval = setInterval(() => this.dataSource.persist(), 10000) as unknown as number;
   }
 
+  public async reload() {
+    await this.dataSource.reload();
+  }
+
   public async unload() {
     await this.dataSource.unload();
     if (this.persistInterval) {

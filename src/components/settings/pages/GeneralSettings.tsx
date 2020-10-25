@@ -13,6 +13,7 @@ import { remote } from "electron";
 import { AppDataExportService } from '../../../appdata/AppDataExportService';
 import { Button } from '@blueprintjs/core';
 import { useAppData } from '../../../appdata/AppDataProvider';
+import { SettingsFilesystemPathInput } from '../layout/SettingsFilesystemPathInput';
 
 const sidebarActions = [
   { value: SideBarItemAction.OpenInNewTab, label: 'Open in new Tab' },
@@ -105,7 +106,14 @@ export const GeneralSettings: React.FC<{}> = props => {
         />
         <SettingsNumberInput
           settingsKey={'autoBackupInterval'}
-          label={"Backup Interval, in Milliseconds"}
+          label={"Backup Interval, in Minutes"}
+          divideFactor={1000 * 60}
+          step={1000}
+          min={0}
+        />
+        <SettingsFilesystemPathInput
+          settingsKey={'autoBackupLocation'}
+          label={"Backup Location"}
         />
       </SettingsSection>
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppData, WorkSpace } from '../types';
 import { remote } from 'electron';
 import path from 'path';
@@ -11,6 +11,7 @@ import rimraf from 'rimraf';
 import { Alerter } from '../components/Alerter';
 import { defaultSettings } from '../settings/defaultSettings';
 import { SettingsObject } from '../settings/types';
+import { AutoBackupService } from './AutoBackupService';
 
 const fs = fsLib.promises;
 
@@ -25,6 +26,7 @@ export interface AppDataContextValue extends AppData {
   currentWorkspace: WorkSpace;
   deleteWorkspace(workspace: WorkSpace): void;
   saveSettings(settings: SettingsObject): Promise<void>;
+  lastAutoBackup: number;
 }
 
 export const AppDataContext = React.createContext<AppDataContextValue>(null as any);
@@ -35,6 +37,8 @@ export const useSettings = () => useAppData().settings;
 export const AppDataProvider: React.FC = props => {
   const [appData, setAppData] = useState<AppData>({ workspaces: [], settings: defaultSettings });
   const [currentWorkspace, setCurrentWorkspace] = useState<WorkSpace>(appData.workspaces[0]);
+  const [autoBackup, setAutoBackup] = useState<undefined | AutoBackupService>();
+  const [lastAutoBackup, setLastAutoBackup] = useState(0);
 
   useAsyncEffect(async () => {
     if (!fsLib.existsSync(userDataFolder)) {
@@ -56,6 +60,10 @@ export const AppDataProvider: React.FC = props => {
 
     setAppData(appData);
     setCurrentWorkspace(appData.workspaces[0]);
+
+    const autoBackupService = new AutoBackupService(appData.workspaces, appData.settings, setLastAutoBackup);
+    await autoBackupService.load();
+    setAutoBackup(autoBackupService);
   }, []);
 
   return (
@@ -64,6 +72,7 @@ export const AppDataProvider: React.FC = props => {
         ...appData,
         currentWorkspace: currentWorkspace,
         setWorkSpace: setCurrentWorkspace,
+        lastAutoBackup,
         createWorkSpace: async (name, path) => {
           const workspace = await initializeWorkspace(name, path);
 
@@ -77,6 +86,7 @@ export const AppDataProvider: React.FC = props => {
 
           fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
           setAppData(newAppData);
+          autoBackup?.addWorkspace(workspace);
         },
         deleteWorkspace(workspace: WorkSpace) {
           rimraf(workspace.dataSourceOptions.sourcePath, error => {
@@ -91,6 +101,7 @@ export const AppDataProvider: React.FC = props => {
 
             fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
             setAppData(newAppData);
+            autoBackup?.removeWorkspace(workspace);
           });
         },
         saveSettings: async (settings: Partial<SettingsObject>) => {

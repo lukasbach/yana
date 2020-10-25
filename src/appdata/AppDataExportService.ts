@@ -12,7 +12,7 @@ import { AppDataContextValue } from './AppDataProvider';
 
 export class AppDataExportService {
   public static async exportTo(destination: string, workspace: WorkSpace, onUpdate: (message: string) => void) {
-    const folder = path.resolve(remote.app.getPath('temp'), 'yana-export');
+    const folder = path.resolve(remote.app.getPath('temp'), 'yana-export', Math.random().toString(36).substring(14));
     const mediaItems: { [key: string]: string } = {};
 
     onUpdate('Clearing temporary folder');
@@ -51,6 +51,12 @@ export class AppDataExportService {
       ...workspace,
       name: workspace.name,
     }));
+
+    const basePath = path.dirname(destination);
+    if (!fs.existsSync(basePath)) {
+      onUpdate('Creating target folder');
+      await fs.promises.mkdir(basePath, { recursive: true });
+    }
 
     onUpdate('Preparing Zip file');
     const output = fs.createWriteStream(destination);

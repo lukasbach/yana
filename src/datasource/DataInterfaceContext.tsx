@@ -23,6 +23,10 @@ export const DataInterfaceProvider: React.FC = props => {
     }
   }, [appData.currentWorkspace]);
 
+  useEffect(() => {
+    dataInterface?.reload();
+  }, [appData.lastAutoBackup]);
+
   return (
     <DataInterfaceContext.Provider value={ dataInterface! }>
       { dataInterface && props.children }
