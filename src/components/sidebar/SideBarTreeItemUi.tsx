@@ -87,8 +87,6 @@ export const SideBarTreeItemUi: React.FC<{
   isExpanded?: boolean;
   isRenaming?: boolean;
   onRename?: (newName: string) => any;
-  onExpand?: () => any;
-  onCollapse?: () => any;
   onClick?: () => any;
   onMiddleClick?: () => any;
   onTitleClick?: () => any;
@@ -123,11 +121,7 @@ export const SideBarTreeItemUi: React.FC<{
         }),
       )}
       onClick={(e) => {
-        if (props.isExpandable) {
-          props.isExpanded ? props.onCollapse?.() : props.onExpand?.();
-        } else {
-          props.onClick?.();
-        }
+        props.onClick?.();
       }}
       onMouseDown={e => {
         if (e.button === 1) {

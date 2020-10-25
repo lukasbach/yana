@@ -9,6 +9,8 @@ import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSour
 import { initializeWorkspace } from './initializeWorkspace';
 import rimraf from 'rimraf';
 import { Alerter } from '../components/Alerter';
+import { defaultSettings } from '../settings/defaultSettings';
+import { SettingsObject } from '../settings/types';
 
 const fs = fsLib.promises;
 
@@ -22,14 +24,16 @@ export interface AppDataContextValue extends AppData {
   setWorkSpace: (workspace: WorkSpace) => void;
   currentWorkspace: WorkSpace;
   deleteWorkspace(workspace: WorkSpace): void;
+  saveSettings(settings: SettingsObject): Promise<void>;
 }
 
 export const AppDataContext = React.createContext<AppDataContextValue>(null as any);
 
 export const useAppData = () => useContext(AppDataContext);
+export const useSettings = () => useAppData().settings;
 
 export const AppDataProvider: React.FC = props => {
-  const [appData, setAppData] = useState<AppData>({ workspaces: [] });
+  const [appData, setAppData] = useState<AppData>({ workspaces: [], settings: defaultSettings });
   const [currentWorkspace, setCurrentWorkspace] = useState<WorkSpace>(appData.workspaces[0]);
 
   useAsyncEffect(async () => {
@@ -39,6 +43,7 @@ export const AppDataProvider: React.FC = props => {
 
     let appData: AppData = {
       workspaces: [],
+      settings: defaultSettings
     };
 
     if (!fsLib.existsSync(appDataFile)) {
@@ -46,6 +51,8 @@ export const AppDataProvider: React.FC = props => {
     } else {
       appData = JSON.parse(fsLib.readFileSync(appDataFile, { encoding: 'utf8' }));
     }
+
+    appData.settings = { ...defaultSettings, ...appData.settings };
 
     setAppData(appData);
     setCurrentWorkspace(appData.workspaces[0]);
@@ -85,6 +92,15 @@ export const AppDataProvider: React.FC = props => {
             fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
             setAppData(newAppData);
           });
+        },
+        saveSettings: async (settings: Partial<SettingsObject>) => {
+          const newAppData: AppData = {
+            ...appData,
+            settings: { ...defaultSettings, ...appData.settings, ...settings }
+          };
+
+          fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+          setAppData(newAppData);
         },
       }}
     >

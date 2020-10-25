@@ -56,7 +56,7 @@ export const DetailedListItem: React.FC<{
 }> = props => {
 
   return (
-    <div className={cx(styles.container, props.onClick && styles.containerHover)}>
+    <div className={cx(styles.container, props.onClick && styles.containerHover)} onClick={props.onClick}>
       { props.icon && (
         <div className={styles.iconContainer}>
           <Icon icon={props.icon} iconSize={32} />

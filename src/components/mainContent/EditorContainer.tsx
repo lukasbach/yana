@@ -4,6 +4,7 @@ import { NoteDataItem } from '../../types';
 import { EditorRegistry } from '../../editors/EditorRegistry';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { LogService } from '../../common/LogService';
+import { useSettings } from '../../appdata/AppDataProvider';
 
 const logger = LogService.getLogger('EditorContainer');
 
@@ -27,6 +28,7 @@ export const EditorContainer: React.FC<{
   // const [saveHandler, setSaveHandler] = useState<number | null>(null);
   const saveHandler = useRef<number | undefined>(undefined);
   const grabContentHandler = useRef<(() => Promise<object>) | undefined>();
+  const settings = useSettings();
 
   useEffect(() => logger.log("changed noteitem", [props.noteItem.name]), [props.noteItem.id])
   useEffect(() => logger.log("changed currentContent", [], {content: props.currentContent, item: props.noteItem.name}), [props.currentContent])
@@ -128,7 +130,7 @@ export const EditorContainer: React.FC<{
             logger.log("change detected, grabContentHandler registered");
             props.onChangeSaveIndicatorState?.(SaveIndicatorState.Unsaved);
             clearSaveHandler();
-            saveHandler.current = setTimeout(() => save(), 3000) as unknown as number;
+            saveHandler.current = setTimeout(() => save(), settings.noteItemSaveDelay) as unknown as number;
           } else {
             logger.log("change detected, but no grabContentHandler registered");
           }

@@ -12,6 +12,8 @@ import { FileItems } from '../pages/FileItems';
 import { AllItems } from '../pages/AllItems';
 import { ManageWorkspaces } from '../pages/ManageWorkspaces';
 import { TrashItems } from '../pages/TrashItems';
+import { pages } from '../../pages';
+import { ReactNode } from 'react';
 
 const logger = LogService.getLogger('MainContainer');
 
@@ -21,22 +23,7 @@ export const MainContainer: React.FC<{}> = props => {
   logger.log("rerender", [], {mainContent})
 
   if (mainContent.openTab?.page) {
-    switch(mainContent.openTab.page) {
-      case PageIndex.StarredItems:
-        return <StarredItems />;
-      case PageIndex.DraftItems:
-        return <DraftItems />;
-      case PageIndex.FileItems:
-        return <FileItems />;
-      case PageIndex.AllItems:
-        return <AllItems />;
-      case PageIndex.ManageWorkspaces:
-        return <ManageWorkspaces />;
-      case PageIndex.Trash:
-        return <TrashItems />;
-      default:
-        return <>Unknown page</>;
-    }
+    return (pages[mainContent.openTab.page]?.content() || '') as any;
   } else if (mainContent.openTab?.dataItem) {
     if (isNoteItem(mainContent.openTab.dataItem)) {
       return (

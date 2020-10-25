@@ -128,6 +128,7 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
                   className={cx(actionsButtonClass, style.actionsButton)}
                   onClick={e => {
                     e.stopPropagation();
+                    mainContent.openInCurrentTab(PageIndex.Settings);
                   }}
                 >
                   <Icon icon="cog" />

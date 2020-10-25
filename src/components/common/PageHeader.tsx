@@ -1,5 +1,6 @@
 import * as React from 'react';
 import cxs from 'cxs';
+import cx from 'classnames';
 import Color from 'color';
 import { Icon, IconName } from '@blueprintjs/core';
 
@@ -43,7 +44,10 @@ const styles = {
   }),
   lowerContent: cxs({
     margin: '0 32px 16px 32px',
-  })
+  }),
+  lowerContentFlush: cxs({
+    marginBottom: '0 !important'
+  }),
 };
 
 export const PageHeader: React.FC<{
@@ -53,6 +57,7 @@ export const PageHeader: React.FC<{
   titleSubtext?: string | React.ReactNode;
   rightContent?: React.ReactNode;
   lowerContent?: React.ReactNode;
+  lowerContentFlush?: boolean;
 }> = props => {
 
   return (
@@ -74,7 +79,7 @@ export const PageHeader: React.FC<{
         </div>
       </div>
       { props.lowerContent && (
-        <div className={styles.lowerContent}>
+        <div className={cx(styles.lowerContent, props.lowerContentFlush && styles.lowerContentFlush)}>
           { props.lowerContent }
         </div>
       )}

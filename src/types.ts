@@ -1,4 +1,5 @@
 import { LocalFileSystemDataSourceOptions } from './datasource/LocalFileSystemDataSource';
+import { SettingsObject } from './settings/types';
 
 export enum DataItemKind {
   NoteItem = 'note',
@@ -60,4 +61,5 @@ export interface WorkSpace {
 
 export interface AppData {
   workspaces: WorkSpace[];
+  settings: SettingsObject;
 }

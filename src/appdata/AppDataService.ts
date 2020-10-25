@@ -3,6 +3,7 @@ import * as fsLib from 'fs';
 import * as path from 'path';
 import { AppData } from '../types';
 import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
+import { defaultSettings } from '../settings/defaultSettings';
 
 const fs = fsLib.promises;
 
@@ -28,6 +29,7 @@ export class AppDataService {
 
     let appData: AppData = {
       workspaces: [],
+      settings: defaultSettings
     };
 
     if (!fsLib.existsSync(appDataFile)) {
