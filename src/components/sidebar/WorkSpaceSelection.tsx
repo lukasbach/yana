@@ -92,11 +92,16 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
                   <MenuItem key={workspace.name} text={workspace.name} onClick={() => appData.setWorkSpace(workspace)} />
                 ))
               }
-              <MenuDivider title="Manage Workspaces" />
+              <MenuDivider title="More..." />
               <MenuItem
                 text="Manage Workspaces"
                 icon="cog"
                 onClick={() => mainContent.openInCurrentTab(PageIndex.ManageWorkspaces)}
+              />
+              <MenuItem
+                text="About Yana"
+                icon="help"
+                onClick={() => mainContent.openInCurrentTab(PageIndex.About)}
               />
             </Menu>
           }

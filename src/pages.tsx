@@ -9,6 +9,7 @@ import { AllItems } from './components/pages/AllItems';
 import { ManageWorkspaces } from './components/pages/ManageWorkspaces';
 import { TrashItems } from './components/pages/TrashItems';
 import { Settings } from './components/settings/Settings';
+import { AboutContainerPage } from './components/settings/about/AboutContainerPage';
 
 export const pages: { [key in PageIndex]: { title: string, icon: IconName, content: () => ReactNode } } = {
   [PageIndex.Home]: { title: 'Home', icon: 'home', content: () => '' },
@@ -20,4 +21,5 @@ export const pages: { [key in PageIndex]: { title: string, icon: IconName, conte
   [PageIndex.Trash]: { title: 'Trash', icon: 'trash', content: () => <TrashItems /> },
   [PageIndex.Settings]: { title: 'Settings', icon: 'cog', content: () => <Settings /> },
   [PageIndex.ManageWorkspaces]: { title: 'Workspaces', icon: 'cog', content: () => <ManageWorkspaces /> },
+  [PageIndex.About]: { title: 'About Yana', icon: 'help', content: () => <AboutContainerPage /> },
 };
