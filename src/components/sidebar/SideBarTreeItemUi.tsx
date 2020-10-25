@@ -26,7 +26,10 @@ const styles = {
     color: '#333',
     '> .more': {
       opacity: 1
-    }
+    },
+    ' input': {
+      color: 'black !important',
+    },
   }),
   chevronContainer: cxs({
     width: '18px',

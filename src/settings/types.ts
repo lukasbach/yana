@@ -23,4 +23,12 @@ export interface SettingsObject {
   autoBackupLocation: string,
   autoUpdateAppActive: boolean,
   autoUpdateAppBackupActive: boolean,
+  editorMonacoMinimap: boolean,
+  editorMonacoTheme: string,
+  editorMonacoRenderControlChars: boolean,
+  editorMonacoRenderWhitespace: string,
+  editorMonacoRuler: number | undefined,
+  editorMonacoTabSize: number,
+  editorMonacoWordWrap: string,
+  editorAtlassianAdvancedTables: boolean,
 }

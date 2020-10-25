@@ -3,6 +3,14 @@ import path from "path";
 import { remote } from "electron";
 
 export const defaultSettings: SettingsObject = {
+  editorAtlassianAdvancedTables: true,
+  editorMonacoMinimap: true,
+  editorMonacoRenderControlChars: false,
+  editorMonacoRenderWhitespace: 'none',
+  editorMonacoRuler: 0,
+  editorMonacoTabSize: 4,
+  editorMonacoTheme: 'vs',
+  editorMonacoWordWrap: 'off',
   autoBackupLocation: path.join(remote.app.getPath('appData'), 'yana', 'backup'),
   autoBackupActive: true,
   autoBackupCount: 3,

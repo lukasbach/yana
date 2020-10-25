@@ -115,27 +115,25 @@ export const EditorContainer: React.FC<{
   // console.log("Using content", currentContent, props)
 
   return (
-    <div>
-      <EditorComponent
-        key={currentNote.id} // cleanly remount component on changing item
-        content={currentContent}
-        item={currentNote}
-        onDismount={content => save(content)}
-        onRegister={grabContent => {
-          logger.log("Registered")
-          grabContentHandler.current = grabContent;
-        }}
-        onChange={() => {
-          if (grabContentHandler.current) {
-            logger.log("change detected, grabContentHandler registered");
-            props.onChangeSaveIndicatorState?.(SaveIndicatorState.Unsaved);
-            clearSaveHandler();
-            saveHandler.current = setTimeout(() => save(), settings.noteItemSaveDelay) as unknown as number;
-          } else {
-            logger.log("change detected, but no grabContentHandler registered");
-          }
-        }}
-      />
-    </div>
+    <EditorComponent
+      key={currentNote.id} // cleanly remount component on changing item
+      content={currentContent}
+      item={currentNote}
+      onDismount={content => save(content)}
+      onRegister={grabContent => {
+        logger.log("Registered")
+        grabContentHandler.current = grabContent;
+      }}
+      onChange={() => {
+        if (grabContentHandler.current) {
+          logger.log("change detected, grabContentHandler registered");
+          props.onChangeSaveIndicatorState?.(SaveIndicatorState.Unsaved);
+          clearSaveHandler();
+          saveHandler.current = setTimeout(() => save(), settings.noteItemSaveDelay) as unknown as number;
+        } else {
+          logger.log("change detected, but no grabContentHandler registered");
+        }
+      }}
+    />
   );
 };

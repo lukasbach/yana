@@ -11,6 +11,7 @@ import { FindItemsDrawer } from '../../components/drawers/findItemsDrawer/FindIt
 import { DataItemKind, MediaItem } from '../../types';
 import { InsertedImageProperties } from '@atlaskit/editor-common/dist/cjs/provider-factory/image-upload-provider';
 import { isMediaItem } from '../../utils';
+import { useSettings } from '../../appdata/AppDataProvider';
 
 const logger = LogService.getLogger('AtlaskitEditorComponent');
 
@@ -23,6 +24,7 @@ const styles = {
 }
 
 export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorContent>> = props => {
+  const settings = useSettings();
   const editorRef = useRef<EditorActions | null>(null);
   const [insertImageFn, setInsertImageFn] = useState< { fn: (props: InsertedImageProperties) => void } | undefined>();
   const dataInterface = useDataInterface();
@@ -81,7 +83,7 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
               return (
                 <Editor
                   allowTables={{
-                    advanced: true,
+                    advanced: settings.editorAtlassianAdvancedTables,
                   }}
                   codeBlock={{
                   }}

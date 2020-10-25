@@ -1,6 +1,7 @@
 import * as path from 'path';
 import * as webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 
 const config: webpack.Configuration = {
   resolve: {
@@ -49,6 +50,7 @@ const config: webpack.Configuration = {
       filename: './index.html',
       template: './index.html',
     }),
+    new MonacoWebpackPlugin(),
   ],
   externals: {
     "archiver": "require('archiver')",

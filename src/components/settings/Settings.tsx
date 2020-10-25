@@ -9,6 +9,7 @@ import { useAppData } from '../../appdata/AppDataProvider';
 import { SettingsObject } from '../../settings/types';
 import { GeneralSettings } from './pages/GeneralSettings';
 import { defaultSettings } from '../../settings/defaultSettings';
+import { EditorSettings } from './pages/EditorSettings';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();
@@ -56,7 +57,7 @@ export const Settings: React.FC<{}> = props => {
         {(() => {
           switch (currentTab) {
             case SettingsTabs.Editors:
-              return <div />;
+              return <EditorSettings />;
             case SettingsTabs.Hotkeys:
               return <div />;
             case SettingsTabs.Devtools:

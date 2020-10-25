@@ -78,7 +78,7 @@ const styles = {
   mainContent: cxs({
     flexGrow: 1,
     height: '100%',
-    overflow: 'auto'
+    overflow: 'auto',
   }),
 };
 

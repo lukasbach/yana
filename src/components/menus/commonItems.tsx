@@ -53,6 +53,17 @@ export const createNewChildsItems = (item: DataItem, dataInterface: DataInterfac
         noteType: 'atlaskit-editor-note'
       } as any, item.id).then(onCreatedItem)
     }},
+  { text: 'Create new Code Snippet', icon: 'add', onClick: () => {
+      dataInterface.createDataItemUnderParent({
+        name: 'New Code Item',
+        childIds: [],
+        kind: DataItemKind.NoteItem,
+        lastChange: new Date().getTime(),
+        created: new Date().getTime(),
+        tags: [],
+        noteType: 'monaco-editor-note'
+      } as any, item.id).then(onCreatedItem)
+    }},
 ]);
 
 export const createDeletionItems = (dataInterface: DataInterface, item: DataItem): Array<MenuItemDefinition | 'divider'> => (
