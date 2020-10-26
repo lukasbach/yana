@@ -129,14 +129,23 @@ export const EditorHeader: React.FC<{
               <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>Edit Tags</Button>{' '}
               <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>Configure document</Button>{' '}
             </div>
-            <div>
-              <TagList
-                dataItem={props.dataItem}
-                isEditing={isEditingTags}
-                onStopEditing={() => setIsEditingTags(false)}
-              />
-            </div>
+            {!isEditingTags && (
+              <div>
+                <TagList
+                  dataItem={props.dataItem}
+                  isEditing={false}
+                  onStopEditing={() => setIsEditingTags(false)}
+                />
+              </div>
+            )}
           </>
+        )}
+        lowerContent={isEditingTags && (
+          <TagList
+            dataItem={props.dataItem}
+            isEditing={true}
+            onStopEditing={() => setIsEditingTags(false)}
+          />
         )}
       />
     <EditItemDrawer />

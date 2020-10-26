@@ -110,6 +110,7 @@ export const MainContentContextProvider: React.FC = props => {
         }));
       } else if (dataItemOrPage.kind === DataItemKind.NoteItem) {
         const currentContent = await dataInterface.getNoteItemContent(dataItemOrPage.id);
+        const currentItem = await dataInterface.getDataItem(dataItemOrPage.id);
         logger.out("Loaded tab contents", [dataItemOrPage.name], {currentContent})
         set(old => ({
           ...old,
@@ -117,20 +118,21 @@ export const MainContentContextProvider: React.FC = props => {
           tabs: [
             ...old.tabs,
             {
-              dataItem: dataItemOrPage,
+              dataItem: currentItem,
               currentContent,
               scrollPosition: 0
             }
           ]
         }));
       } else {
+        const currentItem = await dataInterface.getDataItem(dataItemOrPage.id);
         set(old => ({
           ...old,
           openTabId: old.tabs.length,
           tabs: [
             ...old.tabs,
             {
-              dataItem: dataItemOrPage,
+              dataItem: currentItem,
               scrollPosition: 0
             }
           ]
@@ -156,20 +158,22 @@ export const MainContentContextProvider: React.FC = props => {
         }));
       } else if (dataItemOrPage.kind === DataItemKind.NoteItem) {
         const currentContent = await dataInterface.getNoteItemContent(dataItemOrPage.id);
+        const currentItem = await dataInterface.getDataItem(dataItemOrPage.id);
         logger.out("Loaded tab contents", [dataItemOrPage.name], {currentContent})
         set(old => ({
           ...old,
           tabs: old.tabs.map((tab, id) => id !== old.openTabId ? tab : {
-            dataItem: dataItemOrPage,
+            dataItem: currentItem,
             currentContent,
             scrollPosition: 0
           }),
         }));
       } else {
+        const currentItem = await dataInterface.getDataItem(dataItemOrPage.id);
         set(old => ({
           ...old,
           tabs: old.tabs.map((tab, id) => id !== old.openTabId ? tab : {
-            dataItem: dataItemOrPage,
+            dataItem: currentItem,
             scrollPosition: 0
           }),
         }));
