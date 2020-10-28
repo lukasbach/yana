@@ -9,8 +9,12 @@ import { useDataTree } from '../../datasource/useDataTree';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { SideBarTreeHeader } from './SideBarTreeHeader';
 import { LogService } from '../../common/LogService';
+import { UntruncateItem } from './UntruncateItem';
+import { useSettings } from '../../appdata/AppDataProvider';
 
 const logger = LogService.getLogger('SideBarTree');
+
+const TRUNCATION_ITEM = '__TRUNC_TOKEN';
 
 const styles = {
   expandButton: cxs({
@@ -25,9 +29,11 @@ export const SideBarTree: React.FC<{
   masterItem?: DataItem;
 }> = props => {
   const dataInterface = useDataInterface();
+  const { sidebarNumberOfUntruncatedItems: untruncatedItemsCount } = useSettings();
   const [renamingItemId, setRenamingItemId] = useState<undefined | string>();
   const [isExpanded, setIsExpanded] = useState(true);
   const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems);
+  const [untruncatedItems, setUntruncatedItems] = useState<string[]>([]); // TODO could be moved into its own hook
 
   const [treeData, setTreeData] = useState<TreeData>({
     rootId: 'root',
@@ -40,30 +46,48 @@ export const SideBarTree: React.FC<{
     }
   });
 
-  useEffect(() => {
+  useEffect(() => { // TODO should be moved into its own hook
     const itemIds = items.map(item => item.id);
     const newTree: TreeData = {
       rootId: 'root',
       items: {
         root: { id: 'root', hasChildren: true, data: {}, children: !items.length? [] : props.rootItems.filter(item => itemIds.includes(item.id)).map(item => item.id) },
-        ...Object.fromEntries(items.map(item => [
-          item.id,
-          {
-            id: item.id,
-            hasChildren: item.kind === DataItemKind.Collection,
-            data: item,
-            children: item.childIds.filter(child => itemIds.includes(child)),
-            isExpanded: expandedIds.includes(item.id)
-          }
-        ]))
       }
     };
+
+    for (const item of items) {
+      const shouldTruncate = !untruncatedItems.includes(item.id) && item.childIds.length > untruncatedItemsCount;
+      const token = TRUNCATION_ITEM + item.id;
+      newTree.items[item.id] = {
+        id: item.id,
+        hasChildren: item.kind === DataItemKind.Collection,
+        data: item,
+        children: [
+          ...item.childIds
+            .filter(child => itemIds.includes(child))
+            .filter((child, idx) => idx < untruncatedItemsCount || untruncatedItems.includes(item.id)),
+          ...(shouldTruncate ? [token] : [])
+        ],
+        isExpanded: expandedIds.includes(item.id)
+      };
+
+      if (shouldTruncate) {
+        newTree.items[token] = {
+          id: token,
+          hasChildren: false,
+          data: { truncatedItem: item },
+          children: [],
+        };
+      }
+    }
+
     setTreeData(newTree);
   }, [
     items.map(item => item.id).join('___'),
     expandedIds.join('___'),
     items.map(item => item.name).join('___'),
-    items.map(item => item.childIds.join('___')).join('____')
+    items.map(item => item.childIds.join('___')).join('____'),
+    untruncatedItems
   ]); // TODO!!
   // }, [items, expandedIds]); // TODO!!
 
@@ -83,8 +107,12 @@ export const SideBarTree: React.FC<{
             isDragEnabled={true}
             tree={treeData}
             onExpand={(itemId) => expand(itemId as string)}
-            onCollapse={(itemId) => collapse(itemId as string)}
+            onCollapse={(itemId) => {
+              collapse(itemId as string);
+              setUntruncatedItems(utimes => utimes.filter(item => item !== itemId));
+            }}
             onDragEnd={(source, destination) => {
+              logger.log(`onDragEnd invoked with`, [], {source, destination})
               if (destination && destination.index !== undefined) {
                 const itemId = treeData.items[source.parentId].children[source.index] as string;
                 let originalParentId = source.parentId as string;
@@ -98,78 +126,52 @@ export const SideBarTree: React.FC<{
                 }
 
                 const targetIndex = destination.index;
-                logger.log('onDragEnd', [], {source, destination, itemId, originalParentId, targetParentId, targetIndex})
+                logger.log('onDragEnd finished', [], {source, destination, itemId, originalParentId, targetParentId, targetIndex})
                 dataInterface.moveItem(itemId, originalParentId, targetParentId, targetIndex)
               } else {
                 logger.log('Skipping onDragEnd, because destination or destination.index is undefined', [], {source, destination})
               }
             }}
-            renderItem={({ item, onExpand, onCollapse, provided, depth }) => (
-              <div
-                className={[
-                  cxs({
-                  })
-                ].join(' ')}
-                ref={provided.innerRef}
-                {...provided.draggableProps}
-                {...provided.dragHandleProps}
-                title={item.id}
-              >
-                <SideBarTreeItem
-                  item={item.data}
-                  hasChildren={!!item.hasChildren}
-                  isExpanded={!!item.isExpanded}
-                  onExpand={() => onExpand(item.id)}
-                  onCollapse={() => onCollapse(item.id)}
-                  isRenaming={item.id === renamingItemId}
-                  onStartRenameItem={setRenamingItemId}
-                />
-              </div>
-            )}
+            renderItem={({ item, onExpand, onCollapse, provided, depth }) => {
+              if ((item.id as string).startsWith(TRUNCATION_ITEM)) {
+                const truncatedItem = (item.id as string).slice(TRUNCATION_ITEM.length);
+                return (
+                  <UntruncateItem
+                    itemCount={(item.data.truncatedItem as DataItem).childIds.length - untruncatedItemsCount}
+                    style={provided.draggableProps.style}
+                    onClick={() => setUntruncatedItems(uitems => [...uitems, truncatedItem])}
+                  >
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    />
+                  </UntruncateItem>
+                );
+              } else {
+                return (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    title={item.id}
+                  >
+                    <SideBarTreeItem
+                      item={item.data}
+                      hasChildren={!!item.hasChildren}
+                      isExpanded={!!item.isExpanded}
+                      onExpand={() => onExpand(item.id)}
+                      onCollapse={() => onCollapse(item.id)}
+                      isRenaming={item.id === renamingItemId}
+                      onStartRenameItem={setRenamingItemId}
+                    />
+                  </div>
+                );
+              }
+            }}
           />
         )
       }
     </div>
   );
 };
-
-//             {
-//               item.hasChildren && (
-//                 <Button minimal={true} small={true} onClick={() => item.isExpanded ? onCollapse(item.id) : onExpand(item.id)}>
-//                   <Icon icon={item.isExpanded ? 'chevron-down' : 'chevron-right'} />
-//                 </Button>
-//               )
-//             }
-//             { item.data.name }
-//             {
-//               item.data.kind === DataItemKind.Collection && (
-//                 <>
-//                   <Button minimal={true} small={true} onClick={() => dataInterface.changeItem(item.data.id, {
-//                     ...item.data,
-//                     name: window.prompt('New name', item.data.name)!
-//                   })}>
-//                     <Icon icon={'edit'} />
-//                   </Button>
-//                   <Button minimal={true} small={true} onClick={() => dataInterface.createDataItem({
-//                     name: 'New Collection',
-//                     parentIds: [item.data.id],
-//                     kind: DataItemKind.Collection,
-//                     lastChange: new Date().getTime(),
-//                     created: new Date().getTime(),
-//                     tags: []
-//                   })}>
-//                     <Icon icon={'folder-new'} />
-//                   </Button>
-//                   <Button minimal={true} small={true} onClick={() => dataInterface.createDataItem({
-//                     name: 'New Note Item',
-//                     parentIds: [item.data.id],
-//                     kind: DataItemKind.NoteItem,
-//                     lastChange: new Date().getTime(),
-//                     created: new Date().getTime(),
-//                     tags: []
-//                   })}>
-//                     <Icon icon={'new-object'} />
-//                   </Button>
-//                 </>
-//               )
-//             }

@@ -184,6 +184,7 @@ export const SideBarTreeItemUi: React.FC<{
                     }}
                   >
                     { props.text }
+                    { props.children }
                   </span>
                 </span>
               </div>

@@ -11,7 +11,7 @@ enum LogLevel {
 
 type LogHandler = (description: string, appendedValues?: any[], subStructure?: object) => void;
 
-interface Logger {
+export interface Logger {
   name: string;
   level: LogLevel;
   color: string[];

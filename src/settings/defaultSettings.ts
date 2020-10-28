@@ -28,5 +28,6 @@ export const defaultSettings: SettingsObject = {
   sidebarMediaItemNameAction: SideBarItemAction.OpenInCurrentTab,
   sidebarNoteItemBackgroundAction: SideBarItemAction.OpenInCurrentTab,
   sidebarNoteItemMiddleClickAction: SideBarItemAction.OpenInNewTab,
-  sidebarNoteItemNameAction: SideBarItemAction.OpenInCurrentTab
+  sidebarNoteItemNameAction: SideBarItemAction.OpenInCurrentTab,
+  sidebarNumberOfUntruncatedItems: 5
 }

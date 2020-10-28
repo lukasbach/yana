@@ -28,6 +28,21 @@ export const GeneralSettings: React.FC<{}> = props => {
   return (
     <div>
       <SettingsSection title="Sidebar">
+        <SettingsClickable
+          title="General Sidebar Settings"
+        />
+
+        <SettingsNumberInput
+          settingsKey={'sidebarNumberOfUntruncatedItems'}
+          label="Number of childs shown by default"
+          helperText="When an item in the sidebar has more than this many children, the rest will be truncated."
+        />
+
+        <SettingsClickable
+          title="Sidebar Action Customizations"
+          subtitle="Here you can customize which actions are performed by clicking on the background or the text of an item in the sidebar, or by middle-clicking on an item."
+        />
+
         <SettingsSelectInput
           settingsKey={'sidebarNoteItemNameAction'}
           label={"Action when clicking on the name of a Note Item"}

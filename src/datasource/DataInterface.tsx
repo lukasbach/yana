@@ -36,8 +36,8 @@ export class DataInterface implements AbstractDataSource {
   private dirty = false;
   private persistInterval?: number;
 
-  public onChangeItems = new EventEmitter<ItemChangeEvent[]>();
-  public onAddFiles = new EventEmitter<FileAddEvent[]>();
+  public onChangeItems = new EventEmitter<ItemChangeEvent[]>('DataInterface:onChangeItems');
+  public onAddFiles = new EventEmitter<FileAddEvent[]>('DataInterface:onAddFiles');
 
   constructor(public dataSource: AbstractDataSource, private cacheLength: number = 50) {}
 

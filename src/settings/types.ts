@@ -14,6 +14,7 @@ export interface SettingsObject {
   sidebarCollectionItemNameAction: SideBarItemAction,
   sidebarCollectionItemBackgroundAction: SideBarItemAction,
   sidebarCollectionItemMiddleClickAction: SideBarItemAction,
+  sidebarNumberOfUntruncatedItems: number,
   noteItemSaveDelay: number,
   noteItemMaximumSaveInterval: number,
   autoBackupActive: boolean,
