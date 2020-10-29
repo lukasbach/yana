@@ -16,7 +16,8 @@
     "start": "yarn build:electron-main:dev && concurrently \"yarn start:renderer:dev\" \"yarn start:run-electron\" -n renderer,electron -c blue,green -k",
     "cleanup": "rimraf app && rimraf out",
     "prettier:check": "prettier --check .",
-    "prettier:write": "prettier --write ."
+    "prettier:write": "prettier --write .",
+    "test": "exit"
   },
   "author": "Lukas Bach",
   "license": "ISC",
@@ -48,6 +49,7 @@
     "classnames": "^2.2.6",
     "color": "^3.1.2",
     "cxs": "^6.2.0",
+    "electron-updater": "^4.3.5",
     "jimp": "^0.16.1",
     "logger": "^0.0.1",
     "monaco-editor": "^0.21.2",

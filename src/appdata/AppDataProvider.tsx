@@ -15,8 +15,8 @@ import { AutoBackupService } from './AutoBackupService';
 
 const fs = fsLib.promises;
 
-const userDataFolder = path.join(remote.app.getPath('appData'), 'yana');
-const appDataFile = path.join(userDataFolder, 'workspaces.json');
+export const userDataFolder = path.join(remote.app.getPath('appData'), 'yana');
+export const appDataFile = path.join(userDataFolder, 'workspaces.json');
 
 console.log('AppDataFile located at', appDataFile);
 
