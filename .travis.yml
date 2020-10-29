@@ -1,21 +1,17 @@
 language: node_js
 node_js: 12
 os: windows
-
 before_install:
-  - npm install -g yarn # https://github.com/travis-ci/travis-ci/issues/9445#issuecomment-494864992
-
+- npm install -g yarn
 script:
-  - yarn build
-
+- yarn build
 deploy:
   provider: releases
-  skip_cleanup: true
+  api_key:
+    secure: OUKAvIOv6MkpPCWabutgkmbN0aY7XOfW3T6ZAu0EM+ST4BeeyIEAeKdv0f2rD0fJQm4ekqZhKbfQCj3cY1oPt2Jfz32Cz6OTSCsxFbhuT0TZasMHdTkj5Zf1nMH0lqtqIOv8Qsr+GFlDe0DBXtO4vhuvt1fDPmTG6ku8LPQ5UPnEub8ByZFOuWfYYsZSOurEKwf5qAZLs6le/SKgsPrxAtEuaf0TljypSXiykZ3o98Imoz8Ce90LwOHDyMdT/Im3y/jxe66CtNH/EAckTjGEuh4/X4h5Vb+RhkK80CNzwHbJq+GhcxS3TaTJcKgFMrFB4tNlvxCRqmq7zlelML+VlESjMOS69Ku2/ZZaOd0GRkP1fp0V6wTmHVCFp1D/E54tzL7+/srpXuTY0IcouoR5xCKzmu2Ls//uplUhroB91x3DzBGUsp5NTpHjdRjwDZ+fJsezpEm04o2P6JQSltCaR+Qa9RIULTb6GCUksm0ACO+kv2KdRjWGlPBC8Iu9CLKg+iA1A/VdJoEOf7nKqDq3er3H57yfWeLQVs+RKOF2ISwFWxn4491OeXKceteM57uJUxUa3Wa0ptFpaOb3FP/m03BIMaP1CbOYc31Fnulttf018cVnWzRkeqf8/oK4m946Z5kaK4PxWOlRU3+C8MnhhJHuzJva74o1hLbqdta8Nw4=
+  file: out/*
+  file_glob: true
   on:
     branch: master
     tags: true
-  api-key:
-    secure: "DpRioVdMbQKvjIQJTAR2YW2rlJU7l6kh1bFYu+2B7yr226s1MBnxoQEWI6iFOdn56rxVUQeH4+Q2kzxkjIZqoDyVjaKzrHxjcXJd5mtG2FJ7qlFr9hx46SW+yPnxuIdSLqCZ1kPJ/nkivVLnVpLWJzaBqCVefAy8lv0Yqa0684MXTq3Lby6NCxPet3EfGOfVHOqoHowMlyAjNOU8mPv2lpMevF0nbCRe2lv0+FAX4x84nSWncBwFE4irP4fae2itXBhlNnPgeBCOlHXNiuLHRrPczcX5cH1qjt5HtdlI92VCn/KBHWZ6EB13Y5/qpeXWny5TFQ0UxMyokDNlUxQlpUuj+qiPZGxK7PayFlRyaTNcxezAhCdJSLWryxkngwdKKdqr4O9BbPXKt/xVRBLfHgeaRO8mgMeI1DOkkLZBr3tIRlLfBWbfKYZRK+nHgNXPM74oIrF3YgCgUX4bglzH82fAn8v93bfNXTLwj+QtfxGeIYhOR3zYxgtI80kYnw1Tzo7jiCWTIBWNUlSfI/KWk0F29x5HFsezyG3yZHGwnyXfAECnsB1JCKPhNEH7rW6ncUD9n+/5hA+QEUj6KM0cGOjnu986mir4wkiNSixt1XJxP/ExuurRTQV9TsfgFAIjRCIbz3vmhUWZFGEgPmQkj+fHC9PF/eQ5B4tcdmLJKOg="
-  file_glob: true
-  file:
-    - out/*
+  skip_cleanup: 'true'
