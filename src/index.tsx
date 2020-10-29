@@ -18,55 +18,45 @@ import { AutoUpdate } from './appdata/AutoUpdate';
 
 console.log('process.env.NODE_ENV=', process.env.NODE_ENV);
 
-(async () => {
-  if (process.env.NODE_ENV === 'production') {
-    const updates = new AutoUpdate();
-    await updates.load();
-    await updates.runAutoUpdateIfSettingsSet();
-  } else {
-    console.log("Skipping potential updates, dev mode.");
+remote.getCurrentWebContents().on('context-menu', (event, params) => {
+  if (params.misspelledWord) {
+    ContextMenu.show((
+      <Menu>
+        {
+          params.dictionarySuggestions.length ? (
+            params.dictionarySuggestions.map(sugg => (
+              <MenuItem
+                key={sugg}
+                text={sugg}
+                onClick={() => remote.getCurrentWebContents().replaceMisspelling(sugg)}
+              />
+            ))
+          ) : (
+            <MenuItem text="No suggestions available" disabled />
+          )
+        }
+        <MenuDivider />
+        <MenuItem
+          onClick={() => remote.getCurrentWebContents().session.addWordToSpellCheckerDictionary(params.misspelledWord)}
+          text={`Add to the dictionary`}
+        />
+      </Menu>
+    ), { top: params.y, left: params.x});
   }
-
-  remote.getCurrentWebContents().on('context-menu', (event, params) => {
-    if (params.misspelledWord) {
-      ContextMenu.show((
-        <Menu>
-          {
-            params.dictionarySuggestions.length ? (
-              params.dictionarySuggestions.map(sugg => (
-                <MenuItem
-                  key={sugg}
-                  text={sugg}
-                  onClick={() => remote.getCurrentWebContents().replaceMisspelling(sugg)}
-                />
-              ))
-            ) : (
-              <MenuItem text="No suggestions available" disabled />
-            )
-          }
-          <MenuDivider />
-          <MenuItem
-            onClick={() => remote.getCurrentWebContents().session.addWordToSpellCheckerDictionary(params.misspelledWord)}
-            text={`Add to the dictionary`}
-          />
-        </Menu>
-      ), { top: params.y, left: params.x});
-    }
-  })
+})
 
 // TODO closing a open tab removes its file contents, because the editor isnt mounted anymore and the content getter returns {}, which overwrites the previous content
-  ReactDOM.render(
-    <ThemeContext.Provider value={defaultTheme}>
-      <AppDataProvider>
-        <DataInterfaceProvider>
-          <MainContentContextProvider>
-            <LayoutContainer />
-            <Alerter.Instance.Container />
-            <DropZoneContainer />
-          </MainContentContextProvider>
-        </DataInterfaceProvider>
-      </AppDataProvider>
-    </ThemeContext.Provider>,
-    document.getElementById('root')
-  );
-})();
+ReactDOM.render(
+  <ThemeContext.Provider value={defaultTheme}>
+    <AppDataProvider>
+      <DataInterfaceProvider>
+        <MainContentContextProvider>
+          <LayoutContainer />
+          <Alerter.Instance.Container />
+          <DropZoneContainer />
+        </MainContentContextProvider>
+      </DataInterfaceProvider>
+    </AppDataProvider>
+  </ThemeContext.Provider>,
+  document.getElementById('root')
+);

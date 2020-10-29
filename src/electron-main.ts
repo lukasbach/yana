@@ -2,10 +2,21 @@ import { app, BrowserWindow, ipcMain, protocol } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { IpcChannel } from './IpcChannel';
+import { AutoUpdate } from './appdata/AutoUpdate';
 
 console.log('process.env.NODE_ENV=', process.env.NODE_ENV);
 
 let isQuitting = false;
+
+(async () => {
+  if (process.env.NODE_ENV === 'production') {
+    const updates = new AutoUpdate();
+    await updates.load();
+    await updates.runAutoUpdateIfSettingsSet();
+  } else {
+    console.log("Skipping potential updates, dev mode.");
+  }
+})();
 
 app.whenReady().then(() => {
   protocol.registerFileProtocol('file', (request, callback) => {
