@@ -20,6 +20,7 @@ export const createRenameItems = (item: DataItem, dataInterface: DataInterface, 
     onClick: onStartRename ?? (() => Alerter.Instance.alert({
       content: <>Rename item <b>{item.name}</b>:</>,
       prompt: {
+        type: 'string',
         defaultValue: item.name,
         placeholder: item.name,
         onConfirmText: name => !!name.length && dataInterface.changeItem(item.id, { name })
@@ -75,11 +76,18 @@ export const createDeletionItems = (dataInterface: DataInterface, item: DataItem
     'divider',
     { text: 'Delete forever', icon: 'trash', intent: 'danger', onClick: () => Alerter.Instance.alert({
         content: <>Are you sure you want to delete <b>{item.name}</b>?</>,
-        onConfirm: () => dataInterface.removeItem(item.id),
         intent: 'danger',
         icon: 'trash',
         cancelButtonText: 'Cancel',
-        confirmButtonText: 'Delete'
+        confirmButtonText: 'Delete',
+        prompt: {
+          type: 'boolean',
+          text: 'Recursively delete all children',
+          defaultValue: true,
+          onConfirmBoolean: (recursive) => {
+            dataInterface.removeItem(item.id, recursive);
+          }
+        }
       })
     },
   ] : [

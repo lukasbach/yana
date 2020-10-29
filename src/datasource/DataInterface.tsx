@@ -131,7 +131,15 @@ export class DataInterface implements AbstractDataSource {
     return itemResult;
   }
 
-  public async removeItem(id: string): Promise<DataSourceActionResult> {
+  public async addDataItemToParent(itemId: string, parentId: string): Promise<DataSourceActionResult> {
+    return await this.changeItem(parentId, old => ({ childIds: [...old.childIds, itemId] }));
+  }
+
+  public async removeDataItemFromParent(itemId: string, parentId: string): Promise<DataSourceActionResult> {
+    return await this.changeItem(parentId, old => ({ childIds: old.childIds.filter(id => id !== itemId) }));
+  }
+
+  public async removeItem(id: string, recursive?: boolean): Promise<DataSourceActionResult> {
     const data = await this.dataSource.getDataItem(id);
 
     if (!data) {
@@ -156,6 +164,13 @@ export class DataInterface implements AbstractDataSource {
 
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Removed }]);
     this.makeDirty();
+
+    if (recursive) {
+      for (const childId of data.childIds) {
+        await this.removeItem(childId, true);
+      }
+    }
+
     return result;
   }
 

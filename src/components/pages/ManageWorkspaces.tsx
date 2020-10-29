@@ -39,6 +39,7 @@ export const ManageWorkspaces: React.FC<{}> = props => {
                   canOutsideClickCancel: true,
                   canEscapeKeyCancel: true,
                   prompt: {
+                    type: 'string',
                     onConfirmText: value => res(value)
                   }
                 });
@@ -146,6 +147,7 @@ export const ManageWorkspaces: React.FC<{}> = props => {
                             canOutsideClickCancel: true,
                             canEscapeKeyCancel: true,
                             prompt: {
+                              type: 'string',
                               onConfirmText: value => {
                                 res(value === supposedInput)
                               }
