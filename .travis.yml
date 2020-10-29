@@ -7,7 +7,7 @@ before_install:
 script:
 - yarn build
 - dir
-- dir out/
+- dir out
 deploy:
   provider: releases
   api_key:

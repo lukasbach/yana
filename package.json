@@ -7,7 +7,7 @@
     "build:renderer:prod": "cross-env NODE_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpack-renderer.config.ts --mode production",
     "start:renderer:dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack-renderer.config.ts --mode development",
     "build:electron-main:dev": "cross-env NODE_ENV=development webpack --config webpack-electron.config.ts --mode development",
-    "build:electron-main:prod": "cross-env NODE_ENV=production webpack --config webpack-electron.config.ts --mode production",
+    "build:electron-main:prod": "cross-env NODE_ENV=production cross-env NODE_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpack-electron.config.ts --mode production",
     "build:app": "yarn build:renderer:prod && yarn build:electron-main:prod",
     "build:unpacked": "electron-builder --dir",
     "build:packed": "electron-builder",
