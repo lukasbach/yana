@@ -4,7 +4,7 @@
   "description": "Minimalistic React + TypeScript + Electron Boilerplate. Nothing more.",
   "main": "app/electron-main.js",
   "scripts": {
-    "build:renderer:prod": "cross-env NODE_ENV=production webpack --config webpack-renderer.config.ts --mode production",
+    "build:renderer:prod": "cross-env NODE_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpack-renderer.config.ts --mode production",
     "start:renderer:dev": "cross-env NODE_ENV=development webpack-dev-server --config webpack-renderer.config.ts --mode development",
     "build:electron-main:dev": "cross-env NODE_ENV=development webpack --config webpack-electron.config.ts --mode development",
     "build:electron-main:prod": "cross-env NODE_ENV=production webpack --config webpack-electron.config.ts --mode production",
