@@ -29,7 +29,10 @@ export const SideBarTree: React.FC<{
   masterItem?: DataItem;
 }> = props => {
   const dataInterface = useDataInterface();
-  const { sidebarNumberOfUntruncatedItems: untruncatedItemsCount } = useSettings();
+  const {
+    sidebarNumberOfUntruncatedItems: untruncatedItemsCount,
+    sidebarOffsetPerLevel: offsetPerLevel
+  } = useSettings();
   const [renamingItemId, setRenamingItemId] = useState<undefined | string>();
   const [isExpanded, setIsExpanded] = useState(true);
   const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems);
@@ -103,7 +106,7 @@ export const SideBarTree: React.FC<{
       {
         isExpanded && (
           <Tree
-            offsetPerLevel={16}
+            offsetPerLevel={offsetPerLevel}
             isDragEnabled={true}
             tree={treeData}
             onExpand={(itemId) => expand(itemId as string)}

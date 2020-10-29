@@ -29,5 +29,6 @@ export const defaultSettings: SettingsObject = {
   sidebarNoteItemBackgroundAction: SideBarItemAction.OpenInCurrentTab,
   sidebarNoteItemMiddleClickAction: SideBarItemAction.OpenInNewTab,
   sidebarNoteItemNameAction: SideBarItemAction.OpenInCurrentTab,
-  sidebarNumberOfUntruncatedItems: 5
+  sidebarNumberOfUntruncatedItems: 5,
+  sidebarOffsetPerLevel: 16,
 }

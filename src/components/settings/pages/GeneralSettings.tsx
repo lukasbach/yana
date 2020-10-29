@@ -38,6 +38,12 @@ export const GeneralSettings: React.FC<{}> = props => {
           helperText="When an item in the sidebar has more than this many children, the rest will be truncated."
         />
 
+        <SettingsNumberInput
+          settingsKey={'sidebarOffsetPerLevel'}
+          label="Offset per level"
+          helperText="Number of pixels that every level should be offset in the sidebar."
+        />
+
         <SettingsClickable
           title="Sidebar Action Customizations"
           subtitle="Here you can customize which actions are performed by clicking on the background or the text of an item in the sidebar, or by middle-clicking on an item."

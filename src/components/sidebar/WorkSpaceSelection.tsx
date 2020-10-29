@@ -50,7 +50,7 @@ const style = {
     flexGrow: 1,
     display: 'inline-flex',
     alignItems: 'center',
-    margin: '14px 8px 14px 0',
+    margin: '14px 8px 14px 20px',
     fontWeight: 'bold',
     fontSize: '14px'
   }),
@@ -114,9 +114,9 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
               }
             })
           )}>
-            <div className={style.iconContainer}>
+            {/*<div className={style.iconContainer}>
               <img src={brand} />
-            </div>
+            </div>*/}
             <div
               className={cx(
                 Classes.TEXT_OVERFLOW_ELLIPSIS,
