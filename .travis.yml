@@ -9,13 +9,13 @@ script:
   - yarn build
 
 deploy:
-  - provider: releases
-    skip_cleanup: true
-    on:
-      branch: master
-      tags: true
-    api-key:
-      secure: "g7n/+Ybn1bweJ4ABk2qauqsr04C2A26WgltkwO0C4N3XJUEVFWOnI1DJhNvP3UidRXYea+swfhLdT0Xz++/SuQ2PornNplFG2wX8Tj8DYnMbY9sEgPiNWdCeWWdl+hNmiy0IFT3fpK/JGb0pYWSsRxPlp8L5wKyzVudnIyirKlQ9Ire6i38QkRUWLbl/7MUkD9nzrFQrqYChI5KYjQLEjlnQcmbdy1q6GvbM6+7Syz5UkGbZCDq/ZhpYVCCOyDSOJqLd8CK0n0B0L5+S0QoxZq/liXb1k5tvu1vRTNr9GV1vC1uPaQebn2kaCW9jjA+CPoiXoPKTkV+YgeAnmSj/zsMVi5AzaVNR9NB/GvPBf+8EagbfpqqE7O1Ky0wvoFsVaFKeikvq+H8QDInoSG3noZkTfdCJRdpJodR425CXxj1LLBMbtZG/0SQEJQx1TGta1TspXGKMa4sZN8uBQVfcogCHYlgLfYkbwon58Jw08FS7PMR6Dr26IlygK//hL17loF3ozbVafBX8JzMtcMqSVP1W2/IyoSnH4/fOWF1dJzF35GfeRzV7qAW+R02nyl2RAwXEQEJRGaOluBa/j9wiOXOXLFg7vYwLMOKA5qx6WYxWFPlbV9Ka7qgBJfFhOFXFoLmr4l74AkYVvzMLpYVeccyFwfOFzQDdO5TcWBj+VZo="
-    file_glob: true
-    file:
-      - out/*
+  provider: releases
+  skip_cleanup: true
+  on:
+    branch: master
+    tags: true
+  api-key:
+    secure: "DpRioVdMbQKvjIQJTAR2YW2rlJU7l6kh1bFYu+2B7yr226s1MBnxoQEWI6iFOdn56rxVUQeH4+Q2kzxkjIZqoDyVjaKzrHxjcXJd5mtG2FJ7qlFr9hx46SW+yPnxuIdSLqCZ1kPJ/nkivVLnVpLWJzaBqCVefAy8lv0Yqa0684MXTq3Lby6NCxPet3EfGOfVHOqoHowMlyAjNOU8mPv2lpMevF0nbCRe2lv0+FAX4x84nSWncBwFE4irP4fae2itXBhlNnPgeBCOlHXNiuLHRrPczcX5cH1qjt5HtdlI92VCn/KBHWZ6EB13Y5/qpeXWny5TFQ0UxMyokDNlUxQlpUuj+qiPZGxK7PayFlRyaTNcxezAhCdJSLWryxkngwdKKdqr4O9BbPXKt/xVRBLfHgeaRO8mgMeI1DOkkLZBr3tIRlLfBWbfKYZRK+nHgNXPM74oIrF3YgCgUX4bglzH82fAn8v93bfNXTLwj+QtfxGeIYhOR3zYxgtI80kYnw1Tzo7jiCWTIBWNUlSfI/KWk0F29x5HFsezyG3yZHGwnyXfAECnsB1JCKPhNEH7rW6ncUD9n+/5hA+QEUj6KM0cGOjnu986mir4wkiNSixt1XJxP/ExuurRTQV9TsfgFAIjRCIbz3vmhUWZFGEgPmQkj+fHC9PF/eQ5B4tcdmLJKOg="
+  file_glob: true
+  file:
+    - out/*
