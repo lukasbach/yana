@@ -23,6 +23,10 @@ const config: webpack.Configuration = {
     filename: 'electron-main.js',
     publicPath: './',
   },
+  externals: {
+    "archiver": "require('archiver')",
+    "unzip": "require('unzip')"
+  },
 };
 
 export default config;

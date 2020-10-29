@@ -4,6 +4,7 @@ import { useAppData } from '../appdata/AppDataProvider';
 import { LocalFileSystemDataSource } from './LocalFileSystemDataSource';
 import { DataInterface } from './DataInterface';
 import { useAsyncEffect } from '../utils';
+import { EditorRegistry } from '../editors/EditorRegistry';
 
 export const useDataInterface = () => useContext(DataInterfaceContext);
 export const DataInterfaceContext = React.createContext<DataInterface>(null as any);
@@ -17,7 +18,7 @@ export const DataInterfaceProvider: React.FC = props => {
         await dataInterface.dataSource.unload();
       }
 
-      const di = new DataInterface(new LocalFileSystemDataSource(appData.currentWorkspace.dataSourceOptions));
+      const di = new DataInterface(new LocalFileSystemDataSource(appData.currentWorkspace.dataSourceOptions), EditorRegistry.Instance);
       await di.load();
       setDataInterface(di);
     }

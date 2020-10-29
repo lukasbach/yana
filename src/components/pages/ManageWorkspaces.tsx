@@ -10,6 +10,7 @@ import { useAppData } from '../../appdata/AppDataProvider';
 import { remote } from "electron";
 import { AppDataExportService } from '../../appdata/AppDataExportService';
 import { Alerter } from '../Alerter';
+import { AppDataImportService } from '../../appdata/AppDataImportService';
 
 export const ManageWorkspaces: React.FC<{}> = props => {
   const appData = useAppData();
@@ -71,7 +72,7 @@ export const ManageWorkspaces: React.FC<{}> = props => {
 
               if (!confirmed) return;
 
-              await AppDataExportService.import(
+              await AppDataImportService.import(
                 zipResult.filePaths[0],
                 workspaceName,
                 destResult.filePaths[0],

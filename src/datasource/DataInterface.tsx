@@ -2,10 +2,9 @@ import * as React from 'react';
 import { AbstractDataSource } from './AbstractDataSource';
 import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery } from '../types';
 import { EventEmitter } from '../common/EventEmitter';
-import { EditorRegistry } from '../editors/EditorRegistry';
-import { isMediaItem, isNoteItem, undup } from '../utils';
+import type { EditorRegistry } from '../editors/EditorRegistry';
+import { isMediaItem, isNoteItem } from '../utils';
 import { LogService } from '../common/LogService';
-import { InternalTag } from './InternalTag';
 
 const logger = LogService.getLogger('DataInterface');
 
@@ -32,14 +31,17 @@ export class DataInterface implements AbstractDataSource {
   private cache: { [key: string]: any } = {};
   private cachedKeys: string[] = [];
   private cachedKeysIt = 0;
-  private editors = EditorRegistry.Instance;
   private dirty = false;
   private persistInterval?: number;
 
   public onChangeItems = new EventEmitter<ItemChangeEvent[]>('DataInterface:onChangeItems');
   public onAddFiles = new EventEmitter<FileAddEvent[]>('DataInterface:onAddFiles');
 
-  constructor(public dataSource: AbstractDataSource, private cacheLength: number = 50) {}
+  constructor(
+    public dataSource: AbstractDataSource,
+    private editors: EditorRegistry,
+    private cacheLength: number = 50
+  ) {}
 
   public async load() {
     await this.dataSource.load();

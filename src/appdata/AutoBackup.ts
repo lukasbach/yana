@@ -21,7 +21,7 @@ export class AutoBackup {
     private settings: SettingsObject,
     private queueBackup: (perform: () => Promise<any>) => void,
   ) {
-    this.dataInterface = new DataInterface(new LocalFileSystemDataSource(this.workspace.dataSourceOptions), 300);
+    this.dataInterface = new DataInterface(new LocalFileSystemDataSource(this.workspace.dataSourceOptions), null as any, 300);
     this.backupIdentifier = workspace.name.toLowerCase().replace(/\s/g, '_');
   }
 
