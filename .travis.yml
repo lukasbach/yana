@@ -1,6 +1,5 @@
 language: node_js
 node_js: 12
-os: windows
 before_install:
 - export YARN_GPG=no
 - npm install -g yarn
@@ -8,17 +7,53 @@ script:
 - yarn build
 - dir
 - dir out
-deploy:
-  provider: releases
-  api_key:
-    secure: OUKAvIOv6MkpPCWabutgkmbN0aY7XOfW3T6ZAu0EM+ST4BeeyIEAeKdv0f2rD0fJQm4ekqZhKbfQCj3cY1oPt2Jfz32Cz6OTSCsxFbhuT0TZasMHdTkj5Zf1nMH0lqtqIOv8Qsr+GFlDe0DBXtO4vhuvt1fDPmTG6ku8LPQ5UPnEub8ByZFOuWfYYsZSOurEKwf5qAZLs6le/SKgsPrxAtEuaf0TljypSXiykZ3o98Imoz8Ce90LwOHDyMdT/Im3y/jxe66CtNH/EAckTjGEuh4/X4h5Vb+RhkK80CNzwHbJq+GhcxS3TaTJcKgFMrFB4tNlvxCRqmq7zlelML+VlESjMOS69Ku2/ZZaOd0GRkP1fp0V6wTmHVCFp1D/E54tzL7+/srpXuTY0IcouoR5xCKzmu2Ls//uplUhroB91x3DzBGUsp5NTpHjdRjwDZ+fJsezpEm04o2P6JQSltCaR+Qa9RIULTb6GCUksm0ACO+kv2KdRjWGlPBC8Iu9CLKg+iA1A/VdJoEOf7nKqDq3er3H57yfWeLQVs+RKOF2ISwFWxn4491OeXKceteM57uJUxUa3Wa0ptFpaOb3FP/m03BIMaP1CbOYc31Fnulttf018cVnWzRkeqf8/oK4m946Z5kaK4PxWOlRU3+C8MnhhJHuzJva74o1hLbqdta8Nw4=
-  file:
-    - out/Yana*.exe
-    - out/Yana*.msi
-    - out/Yana*.zip
-    - latest.yml
-  file_glob: true
-  on:
-    branch: master
-    tags: true
-  skip_cleanup: 'true'
+
+cache:
+  directories:
+    - node_modules
+    - $HOME/.cache/electron
+    - $HOME/.cache/electron-builder
+    - $HOME/.npm/_prebuilds
+
+jobs:
+  include:
+    - stage: Build & Deploy Windows
+      os: windows
+      if: tag IS present
+      script:
+        - yarn build
+        - dir
+        - dir out
+        - yarn release -- --win
+    - stage: Build & Deploy Mac
+      os: osx
+      if: tag IS present
+      script:
+        - yarn build
+        - dir
+        - dir out
+        - yarn release -- --mac
+    - stage: Build & Deploy Linux
+      os: linux
+      dist: trusty
+      if: tag IS present
+      script:
+        - yarn build
+        - dir
+        - dir out
+        - yarn release
+
+# deploy:
+#   provider: releases
+#   api_key:
+#     secure: OUKAvIOv6MkpPCWabutgkmbN0aY7XOfW3T6ZAu0EM+ST4BeeyIEAeKdv0f2rD0fJQm4ekqZhKbfQCj3cY1oPt2Jfz32Cz6OTSCsxFbhuT0TZasMHdTkj5Zf1nMH0lqtqIOv8Qsr+GFlDe0DBXtO4vhuvt1fDPmTG6ku8LPQ5UPnEub8ByZFOuWfYYsZSOurEKwf5qAZLs6le/SKgsPrxAtEuaf0TljypSXiykZ3o98Imoz8Ce90LwOHDyMdT/Im3y/jxe66CtNH/EAckTjGEuh4/X4h5Vb+RhkK80CNzwHbJq+GhcxS3TaTJcKgFMrFB4tNlvxCRqmq7zlelML+VlESjMOS69Ku2/ZZaOd0GRkP1fp0V6wTmHVCFp1D/E54tzL7+/srpXuTY0IcouoR5xCKzmu2Ls//uplUhroB91x3DzBGUsp5NTpHjdRjwDZ+fJsezpEm04o2P6JQSltCaR+Qa9RIULTb6GCUksm0ACO+kv2KdRjWGlPBC8Iu9CLKg+iA1A/VdJoEOf7nKqDq3er3H57yfWeLQVs+RKOF2ISwFWxn4491OeXKceteM57uJUxUa3Wa0ptFpaOb3FP/m03BIMaP1CbOYc31Fnulttf018cVnWzRkeqf8/oK4m946Z5kaK4PxWOlRU3+C8MnhhJHuzJva74o1hLbqdta8Nw4=
+#   file:
+#     - out/Yana*.exe
+#     - out/Yana*.msi
+#     - out/Yana*.zip
+#     - latest.yml
+#   file_glob: true
+#   on:
+#     branch: master
+#     tags: true
+#   skip_cleanup: 'true'

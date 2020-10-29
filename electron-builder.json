@@ -9,12 +9,15 @@
     "buildResources": "./resources"
   },
   "win": {
-    "target": ["nsis", "msi", "zip"]
+    "target": ["nsis", "msi", "zip"],
+    "publish": ["github"]
   },
   "linux": {
-    "target": ["snap", "deb", "tar.gz"]
+    "target": ["snap", "deb", "tar.gz"],
+    "publish": ["github"]
   },
   "mac": {
-    "target": ["dmg", "zip"]
+    "target": ["dmg", "zip"],
+    "publish": ["github"]
   }
 }

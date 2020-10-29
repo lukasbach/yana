@@ -17,7 +17,8 @@
     "cleanup": "rimraf app && rimraf out",
     "prettier:check": "prettier --check .",
     "prettier:write": "prettier --write .",
-    "test": "exit"
+    "test": "exit",
+    "release": "build"
   },
   "author": "Lukas Bach",
   "license": "ISC",
@@ -116,5 +117,9 @@
     "@react-spring/zdog": "9.0.0-beta.33",
     "@react-spring/animated": "9.0.0-beta.33",
     "@react-spring/shared": "9.0.0-beta.33"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lukasbach/yana.git"
   }
 }
