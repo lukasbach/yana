@@ -1,6 +1,5 @@
 import cxs from 'cxs';
 import React from 'react';
-import { Button, Icon } from '@blueprintjs/core';
 
 const styles = {
   container: cxs({
