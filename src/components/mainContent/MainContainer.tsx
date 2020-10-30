@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useMainContentContext } from './context';
-import { isCollectionItem, isNoteItem } from '../../utils';
+import { isCollectionItem, isMediaItem, isNoteItem } from '../../utils';
 import { LogService } from '../../common/LogService';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { CollectionContainer } from './CollectionContainer';
@@ -14,6 +14,7 @@ import { ManageWorkspaces } from '../pages/ManageWorkspaces';
 import { TrashItems } from '../pages/TrashItems';
 import { pages } from '../../pages';
 import { ReactNode } from 'react';
+import { MediaView } from './MediaView';
 
 const logger = LogService.getLogger('MainContainer');
 
@@ -38,6 +39,12 @@ export const MainContainer: React.FC<{}> = props => {
           dataItem={mainContent.openTab.dataItem}
         />
       );
+    } else if (isMediaItem(mainContent.openTab.dataItem)) {
+      return (
+        <MediaView
+          dataItem={mainContent.openTab.dataItem}
+        />
+      )
     } else {
       return <>Unknown data type</>;
     }
