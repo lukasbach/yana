@@ -5,8 +5,6 @@ import { AppDataExportService } from './AppDataExportService';
 import { LogService } from '../common/LogService';
 import path from 'path';
 import { autoUpdater } from "electron-updater"
-import { app, ipcMain } from 'electron';
-import { IpcChannel } from '../IpcChannel';
 
 const logger = LogService.getLogger('AutoUpdate');
 
@@ -59,15 +57,6 @@ export class AutoUpdate {
       };
       await autoUpdater.checkForUpdatesAndNotify()
       logger.log('Done with checkForUpdatesAndNotify().');
-    });
-
-    autoUpdater.once('update-downloaded', async () => {
-      logger.log('Update has finished downloading');
-      ipcMain.once(IpcChannel.ConfirmQuit, e => {
-        logger.log('App has confirmed quit. Now reinstalling.');
-        autoUpdater.quitAndInstall();
-      });
-      ipcMain.emit(IpcChannel.InitiateQuit);
     });
   }
 }
