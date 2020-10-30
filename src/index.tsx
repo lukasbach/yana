@@ -13,6 +13,7 @@ import { ContextMenu, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import { AutoUpdate } from './appdata/AutoUpdate';
+import { DevToolsContextProvider } from './components/devtools/DevToolsContextProvider';
 
 (window as any).ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
@@ -49,13 +50,15 @@ remote.getCurrentWebContents().on('context-menu', (event, params) => {
 ReactDOM.render(
   <ThemeContext.Provider value={defaultTheme}>
     <AppDataProvider>
-      <DataInterfaceProvider>
-        <MainContentContextProvider>
-          <LayoutContainer />
-          <Alerter.Instance.Container />
-          <DropZoneContainer />
-        </MainContentContextProvider>
-      </DataInterfaceProvider>
+      <DevToolsContextProvider>
+        <DataInterfaceProvider>
+          <MainContentContextProvider>
+            <LayoutContainer />
+            <Alerter.Instance.Container />
+            <DropZoneContainer />
+          </MainContentContextProvider>
+        </DataInterfaceProvider>
+      </DevToolsContextProvider>
     </AppDataProvider>
   </ThemeContext.Provider>,
   document.getElementById('root')

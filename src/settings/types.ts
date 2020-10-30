@@ -33,4 +33,5 @@ export interface SettingsObject {
   editorMonacoTabSize: number,
   editorMonacoWordWrap: string,
   editorAtlassianAdvancedTables: boolean,
+  devToolsOpen: boolean,
 }

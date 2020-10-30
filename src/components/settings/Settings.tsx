@@ -10,6 +10,7 @@ import { SettingsObject } from '../../settings/types';
 import { GeneralSettings } from './pages/GeneralSettings';
 import { defaultSettings } from '../../settings/defaultSettings';
 import { EditorSettings } from './pages/EditorSettings';
+import { DevSettings } from './pages/DevSettings';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();
@@ -61,7 +62,7 @@ export const Settings: React.FC<{}> = props => {
             case SettingsTabs.Hotkeys:
               return <div />;
             case SettingsTabs.Devtools:
-              return <div />;
+              return <DevSettings />;
             case SettingsTabs.General:
             default:
               return <GeneralSettings />;

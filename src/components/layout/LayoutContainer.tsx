@@ -12,6 +12,8 @@ import { TopBar } from './TopBar';
 import ResizePanel from "react-resize-panel";
 import { Button, Icon, ResizeSensor } from '@blueprintjs/core';
 import { useCallback, useRef, useState } from 'react';
+import { useSettings } from '../../appdata/AppDataProvider';
+import { DevToolsSidebar } from '../devtools/DevToolsSidebar';
 
 const styles = {
   mainContainer: cxs({
@@ -90,12 +92,19 @@ const styles = {
     height: '100%',
     overflow: 'auto',
   }),
+  devtools: cxs({
+    width: '300px',
+    minWidth: '300px',
+    height: '100%',
+    overflow: 'auto'
+  })
 };
 
 const SIZE_TO_COLLAPSE = 160;
 
 export const LayoutContainer: React.FC<{}> = props => {
   const theme = useTheme();
+  const settings = useSettings();
   const lastSizeRef = useRef(0);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -150,22 +159,23 @@ export const LayoutContainer: React.FC<{}> = props => {
                 setCollapsed(true);
               }
             }}>
-              { !collapsed ? (
-                <div>
+              <div>
+                <div style={{ display: collapsed ? 'none' : 'block' }}>
                   <SideBarContent />
-                  { collapseButtonContainer }
                 </div>
-              ) : (
-                <div>
-                  { collapseButtonContainer }
-                </div>
-              ) }
+                { collapseButtonContainer }
+              </div>
             </ResizeSensor>
           </div>
         </ResizePanel>
         <div className={styles.mainContent}>
           <MainContainer />
         </div>
+        { settings.devToolsOpen && (
+          <div className={styles.devtools}>
+            <DevToolsSidebar />
+          </div>
+        ) }
       </div>
     </div>
   );

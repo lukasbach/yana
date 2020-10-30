@@ -29,13 +29,11 @@ export class EventEmitter<EventPayload extends object> {
   }
 
   public on(handler: (payload: EventPayload) => Promise<void> | void): number {
-    this.logger?.log('register handler', [this.handlerCount + 1], {handler});
     this.handlers.push(handler);
     return this.handlerCount++;
   }
 
   public delete(handlerId: number) {
-    this.logger?.log('unregister handler', [handlerId]);
     this.handlers[handlerId] = null;
   }
 }

@@ -5,6 +5,7 @@ import { EventEmitter } from '../common/EventEmitter';
 import type { EditorRegistry } from '../editors/EditorRegistry';
 import { isMediaItem, isNoteItem } from '../utils';
 import { LogService } from '../common/LogService';
+import { DevtoolsContextType } from '../components/devtools/DevToolsContextProvider';
 
 const logger = LogService.getLogger('DataInterface');
 
@@ -40,8 +41,14 @@ export class DataInterface implements AbstractDataSource {
   constructor(
     public dataSource: AbstractDataSource,
     private editors: EditorRegistry,
-    private cacheLength: number = 50
-  ) {}
+    private cacheLength: number = 50,
+    private devtools?: DevtoolsContextType,
+  ) {
+    if (devtools) {
+      this.onChangeItems.on(() => devtools.increaseCounter('DI onChangeItems'));
+      this.onAddFiles.on(() => devtools.increaseCounter('DI onAddFiles'));
+    }
+  }
 
   public async load() {
     await this.dataSource.load();
@@ -63,10 +70,13 @@ export class DataInterface implements AbstractDataSource {
   }
 
   private async tryCache<T>(id: string, orFetch: () => Promise<T>) {
+    this.devtools?.increaseCounter('DI try cache');
     const cacheItem = this.cache[id];
     if (cacheItem) {
+      this.devtools?.increaseCounter('DI cache hit');
       return cacheItem;
     } else {
+      this.devtools?.increaseCounter('DI cache miss');
       const item = await orFetch();
       this.cache[id] = item;
 
@@ -76,6 +86,7 @@ export class DataInterface implements AbstractDataSource {
       this.cachedKeysIt = this.cachedKeysIt % this.cacheLength;
 
       if (this.cachedKeys.length >= this.cacheLength) {
+        this.devtools?.increaseCounter('DI cache purge');
         delete this.cache[this.cachedKeysIt];
       }
 
@@ -92,14 +103,17 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async getDataItem<K extends DataItemKind>(id: string): Promise<DataItem<K>> {
+    this.devtools?.increaseCounter('DI getDataItem');
     return await this.tryCache(id, () => this.dataSource.getDataItem(id));
   }
 
   public async getNoteItemContent<C extends object>(id: string): Promise<C> {
+    this.devtools?.increaseCounter('DI getNoteItemContent');
     return await this.dataSource.getNoteItemContent<C>(id);
   }
 
   public async writeNoteItemContent<C extends object>(id: string, content: C): Promise<DataSourceActionResult> {
+    this.devtools?.increaseCounter('DI writeNoteItemContent');
     const result = await this.dataSource.writeNoteItemContent<C>(id, content);
     logger.out("Writing contents to file for ", [id], {content});
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.ChangedNoteContents }]);
@@ -109,6 +123,7 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>): Promise<DataItem<K>> {
+    this.devtools?.increaseCounter('DI createDataItem');
     const result = await this.dataSource.createDataItem<K>(item);
     await this.initializeNoteContent(result);
     this.onChangeItems.emit([{ id: result.id, reason: ItemChangeEventReason.Created }]);
@@ -142,6 +157,7 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async removeItem(id: string, recursive?: boolean): Promise<DataSourceActionResult> {
+    this.devtools?.increaseCounter('DI removeItem');
     const data = await this.dataSource.getDataItem(id);
 
     if (!data) {
@@ -177,6 +193,7 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async moveItem(id: string, originalParentId: string, targetParentId: string, targetIndex: number) {
+    this.devtools?.increaseCounter('DI moveItem');
     // const item = await this.getDataItem(id);
     const originalParent = await this.getDataItem(originalParentId);
 
@@ -201,6 +218,7 @@ export class DataInterface implements AbstractDataSource {
     id: string,
     overwriteWith: Partial<DataItem<K>> | ((old: DataItem<K>) => Partial<DataItem<K>>)
   ): Promise<DataSourceActionResult> {
+    this.devtools?.increaseCounter('DI changeItem');
     const old = await this.dataSource.getDataItem(id) as DataItem<K>;
 
     if (!old) {
@@ -250,11 +268,13 @@ export class DataInterface implements AbstractDataSource {
     search: SearchQuery,
     onFind: (result: Array<DataItem<any>>) => any
   ): Promise<DataSourceActionResult> {
+    this.devtools?.increaseCounter('DI search');
     if (Object.keys(search).length === 0) return;
     return await this.dataSource.search(search, onFind);
   }
 
   public async searchImmediate(search: SearchQuery): Promise<Array<DataItem>> {
+    this.devtools?.increaseCounter('DI searchImmediate');
     const items: DataItem[] = [];
     await this.search(search, result => items.push(...result));
     logger.out("Performing immediate search", [], { search, items });
@@ -282,6 +302,7 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async persist(): Promise<DataSourceActionResult> {
+    this.devtools?.increaseCounter('DI persist');
     if (this.dirty) {
       logger.log("Persisting", [], {source: this.dataSource});
       this.dirty = false;
@@ -292,6 +313,7 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {
+    this.devtools?.increaseCounter('DI getParentsOf');
     return await this.dataSource.getParentsOf(childId);
   }
 
@@ -308,18 +330,22 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async getStructure<K extends any = any>(id: string): Promise<K> {
+    this.devtools?.increaseCounter('DI getStructure');
+    this.devtools?.increaseCounter('DI getStructure:' + id);
     const structure = await this.dataSource.getStructure(id);
     logger.log('getStructure', [id], {structure});
     return structure; // TODO cache?
   }
 
   public async storeStructure<K extends any = any>(id: string, structure: K): Promise<DataSourceActionResult> {
+    this.devtools?.increaseCounter('DI storeStructure');
     logger.log('storeStructure', [id], {structure});
     this.makeDirty();
     return await this.dataSource.storeStructure(id, structure);
   }
 
   public async getAvailableTags(): Promise<Array<{ value: string }>> {
+    this.devtools?.increaseCounter('DI getAvailableTags');
     console.log("getAvailableTags", await this.getStructure('tags'));
     return Object.entries(await this.getStructure('tags')).map(([value, data]: any) => ({ value, ...data }));
   }

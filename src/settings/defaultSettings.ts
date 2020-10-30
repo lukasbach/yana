@@ -32,4 +32,5 @@ export const defaultSettings: SettingsObject = {
   sidebarNoteItemNameAction: SideBarItemAction.OpenInCurrentTab,
   sidebarNumberOfUntruncatedItems: 5,
   sidebarOffsetPerLevel: 16,
+  devToolsOpen: false,
 }
