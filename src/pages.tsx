@@ -10,13 +10,14 @@ import { ManageWorkspaces } from './components/pages/ManageWorkspaces';
 import { TrashItems } from './components/pages/TrashItems';
 import { Settings } from './components/settings/Settings';
 import { AboutContainerPage } from './components/settings/about/AboutContainerPage';
+import { HomePage } from './components/pages/HomePage';
 
 export const pages: { [key in PageIndex]: { title: string, icon: IconName, content: () => ReactNode } } = {
-  [PageIndex.Home]: { title: 'Home', icon: 'home', content: () => '' },
+  [PageIndex.Home]: { title: 'Home', icon: 'home', content: () => <HomePage /> },
   [PageIndex.StarredItems]: { title: 'Starred', icon: 'star', content: () => <StarredItems /> },
   [PageIndex.FileItems]: { title: 'Files', icon: 'archive', content: () => <FileItems /> },
   [PageIndex.DraftItems]: { title: 'Drafts', icon: 'edit', content: () => <DraftItems /> },
-  [PageIndex.AllItems]: { title: 'All Items', icon: 'layout-grid', content: () => <AllItems /> },
+  [PageIndex.AllItems]: { title: 'Search', icon: 'search', content: () => <AllItems /> },
   [PageIndex.Search]: { title: 'Search', icon: 'search', content: () => '' },
   [PageIndex.Trash]: { title: 'Trash', icon: 'trash', content: () => <TrashItems /> },
   [PageIndex.Settings]: { title: 'Settings', icon: 'cog', content: () => <Settings /> },

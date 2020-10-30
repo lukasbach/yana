@@ -1,4 +1,4 @@
-import { DataItem, SearchQuery } from '../types';
+import { DataItem, SearchQuery, SearchQuerySortColumn, SearchQuerySortDirection } from '../types';
 import { AbstractDataSource } from './AbstractDataSource';
 import { doArraysIntersect } from '../utils';
 
@@ -37,5 +37,19 @@ export class SearchHelper {
     }
 
     return true;
+  }
+
+  public static sortItems(itemA: DataItem, itemB: DataItem, column: SearchQuerySortColumn, direction: SearchQuerySortDirection = SearchQuerySortDirection.Ascending) {
+    const a = direction === SearchQuerySortDirection.Ascending ? itemA : itemB;
+    const b = direction === SearchQuerySortDirection.Ascending ? itemB : itemA;
+
+    switch (column) {
+      case SearchQuerySortColumn.Name:
+        return a.name.localeCompare(b.name);
+      case SearchQuerySortColumn.Created:
+        return a.created - b.created;
+      case SearchQuerySortColumn.LastChange:
+        return a.lastChange - b.lastChange;
+    }
   }
 }

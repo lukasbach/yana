@@ -14,7 +14,6 @@ const navTreePageIndices = [
   PageIndex.FileItems,
   PageIndex.DraftItems,
   PageIndex.AllItems,
-  PageIndex.Search,
   PageIndex.Trash
 ];
 

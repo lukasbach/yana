@@ -131,13 +131,18 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     search: SearchQuery,
     onFind: (collections: Array<DataItem<any>>) => any
   ): Promise<DataSourceActionResult> {
-    const result: DataItem[] = [];
+    let result: DataItem[] = [];
     console.log("Search")
 
     for (const item of Object.values(this.structure.items)) {
       if (await SearchHelper.satisfiesSearch(item, search, this)) {
         result.push(item);
       }
+    }
+
+    if (search.sortColumn) {
+      result = result.sort((a, b) =>
+        SearchHelper.sortItems(a, b, search.sortColumn!, search.sortDirection));
     }
 
     onFind(result);

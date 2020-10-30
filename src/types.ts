@@ -42,6 +42,16 @@ export class ItemNotFoundError extends UiError {}
 
 export type DataSourceActionResult = void;
 
+export enum SearchQuerySortColumn {
+  Name = 'name',
+  Created = 'created',
+  LastChange = 'lastChange'
+}
+
+export enum SearchQuerySortDirection {
+  Ascending = 'asc', Descending = 'desc'
+}
+
 export interface SearchQuery {
   contains?: string[];
   tags?: string[];
@@ -51,6 +61,8 @@ export interface SearchQuery {
   childs?: string[];
   kind?: DataItemKind;
   all?: boolean;
+  sortColumn?: SearchQuerySortColumn;
+  sortDirection?: SearchQuerySortDirection;
 }
 
 export interface WorkSpace {

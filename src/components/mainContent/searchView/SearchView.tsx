@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { IconName, InputGroup } from '@blueprintjs/core';
+import { Button, IconName, InputGroup, Popover } from '@blueprintjs/core';
 import { AutoSizer, Grid } from 'react-virtualized';
-import { DataItem, SearchQuery } from '../../../types';
+import { DataItem, SearchQuery, SearchQuerySortDirection } from '../../../types';
 import { PageHeader } from '../../common/PageHeader';
 import { useEffect, useRef, useState } from 'react';
 import { useDataSearch } from '../../../datasource/useDataSearch';
@@ -9,6 +9,7 @@ import { searchViewCellDimensions } from './searchViewCellDimensions';
 import { SearchViewCard } from './SearchViewCard';
 import { PageContainer } from '../../common/PageContainer';
 import { SearchInput } from './SearchInput';
+import { SearchSortingMenu } from './SearchSortingMenu';
 
 export const SearchView: React.FC<{
   title: string,
@@ -35,6 +36,23 @@ export const SearchView: React.FC<{
         iconColor={props.iconColor}
         lowerContent={(
           <SearchInput onChangeSearchQuery={setUserSearch} />
+        )}
+        rightContent={(
+          <Popover
+            content={(
+              <SearchSortingMenu
+                searchQuery={hiddenSearch}
+                onChange={setHiddenSearch}
+              />
+            )}
+          >
+            <Button
+              icon={searchQuery.sortDirection === SearchQuerySortDirection.Ascending ? 'sort-asc' : 'sort-desc'}
+              outlined
+            >
+              Sort Items
+            </Button>
+          </Popover>
         )}
       />
     )}>

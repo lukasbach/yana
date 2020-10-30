@@ -15,6 +15,9 @@ import { TrashItems } from '../pages/TrashItems';
 import { pages } from '../../pages';
 import { ReactNode } from 'react';
 import { MediaView } from './MediaView';
+import { Button, NonIdealState } from '@blueprintjs/core';
+import { InternalTag } from '../../datasource/InternalTag';
+import { DataItemKind } from '../../types';
 
 const logger = LogService.getLogger('MainContainer');
 
@@ -49,6 +52,38 @@ export const MainContainer: React.FC<{}> = props => {
       return <>Unknown data type</>;
     }
   } else {
-    return <>Invalid tab</>;
+    return (
+      <NonIdealState
+        icon={'home'}
+        title="Welcome to Yana!"
+        description="It looks like you don't have any tabs open."
+        action={(
+          <>
+            <Button
+              icon={'home'} minimal
+              onClick={() => mainContent.newTab(PageIndex.Home)}
+            >
+              See recent notes
+            </Button>
+            <Button
+              icon={'plus'} minimal
+              onClick={() => {
+                dataInterface.createDataItem({
+                  name: 'New Draft',
+                  tags: [InternalTag.Draft],
+                  kind: DataItemKind.NoteItem,
+                  childIds: [],
+                  lastChange: new Date().getTime(),
+                  created: new Date().getTime(),
+                  noteType: 'atlaskit-editor-note'
+                } as any).then(item => mainContent.newTab(item));
+              }}
+            >
+              New draft
+            </Button>
+          </>
+        )}
+      />
+    );
   }
 };
