@@ -25,23 +25,23 @@ jobs:
         - dir
         - dir out
         - yarn release -- --win
-    - stage: Build & Deploy Mac
-      os: osx
-      if: tag IS present
-      script:
-        - yarn build
-        - dir
-        - dir out
-        - yarn release -- --mac
-    - stage: Build & Deploy Linux
-      os: linux
-      dist: trusty
-      if: tag IS present
-      script:
-        - yarn build
-        - dir
-        - dir out
-        - yarn release
+#    - stage: Build & Deploy Mac
+#      os: osx
+#      if: tag IS present
+#      script:
+#        - yarn build
+#        - dir
+#        - dir out
+#        - yarn release -- --mac
+#    - stage: Build & Deploy Linux
+#      os: linux
+#      dist: trusty
+#      if: tag IS present
+#      script:
+#        - yarn build
+#        - dir
+#        - dir out
+#        - yarn release
 
 # deploy:
 #   provider: releases

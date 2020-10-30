@@ -1,6 +1,6 @@
 {
   "name": "retypetron-starter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Minimalistic React + TypeScript + Electron Boilerplate. Nothing more.",
   "main": "app/electron-main.js",
   "scripts": {
