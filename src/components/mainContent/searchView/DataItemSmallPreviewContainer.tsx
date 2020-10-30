@@ -17,13 +17,10 @@ const containerStyle = cxs({
   }
 })
 
-// TODO might be very inefficient in virtualized list because this item gets dismounted and remounted when
-// TODO being removed and added into viewport, causing the content to be reloaded every time.
-export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<any> }> = props => {
+export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<any>, noteItemContent?: object }> = props => {
   const editor = EditorRegistry.Instance.getEditorWithId(props.noteItem.noteType);
-  const noteContent = useDataItemContent(editor && editor.smallPreviewComponent ? props.noteItem.id : undefined);
 
-  if (!editor || !editor.smallPreviewComponent || !noteContent) {
+  if (!editor || !editor.smallPreviewComponent || !props.noteItemContent) {
     return null;
   }
 
@@ -31,7 +28,7 @@ export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<an
 
   return (
     <div className={containerStyle}>
-      <PreviewComponent item={props.noteItem} content={noteContent} />
+      <PreviewComponent item={props.noteItem} content={props.noteItemContent} />
     </div>
   );
 };

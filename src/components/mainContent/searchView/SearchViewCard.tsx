@@ -61,24 +61,14 @@ export const SearchViewCard: React.FC<{
   dataItem: DataItem,
   additionalLeftMargin: number,
   onClick?: () => void,
-}> = ({ cellProps, dataItem, additionalLeftMargin, onClick }) => {
+  preview?: string | object,
+}> = ({ cellProps, dataItem, additionalLeftMargin, onClick, preview }) => {
   const mainContent = useMainContentContext();
   const dataInterface = useDataInterface();
   const contextMenuProps = useContextMenu(<DataItemContextMenu item={dataItem} renderer={Bp3MenuRenderer} mainContent={mainContent} dataInterface={dataInterface} />);
-  const [thumbnail, setThumbnail] = useState<string | undefined>();
 
-  console.log(thumbnail)
-
-
-  useAsyncEffect(async () => {
-    console.log(dataItem, isMediaItem(dataItem))
-    if (isMediaItem(dataItem) && dataItem.hasThumbnail) {
-      setThumbnail(await dataInterface.loadMediaItemContentThumbnailAsPath(dataItem.id));
-      console.log(await dataInterface.loadMediaItemContentThumbnailAsPath(dataItem.id), thumbnail)
-    } else {
-      setThumbnail(undefined);
-    }
-  }, [dataItem.id]);
+  const thumbnail = typeof preview === 'string' ? preview : undefined;
+  const noteItemContent = typeof preview === 'object' ? preview : undefined;
 
   return (
     <div
@@ -98,7 +88,7 @@ export const SearchViewCard: React.FC<{
           </h4>
         </div>
         <div className={styles.cardMiddle} style={{ backgroundImage: thumbnail && `url("file:///${thumbnail.replace(/\\/g, '/')}")` }}>
-          { isNoteItem(dataItem) && <DataItemSmallPreviewContainer noteItem={dataItem} /> }
+          { isNoteItem(dataItem) && <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} /> }
         </div>
         <div className={styles.cardFooter}>
           { ago(new Date(dataItem.lastChange)) }

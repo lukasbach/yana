@@ -10,6 +10,7 @@ import { SearchViewCard } from './SearchViewCard';
 import { PageContainer } from '../../common/PageContainer';
 import { SearchInput } from './SearchInput';
 import { SearchSortingMenu } from './SearchSortingMenu';
+import { useDataItemPreviews } from '../../../datasource/useDataItemPreviews';
 
 export const SearchView: React.FC<{
   title: string,
@@ -24,6 +25,8 @@ export const SearchView: React.FC<{
   // const [searchQuery, setSearchQuery] = useState<SearchQuery>({ ...props.hiddenSearch, ...props.defaultSearch });
   const searchQuery = { ...hiddenSearch, ...userSearch };
   const items = useDataSearch(Object.keys(searchQuery).length === 0 ? { all: true } : searchQuery);
+  const previews = useDataItemPreviews(items);
+  // TODO currently, all previews are loaded at once. Use Grid.onSectionRendered() to only load previews when they enter the viewport
 
   useEffect(() => setHiddenSearch(q => ({...q, ...props.hiddenSearch})), [props.hiddenSearch]);
   useEffect(() => setUserSearch(q => ({...q, ...props.defaultSearch})), [props.defaultSearch]);
@@ -67,13 +70,15 @@ export const SearchView: React.FC<{
               cellRenderer={cellProps => {
                 const itemId = cellProps.rowIndex * Math.floor(width / searchViewCellDimensions.cellWidth) + cellProps.columnIndex;
                 if (itemId >= items.length) return null;
+                const item = items[itemId];
 
                 return (
                   <SearchViewCard
                     cellProps={cellProps}
-                    dataItem={items[itemId]}
+                    dataItem={item}
                     additionalLeftMargin={(width - columnCount * searchViewCellDimensions.cellWidth) / 2}
-                    onClick={props.onClickItem ? (() => props.onClickItem?.(items[itemId])) : undefined}
+                    onClick={props.onClickItem ? (() => props.onClickItem?.(item)) : undefined}
+                    preview={previews[item.id]}
                   />
                 );
               }}
