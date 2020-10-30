@@ -5,6 +5,8 @@ import { AppDataExportService } from './AppDataExportService';
 import { LogService } from '../common/LogService';
 import path from 'path';
 import { autoUpdater } from "electron-updater"
+import { app, ipcMain } from 'electron';
+import { IpcChannel } from '../IpcChannel';
 
 const logger = LogService.getLogger('AutoUpdate');
 
@@ -14,6 +16,8 @@ export class AutoUpdate {
   private appData!: AppData;
 
   constructor() {
+    autoUpdater.autoInstallOnAppQuit = false;
+    autoUpdater.autoDownload = false;
   }
 
   async load() {
@@ -27,27 +31,43 @@ export class AutoUpdate {
 
   async runAutoUpdateIfSettingsSet() {
     if (this.shouldAutoUpdate) {
+      const check = await autoUpdater.checkForUpdates();
+      check.updateInfo.files
       await this.runUpdate();
     }
   }
 
   async runUpdate() {
-    if (this.shouldBackupBefore) {
-      for (const ws of this.appData.workspaces) {
-        const dest = path.join(this.appData.settings.autoBackupLocation, `backup_before_update__${Date.now()}.zip`);
-        logger.log(`Backing up ${ws.name} to ${dest}`);
-        await AppDataExportService.exportTo(dest, ws, logger.log);
-        logger.log('Finished backing up ', [ws.name]);
-      }
-    }
+    autoUpdater.once('update-available', async () => {
+      logger.log('Update is available. Initiate update.');
 
-    logger.log('Starting update.');
-    autoUpdater.logger = {
-      info: msg => logger.log(JSON.stringify(msg)),
-      warn: msg => logger.warn(JSON.stringify(msg)),
-      error: msg => logger.error(JSON.stringify(msg)),
-      debug: msg => logger.debug(JSON.stringify(msg)),
-    };
-    await autoUpdater.checkForUpdatesAndNotify()
+      if (this.shouldBackupBefore) {
+        for (const ws of this.appData.workspaces) {
+          const dest = path.join(this.appData.settings.autoBackupLocation, `backup_before_update__${Date.now()}.zip`);
+          logger.log(`Backing up ${ws.name} to ${dest}`);
+          await AppDataExportService.exportTo(dest, ws, logger.log);
+          logger.log('Finished backing up ', [ws.name]);
+        }
+      }
+
+      logger.log('Starting update.');
+      autoUpdater.logger = {
+        info: msg => logger.log(JSON.stringify(msg)),
+        warn: msg => logger.warn(JSON.stringify(msg)),
+        error: msg => logger.error(JSON.stringify(msg)),
+        debug: msg => logger.debug(JSON.stringify(msg)),
+      };
+      await autoUpdater.checkForUpdatesAndNotify()
+      logger.log('Done with checkForUpdatesAndNotify().');
+    });
+
+    autoUpdater.once('update-downloaded', async () => {
+      logger.log('Update has finished downloading');
+      ipcMain.once(IpcChannel.ConfirmQuit, e => {
+        logger.log('App has confirmed quit. Now reinstalling.');
+        autoUpdater.quitAndInstall();
+      });
+      ipcMain.emit(IpcChannel.InitiateQuit);
+    });
   }
 }
