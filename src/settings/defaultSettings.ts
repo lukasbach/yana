@@ -1,6 +1,7 @@
 import { SettingsObject, SideBarItemAction } from './types';
 import path from "path";
 import { remote } from "electron";
+import { getElectronPath } from '../utils';
 
 export const defaultSettings: SettingsObject = {
   editorAtlassianAdvancedTables: true,
@@ -11,7 +12,7 @@ export const defaultSettings: SettingsObject = {
   editorMonacoTabSize: 4,
   editorMonacoTheme: 'vs',
   editorMonacoWordWrap: 'off',
-  autoBackupLocation: path.join(remote.app.getPath('appData'), 'yana', 'backup'),
+  autoBackupLocation: path.join(getElectronPath('appData'), 'yana', 'backup'),
   autoBackupActive: true,
   autoBackupCount: 3,
   autoBackupIncludeMedia: true,

@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Button, Classes, Dialog, FormGroup, InputGroup } from '@blueprintjs/core';
 import { useState } from 'react';
 import path from "path";
-import { remote } from "electron";
 import { useAppData } from '../../appdata/AppDataProvider';
+import { getElectronPath } from '../../utils';
 
 export const CreateWorkspaceDialog: React.FC<{
   isOpen: boolean,
@@ -12,7 +12,7 @@ export const CreateWorkspaceDialog: React.FC<{
   const appData = useAppData();
   const [createWorkspaceName, setCreateWorkspaceName] = useState('New Workspace');
   const [createWorkspacePath, setCreateWorkspacePath] = useState(
-    path.join(remote.app.getPath('home'), 'yana-workspace')
+    path.join(getElectronPath('home'), 'yana-workspace')
   );
 
   return (

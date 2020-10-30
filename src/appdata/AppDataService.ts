@@ -4,6 +4,7 @@ import * as path from 'path';
 import { AppData } from '../types';
 import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { defaultSettings } from '../settings/defaultSettings';
+import { getElectronPath } from '../utils';
 
 const fs = fsLib.promises;
 
@@ -15,12 +16,12 @@ export class AppDataService {
   constructor() {}
 
   private getAppDataFile() {
-    const userDataFolder = app.getPath('userData');
+    const userDataFolder = getElectronPath('userData');
     return path.join(userDataFolder, APPDATA_FILE);
   }
 
   private async init() {
-    const userDataFolder = app.getPath('userData');
+    const userDataFolder = getElectronPath('userData');
     if (!fsLib.existsSync(userDataFolder)) {
       await fs.mkdir(userDataFolder);
     }

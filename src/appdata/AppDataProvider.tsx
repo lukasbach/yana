@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { AppData, WorkSpace } from '../types';
 import { remote } from 'electron';
 import path from 'path';
-import { useAsyncEffect } from '../utils';
+import { getElectronPath, useAsyncEffect } from '../utils';
 import * as fsLib from 'fs';
 import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { initializeWorkspace } from './initializeWorkspace';
@@ -15,7 +15,7 @@ import { AutoBackupService } from './AutoBackupService';
 
 const fs = fsLib.promises;
 
-export const userDataFolder = path.join(remote.app.getPath('appData'), 'yana');
+export const userDataFolder = path.join(getElectronPath('appData'), 'yana');
 export const appDataFile = path.join(userDataFolder, 'workspaces.json');
 
 console.log('AppDataFile located at', appDataFile);

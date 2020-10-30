@@ -5,14 +5,14 @@ import { remote } from "electron";
 import path from 'path';
 import fs from 'fs';
 import rimraf from 'rimraf';
-import { isMediaItem, isNoteItem } from '../utils';
+import { getElectronPath, isMediaItem, isNoteItem } from '../utils';
 import unzipper from 'unzipper';
 import { AppDataContextValue } from './AppDataProvider';
 import { EditorRegistry } from '../editors/EditorRegistry';
 
 export class AppDataImportService {
   public static async import(sourcePath: string, name: string, newWorkspaceFolder: string, appDataContext: AppDataContextValue, onUpdate: (message: string) => void) {
-    const folder = path.resolve(remote.app.getPath('temp'), 'yana-import');
+    const folder = path.resolve(getElectronPath('temp'), 'yana-import');
 
     onUpdate('Clearing temporary folder');
     await new Promise(r => rimraf(folder, r));

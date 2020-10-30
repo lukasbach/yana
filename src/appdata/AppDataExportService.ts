@@ -5,12 +5,12 @@ import { remote } from "electron";
 import path from 'path';
 import fs from 'fs';
 import rimraf from 'rimraf';
-import { isMediaItem, isNoteItem } from '../utils';
+import { getElectronPath, isMediaItem, isNoteItem } from '../utils';
 import archiver from 'archiver';
 
 export class AppDataExportService {
   public static async exportTo(destination: string, workspace: WorkSpace, onUpdate: (message: string) => void) {
-    const folder = path.resolve(remote.app.getPath('temp'), 'yana-export', Math.random().toString(36).substring(14));
+    const folder = path.resolve(getElectronPath('temp'), 'yana-export', Math.random().toString(36).substring(14));
     onUpdate(`Temporary folder: ${folder}`);
 
     const mediaItems: { [key: string]: string } = {};

@@ -1,12 +1,5 @@
 language: node_js
 node_js: 12
-before_install:
-- export YARN_GPG=no
-- npm install -g yarn
-script:
-- yarn build
-- dir
-- dir out
 
 cache:
   directories:
@@ -20,11 +13,14 @@ jobs:
     - stage: Build & Deploy Windows
       os: windows
       if: tag IS present
+      env:
+        - YARN_GPG=no
+      before_install:
+        - npm install -g yarn
       script:
         - yarn build
         - dir
         - dir out
-        - yarn release -- --win
 #    - stage: Build & Deploy Mac
 #      os: osx
 #      if: tag IS present
