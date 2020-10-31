@@ -5,6 +5,7 @@ import { EditorRegistry } from '../../editors/EditorRegistry';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { LogService } from '../../common/LogService';
 import { useSettings } from '../../appdata/AppDataProvider';
+import { useCloseEvent } from '../../common/useCloseEvent';
 
 const logger = LogService.getLogger('EditorContainer');
 
@@ -70,6 +71,8 @@ export const EditorContainer: React.FC<{
       logger.error("Not saving editor contents, no content retrieved", [], {currentNote, content});
     }
   };
+
+  useCloseEvent(save, [currentNote.id]);
 
   // useEffect(() => {
   //   (async () => {
