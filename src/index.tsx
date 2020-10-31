@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { LayoutContainer } from './components/layout/LayoutContainer';
 import { AppDataProvider } from './appdata/AppDataProvider';
 import { DataInterfaceProvider } from './datasource/DataInterfaceContext';
-import { defaultTheme, ThemeContext } from './common/theming';
+import { defaultTheme, ThemeContext, ThemeProvider } from './common/theming';
 import { MainContentContextProvider } from './components/mainContent/context';
 import { Alerter } from './components/Alerter';
 import { DropZoneContainer } from './components/dropZone/DropZoneContainer';
@@ -48,8 +48,8 @@ remote.getCurrentWebContents().on('context-menu', (event, params) => {
 
 // TODO closing a open tab removes its file contents, because the editor isnt mounted anymore and the content getter returns {}, which overwrites the previous content
 ReactDOM.render(
-  <ThemeContext.Provider value={defaultTheme}>
-    <AppDataProvider>
+  <AppDataProvider>
+    <ThemeProvider>
       <DevToolsContextProvider>
         <DataInterfaceProvider>
           <MainContentContextProvider>
@@ -59,7 +59,7 @@ ReactDOM.render(
           </MainContentContextProvider>
         </DataInterfaceProvider>
       </DevToolsContextProvider>
-    </AppDataProvider>
-  </ThemeContext.Provider>,
+    </ThemeProvider>
+  </AppDataProvider>,
   document.getElementById('root')
 );

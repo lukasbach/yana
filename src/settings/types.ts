@@ -34,4 +34,9 @@ export interface SettingsObject {
   editorMonacoWordWrap: string,
   editorAtlassianAdvancedTables: boolean,
   devToolsOpen: boolean,
+  themePrimaryColor: string,
+  themeSidebarColor: string,
+  themeSidebarHoverColor: string,
+  themeSidebarTextColor: string,
+  themeTopbarColor: string,
 }

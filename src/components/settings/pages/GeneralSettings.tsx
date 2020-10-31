@@ -12,8 +12,11 @@ import { PageIndex } from '../../../PageIndex';
 import { remote } from "electron";
 import { AppDataExportService } from '../../../appdata/AppDataExportService';
 import { Button } from '@blueprintjs/core';
-import { useAppData } from '../../../appdata/AppDataProvider';
+import { useAppData, useSettings } from '../../../appdata/AppDataProvider';
 import { SettingsFilesystemPathInput } from '../layout/SettingsFilesystemPathInput';
+import { SettingsColorInput } from '../layout/SettingsColorInput';
+import { useSettingsPageContext } from '../SettingsContext';
+import { defaultTheme } from '../../../common/theming';
 
 const sidebarActions = [
   { value: SideBarItemAction.OpenInNewTab, label: 'Open in new Tab' },
@@ -24,6 +27,7 @@ const sidebarActions = [
 export const GeneralSettings: React.FC<{}> = props => {
   const mainContent = useMainContentContext();
   const app = useAppData();
+  const settings = useSettingsPageContext();
 
   return (
     <div>
@@ -146,6 +150,42 @@ export const GeneralSettings: React.FC<{}> = props => {
         <SettingsSwitchInput
           settingsKey={'autoUpdateAppBackupActive'}
           label={"Automatically backup workspaces before updating"}
+        />
+      </SettingsSection>
+
+      <SettingsSection title="Personalization">
+        <SettingsColorInput
+          settingsKey={'themePrimaryColor'}
+          label={"Primary Color"}
+        />
+        <SettingsColorInput
+          settingsKey={'themeSidebarColor'}
+          label={"Sidebar Background Color"}
+        />
+        <SettingsColorInput
+          settingsKey={'themeSidebarTextColor'}
+          label={"Sidebar Text Color"}
+        />
+        <SettingsColorInput
+          settingsKey={'themeSidebarHoverColor'}
+          label={"Sidebar Hovering Color"}
+        />
+        <SettingsColorInput
+          settingsKey={'themeTopbarColor'}
+          label={"Application Bar Color"}
+        />
+        <SettingsClickable
+          title="Reset to default Theme"
+          icon={'reset'}
+          onClick={() => {
+            settings.changeSettings({
+              themePrimaryColor: defaultTheme.primaryColor,
+              themeSidebarColor: defaultTheme.sidebarColor,
+              themeSidebarTextColor: defaultTheme.sidebarTextColor,
+              themeSidebarHoverColor: defaultTheme.sidebarHoverColor,
+              themeTopbarColor: defaultTheme.topBarColor,
+            })
+          }}
         />
       </SettingsSection>
 

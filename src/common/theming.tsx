@@ -1,5 +1,6 @@
 import Color from 'color';
 import React, { useContext } from 'react';
+import { useSettings } from '../appdata/AppDataProvider';
 
 export interface Theme {
   primaryColor: string;
@@ -22,3 +23,18 @@ export const defaultTheme: Theme = {
 export const ThemeContext = React.createContext(defaultTheme);
 
 export const useTheme = () => useContext(ThemeContext);
+
+export const ThemeProvider: React.FC = props => {
+  const settings = useSettings();
+  return (
+    <ThemeContext.Provider value={{
+      primaryColor: settings.themePrimaryColor,
+      sidebarColor: settings.themeSidebarColor,
+      sidebarTextColor: settings.themeSidebarTextColor,
+      sidebarHoverColor: settings.themeSidebarHoverColor,
+      topBarColor: settings.themeTopbarColor,
+    }}>
+      { props.children }
+    </ThemeContext.Provider>
+  );
+}
