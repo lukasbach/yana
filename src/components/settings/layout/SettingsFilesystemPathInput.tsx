@@ -43,7 +43,7 @@ export const SettingsFilesystemPathInput: React.FC<{
             settings.changeSettings({ [props.settingsKey]: result.filePaths[0] });
           }}
         >
-          Choose&nbsp;path...
+          &nbsp;&nbsp;&nbsp;Choose&nbsp;path...
         </Button>
       </ControlGroup>
     </FormGroup>

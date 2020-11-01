@@ -12,13 +12,10 @@ import { Alerter } from '../components/Alerter';
 import { defaultSettings } from '../settings/defaultSettings';
 import { SettingsObject } from '../settings/types';
 import { AutoBackupService } from './AutoBackupService';
+import { CreateWorkspaceWindow } from '../components/appdata/CreateWorkspaceWindow';
+import { appDataFile, userDataFolder } from './paths';
 
 const fs = fsLib.promises;
-
-export const userDataFolder = path.join(getElectronPath('appData'), 'yana');
-export const appDataFile = path.join(userDataFolder, 'workspaces.json');
-
-console.log('AppDataFile located at', appDataFile);
 
 export interface AppDataContextValue extends AppData {
   createWorkSpace: (name: string, path: string) => Promise<void>;
@@ -27,6 +24,7 @@ export interface AppDataContextValue extends AppData {
   deleteWorkspace(workspace: WorkSpace): void;
   saveSettings(settings: SettingsObject): Promise<void>;
   lastAutoBackup: number;
+  openWorkspaceCreationWindow: () => void;
 }
 
 export const AppDataContext = React.createContext<AppDataContextValue>(null as any);
@@ -35,10 +33,13 @@ export const useAppData = () => useContext(AppDataContext);
 export const useSettings = () => useAppData().settings;
 
 export const AppDataProvider: React.FC = props => {
+  const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
   const [appData, setAppData] = useState<AppData>({ workspaces: [], settings: defaultSettings });
   const [currentWorkspace, setCurrentWorkspace] = useState<WorkSpace>(appData.workspaces[0]);
   const [autoBackup, setAutoBackup] = useState<undefined | AutoBackupService>();
   const [lastAutoBackup, setLastAutoBackup] = useState(0);
+
+  const isInInitialCreationScreen = !appData.workspaces[0];
 
   useAsyncEffect(async () => {
     if (!fsLib.existsSync(userDataFolder)) {
@@ -66,57 +67,70 @@ export const AppDataProvider: React.FC = props => {
     setAutoBackup(autoBackupService);
   }, []);
 
-  return (
-    <AppDataContext.Provider
-      value={{
+  const ctx: AppDataContextValue = {
+    ...appData,
+    lastAutoBackup,
+    currentWorkspace: currentWorkspace,
+    setWorkSpace: setCurrentWorkspace,
+    openWorkspaceCreationWindow: () => setIsCreatingWorkspace(true),
+    createWorkSpace: async (name, path) => {
+      const workspace = await initializeWorkspace(name, path);
+
+      const newAppData: AppData = {
         ...appData,
-        currentWorkspace: currentWorkspace,
-        setWorkSpace: setCurrentWorkspace,
-        lastAutoBackup,
-        createWorkSpace: async (name, path) => {
-          const workspace = await initializeWorkspace(name, path);
+        workspaces: [
+          ...appData.workspaces,
+          workspace,
+        ],
+      };
 
-          const newAppData: AppData = {
-            ...appData,
-            workspaces: [
-              ...appData.workspaces,
-              workspace,
-            ],
-          };
+      fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+      setAppData(newAppData);
+      autoBackup?.addWorkspace(workspace);
+      setCurrentWorkspace(workspace);
+    },
+    deleteWorkspace(workspace: WorkSpace) {
+      rimraf(workspace.dataSourceOptions.sourcePath, error => {
+        if (error) {
+          Alerter.Instance.alert({ content: 'Error: ' + error.message });
+        }
 
-          fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
-          setAppData(newAppData);
-          autoBackup?.addWorkspace(workspace);
-        },
-        deleteWorkspace(workspace: WorkSpace) {
-          rimraf(workspace.dataSourceOptions.sourcePath, error => {
-            if (error) {
-              Alerter.Instance.alert({ content: 'Error: ' + error.message });
-            }
+        const newAppData: AppData = {
+          ...appData,
+          workspaces: appData.workspaces.filter(w => w.name !== workspace.name),
+        };
 
-            const newAppData: AppData = {
-              ...appData,
-              workspaces: appData.workspaces.filter(w => w.name !== workspace.name),
-            };
+        fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+        setAppData(newAppData);
+        autoBackup?.removeWorkspace(workspace);
+      });
+    },
+    saveSettings: async (settings: Partial<SettingsObject>) => {
+      const newAppData: AppData = {
+        ...appData,
+        settings: { ...defaultSettings, ...appData.settings, ...settings }
+      };
 
-            fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
-            setAppData(newAppData);
-            autoBackup?.removeWorkspace(workspace);
-          });
-        },
-        saveSettings: async (settings: Partial<SettingsObject>) => {
-          const newAppData: AppData = {
-            ...appData,
-            settings: { ...defaultSettings, ...appData.settings, ...settings }
-          };
+      fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+      setAppData(newAppData);
+    },
+  };
 
-          fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
-          setAppData(newAppData);
-        },
-      }}
-    >
+  return (
+    <AppDataContext.Provider value={ctx}>
       <div key={currentWorkspace?.dataSourceOptions?.sourcePath || '__'} style={{ height: '100%' }}>
-        {props.children}
+        { isCreatingWorkspace || isInInitialCreationScreen ? (
+          <CreateWorkspaceWindow
+            onClose={() => isInInitialCreationScreen ? remote.getCurrentWindow().close() : setIsCreatingWorkspace(false)}
+            onCreate={(name, wsPath) => {
+              ctx.createWorkSpace(name, wsPath);
+              setIsCreatingWorkspace(false);
+            }}
+            onImported={() => {
+              setCurrentWorkspace(appData.workspaces[0]);
+            }}
+          />
+        ) : props.children }
       </div>
     </AppDataContext.Provider>
   );

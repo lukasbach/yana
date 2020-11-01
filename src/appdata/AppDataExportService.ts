@@ -1,7 +1,6 @@
 import { DataInterface } from '../datasource/DataInterface';
 import { WorkSpace } from '../types';
 import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
-import { remote } from "electron";
 import path from 'path';
 import fs from 'fs';
 import rimraf from 'rimraf';

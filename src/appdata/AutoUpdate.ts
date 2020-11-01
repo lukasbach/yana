@@ -1,5 +1,5 @@
 import fs from "fs";
-import { appDataFile, userDataFolder } from './AppDataProvider';
+import { appDataFile, userDataFolder } from './paths';
 import { AppData } from '../types';
 import { AppDataExportService } from './AppDataExportService';
 import { LogService } from '../common/LogService';

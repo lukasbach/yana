@@ -4,8 +4,6 @@ import { PageHeader } from '../common/PageHeader';
 import { Button, Tooltip } from '@blueprintjs/core';
 import { DetailedListContainer } from '../common/DetailedListContainer';
 import { DetailedListItem } from '../common/DetailedListItem';
-import { CreateWorkspaceDialog } from '../appdata/CreateWorkspaceDialog';
-import { useState } from 'react';
 import { useAppData } from '../../appdata/AppDataProvider';
 import { remote } from "electron";
 import { AppDataExportService } from '../../appdata/AppDataExportService';
@@ -14,7 +12,6 @@ import { AppDataImportService } from '../../appdata/AppDataImportService';
 
 export const ManageWorkspaces: React.FC<{}> = props => {
   const appData = useAppData();
-  const [isCreationDialogOpen, setIsCreationDialogOpen] = useState(false);
 
   return (
     <PageContainer header={(
@@ -24,73 +21,18 @@ export const ManageWorkspaces: React.FC<{}> = props => {
         rightContent={(
           <>
             <Button outlined onClick={async () => {
-              const zipResult = await remote.dialog.showOpenDialog({
-                buttonLabel: 'Import',
-                properties: [],
-                title: 'Choose a exported workspace',
-              });
-
-              if (zipResult.canceled || !zipResult.filePaths[0]) return;
-
-              const workspaceName: string | undefined = await new Promise(res => {
-                Alerter.Instance.alert({
-                  confirmButtonText: 'Okay',
-                  cancelButtonText: 'Cancel',
-                  content: 'Choose a name for the imported workspace',
-                  canOutsideClickCancel: true,
-                  canEscapeKeyCancel: true,
-                  prompt: {
-                    type: 'string',
-                    onConfirmText: value => res(value)
-                  }
-                });
-              });
-
-              if (!workspaceName) return;
-
-              const destResult = await remote.dialog.showOpenDialog({
-                buttonLabel: 'Set',
-                properties: ['createDirectory', 'openDirectory'],
-                title: 'Choose a location where to store the workspace at',
-              });
-
-              if (destResult.canceled || !destResult.filePaths[0]) return;
-
-              const confirmed: boolean = await new Promise(res => {
-                Alerter.Instance.alert({
-                  confirmButtonText: 'Okay',
-                  cancelButtonText: 'Cancel',
-                  content: <>Do you want to import the workspace into the folder
-                    <pre>{ destResult.filePaths[0] }</pre>? The files will be spread
-                    directly into this folder. You cannot change this later!</>,
-                  canOutsideClickCancel: true,
-                  canEscapeKeyCancel: true,
-                  onConfirm: () => res(true),
-                  onCancel: () => res(false),
-                });
-              });
-
-              if (!confirmed) return;
-
-              await AppDataImportService.import(
-                zipResult.filePaths[0],
-                workspaceName,
-                destResult.filePaths[0],
-                appData,
-                console.log
-              );
+              await AppDataImportService.initiateImportWizard(appData);
             }}>
               Import workspace
             </Button>
             {' '}
-            <Button intent="primary" onClick={() => setIsCreationDialogOpen(true)} outlined>
+            <Button intent="primary" onClick={() => appData.openWorkspaceCreationWindow()} outlined>
               Create new workspace
             </Button>
           </>
         )}
       />
     )}>
-      <CreateWorkspaceDialog isOpen={isCreationDialogOpen} onSetIsOpen={setIsCreationDialogOpen} />
       <DetailedListContainer>
         {
           appData.workspaces.map(workspace => (
