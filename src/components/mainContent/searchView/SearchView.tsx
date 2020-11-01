@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, IconName, InputGroup, Popover } from '@blueprintjs/core';
+import { Button, IconName, InputGroup, NonIdealState, Popover } from '@blueprintjs/core';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { DataItem, SearchQuery, SearchQuerySortDirection } from '../../../types';
 import { PageHeader } from '../../common/PageHeader';
@@ -84,7 +84,12 @@ export const SearchView: React.FC<{
               }}
               columnWidth={searchViewCellDimensions.cellWidth}
               columnCount={columnCount}
-              noContentRenderer={() => <>No Content</>}
+              noContentRenderer={() => (
+                <NonIdealState
+                  icon={'warning-sign'}
+                  title="No items found"
+                />
+              )}
               overscanColumnCount={2}
               overscanRowCount={4}
               rowHeight={searchViewCellDimensions.cellHeight}

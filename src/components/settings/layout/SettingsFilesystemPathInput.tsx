@@ -31,7 +31,6 @@ export const SettingsFilesystemPathInput: React.FC<{
         />
         <Button
           outlined
-          rightIcon="chevron-right"
           onClick={async () => {
             const result = await remote.dialog.showOpenDialog({
               defaultPath: settings.settings[props.settingsKey] as string,
@@ -43,7 +42,7 @@ export const SettingsFilesystemPathInput: React.FC<{
             settings.changeSettings({ [props.settingsKey]: result.filePaths[0] });
           }}
         >
-          &nbsp;&nbsp;&nbsp;Choose&nbsp;path...
+          &nbsp;&nbsp;&nbsp;Choose&nbsp;path...&nbsp;&nbsp;&nbsp;
         </Button>
       </ControlGroup>
     </FormGroup>

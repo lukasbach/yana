@@ -206,7 +206,6 @@ export const CreateWorkspaceWindow: React.FC<{
                   />
                   <Button
                     outlined
-                    rightIcon="chevron-right"
                     onClick={async () => {
                       const result = await remote.dialog.showOpenDialog({
                         defaultPath: createWorkspacePath,
@@ -218,7 +217,7 @@ export const CreateWorkspaceWindow: React.FC<{
                       setCreateWorkspacePath(result.filePaths[0]);
                     }}
                   >
-                    &nbsp;&nbsp;&nbsp;Choose&nbsp;path...
+                    &nbsp;&nbsp;&nbsp;Choose&nbsp;path...&nbsp;&nbsp;&nbsp;
                   </Button>
                 </ControlGroup>
               </FormGroup>
