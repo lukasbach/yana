@@ -11,6 +11,7 @@ import { GeneralSettings } from './pages/GeneralSettings';
 import { defaultSettings } from '../../settings/defaultSettings';
 import { EditorSettings } from './pages/EditorSettings';
 import { DevSettings } from './pages/DevSettings';
+import { remote, webFrame } from 'electron';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();

@@ -39,4 +39,5 @@ export const defaultSettings: SettingsObject = {
   themeSidebarHoverColor: defaultTheme.sidebarHoverColor,
   themeSidebarTextColor: defaultTheme.sidebarTextColor,
   themeTopbarColor: defaultTheme.topBarColor,
+  zoomFactor: 1,
 }

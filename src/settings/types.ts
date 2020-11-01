@@ -39,4 +39,5 @@ export interface SettingsObject {
   themeSidebarHoverColor: string,
   themeSidebarTextColor: string,
   themeTopbarColor: string,
+  zoomFactor: number,
 }

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { AppData, WorkSpace } from '../types';
-import { remote } from 'electron';
+import { remote, webFrame } from 'electron';
 import path from 'path';
 import { getElectronPath, useAsyncEffect } from '../utils';
 import * as fsLib from 'fs';
@@ -65,6 +65,8 @@ export const AppDataProvider: React.FC = props => {
     const autoBackupService = new AutoBackupService(appData.workspaces, appData.settings, setLastAutoBackup);
     await autoBackupService.load();
     setAutoBackup(autoBackupService);
+
+    webFrame.setZoomFactor(appData.settings.zoomFactor);
   }, []);
 
   const ctx: AppDataContextValue = {
@@ -113,6 +115,7 @@ export const AppDataProvider: React.FC = props => {
 
       fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
       setAppData(newAppData);
+      webFrame.setZoomFactor(newAppData.settings.zoomFactor);
     },
   };
 

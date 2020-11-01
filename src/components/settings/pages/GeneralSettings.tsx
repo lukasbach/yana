@@ -31,6 +31,16 @@ export const GeneralSettings: React.FC<{}> = props => {
 
   return (
     <div>
+      <SettingsSection title="General Settings">
+        <SettingsNumberInput
+          settingsKey={'zoomFactor'}
+          label="Zoom Factor"
+          step={.1}
+          min={.4}
+          max={5}
+        />
+      </SettingsSection>
+
       <SettingsSection title="Sidebar">
         <SettingsClickable
           title="General Sidebar Settings"
