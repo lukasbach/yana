@@ -9,7 +9,7 @@
     "buildResources": "./resources"
   },
   "win": {
-    "target": ["nsis", "msi", "zip"],
+    "target": ["nsis", "zip"],
     "publish": ["github"]
   },
   "linux": {
