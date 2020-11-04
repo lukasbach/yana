@@ -106,5 +106,7 @@ export class AppDataImportService {
         await di.storeMediaItemContent(item.id, path.join(folder, media[item.id]), { width: 300 });
       }
     }
+
+    await di.unload();
   }
 }

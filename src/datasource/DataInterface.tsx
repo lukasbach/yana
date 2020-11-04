@@ -51,18 +51,21 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async load() {
+    logger.log("load", [], {dataInterface: this});
     await this.dataSource.load();
     if (!await this.dataSource.getStructure('tags')) {
       await this.dataSource.storeStructure('tags', {});
     }
-    this.persistInterval = setInterval(() => this.dataSource.persist(), 10000) as unknown as number;
+    this.persistInterval = setInterval(() => this.persist(), 10000) as unknown as number;
   }
 
   public async reload() {
+    logger.log("reload", [], {dataInterface: this});
     await this.dataSource.reload();
   }
 
   public async unload() {
+    logger.log("unload", [], {dataInterface: this});
     await this.dataSource.unload();
     if (this.persistInterval) {
       clearInterval(this.persistInterval);

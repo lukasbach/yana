@@ -204,7 +204,9 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   }
 
   public async persist() {
-    fsLib.writeFileSync(this.resolvePath(STRUCTURE_FILE), JSON.stringify(this.structure, null, 1));
+    const data = JSON.stringify(this.structure, null, 1);
+    logger.log("Persisting to", [this.resolvePath(STRUCTURE_FILE)], {data, structure: this.structure});
+    fsLib.writeFileSync(this.resolvePath(STRUCTURE_FILE), data);
   }
 
   public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {

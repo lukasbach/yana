@@ -6,6 +6,7 @@ import { DataInterface } from './DataInterface';
 import { useAsyncEffect } from '../utils';
 import { EditorRegistry } from '../editors/EditorRegistry';
 import { useDevTools } from '../components/devtools/DevToolsContextProvider';
+import { useCloseEvent } from '../common/useCloseEvent';
 
 export const useDataInterface = () => useContext(DataInterfaceContext);
 export const DataInterfaceContext = React.createContext<DataInterface>(null as any);
@@ -34,6 +35,12 @@ export const DataInterfaceProvider: React.FC = props => {
   useEffect(() => {
     dataInterface?.reload();
   }, [appData.lastAutoBackup]);
+
+  useCloseEvent(async () => {
+    if (dataInterface) {
+      await dataInterface.persist();
+    }
+  }, [dataInterface])
 
   return (
     <DataInterfaceContext.Provider value={ dataInterface! }>

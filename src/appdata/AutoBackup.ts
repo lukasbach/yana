@@ -10,7 +10,6 @@ import { LogService } from '../common/LogService';
 const logger = LogService.getLogger('AutoBackup');
 
 export class AutoBackup {
-  private dataInterface: DataInterface;
   private lastBackup: number = 0;
   private nextBackup: number = 0;
   private timer: number | undefined;
@@ -21,13 +20,14 @@ export class AutoBackup {
     private settings: SettingsObject,
     private queueBackup: (perform: () => Promise<any>) => void,
   ) {
-    this.dataInterface = new DataInterface(new LocalFileSystemDataSource(this.workspace.dataSourceOptions), null as any, 300);
     this.backupIdentifier = workspace.name.toLowerCase().replace(/\s/g, '_');
   }
 
   public async load() {
-    await this.dataInterface.load();
-    this.lastBackup = (await this.dataInterface.getStructure('backup'))?.lastBackup || 0;
+    const dataInterface = new DataInterface(new LocalFileSystemDataSource(this.workspace.dataSourceOptions), null as any, 300);
+    await dataInterface.load();
+    this.lastBackup = (await dataInterface.getStructure('backup'))?.lastBackup || 0;
+    await dataInterface.unload();
     this.nextBackup = this.lastBackup + this.settings.autoBackupInterval;
     this.scheduleNextBackup();
   }
@@ -36,7 +36,6 @@ export class AutoBackup {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    await this.dataInterface.unload();
   }
 
   private async performBackup() {
@@ -45,6 +44,9 @@ export class AutoBackup {
     }
 
     logger.log("Performing automatic backup for workspace", [this.workspace.name], {workspace: this.workspace});
+
+    const dataInterface = new DataInterface(new LocalFileSystemDataSource(this.workspace.dataSourceOptions), null as any, 300);
+    await dataInterface.load();
 
     const now = new Date();
     const dateIdentifier = `_${now.getTime()}__${now.getFullYear()}-${now.getMonth()}-${now.getDate()}_${now.getHours()}-${now.getMinutes()}-${now.getSeconds()}`;
@@ -61,8 +63,9 @@ export class AutoBackup {
 
     this.lastBackup = Date.now();
     this.nextBackup = this.lastBackup + this.settings.autoBackupInterval;
-    await this.dataInterface.storeStructure('backup', { lastBackup: this.lastBackup });
-    await this.dataInterface.persist();
+    await dataInterface.storeStructure('backup', { lastBackup: this.lastBackup });
+    await dataInterface.persist();
+    await dataInterface.unload();
     this.scheduleNextBackup();
   }
 
