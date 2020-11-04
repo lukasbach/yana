@@ -14,7 +14,7 @@ export class AutoUpdate {
   private appData!: AppData;
 
   constructor() {
-    autoUpdater.autoInstallOnAppQuit = false;
+    autoUpdater.autoInstallOnAppQuit = true;
     autoUpdater.autoDownload = false;
   }
 
@@ -29,9 +29,7 @@ export class AutoUpdate {
 
   async runAutoUpdateIfSettingsSet() {
     if (this.shouldAutoUpdate) {
-      const check = await autoUpdater.checkForUpdates();
-      check.updateInfo.files
-      await this.runUpdate();
+      await autoUpdater.checkForUpdates();
     }
   }
 
@@ -55,8 +53,17 @@ export class AutoUpdate {
         error: msg => logger.error(JSON.stringify(msg)),
         debug: msg => logger.debug(JSON.stringify(msg)),
       };
-      await autoUpdater.checkForUpdatesAndNotify()
+      await autoUpdater.downloadUpdate();
       logger.log('Done with checkForUpdatesAndNotify().');
     });
+
+    autoUpdater.once('update-not-available', async () => {
+      logger.log('No update available');
+    });
+
+    autoUpdater.on('update-downloaded', () => {
+      // Do nothing for now
+      // autoUpdater.quitAndInstall();
+    })
   }
 }
