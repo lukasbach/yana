@@ -7,9 +7,9 @@ import { DetailedListItem } from '../common/DetailedListItem';
 import { useAppData } from '../../appdata/AppDataProvider';
 import { remote } from "electron";
 import { AppDataExportService } from '../../appdata/AppDataExportService';
-import { Alerter } from '../Alerter';
-import { AppDataImportService } from '../../appdata/AppDataImportService';
 import { runRemoveWorkspaceWizard } from '../../appdata/runRemoveWorkspaceWizard';
+import { runImportWizard } from '../../appdata/runImportWizard';
+import { runAddWorkspaceWizard } from '../../appdata/runAddWorkspaceWizard';
 
 export const ManageWorkspaces: React.FC<{}> = props => {
   const appData = useAppData();
@@ -82,13 +82,13 @@ export const ManageWorkspaces: React.FC<{}> = props => {
           title="Import workspace"
           subtitle="Import a zipped workspace which you've exported from Yana before."
           icon="bring-data"
-          onClick={() => AppDataImportService.initiateImportWizard(appData)}
+          onClick={() => runImportWizard(appData)}
         />
         <DetailedListItem
           title="Add existing workspace"
           subtitle="Add a local workspace from your local drive. You can use this to add a workspace within a cloud folder that was created on another device."
           icon="new-link"
-          onClick={() => AppDataImportService.initiateAddWorkspaceWizard(appData)}
+          onClick={() => runAddWorkspaceWizard(appData)}
         />
       </DetailedListContainer>
     </PageContainer>

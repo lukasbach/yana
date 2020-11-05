@@ -8,7 +8,7 @@ import path from "path";
 import { getElectronPath } from '../../utils';
 import pkg from '../../../package.json';
 import { remote } from "electron";
-import { AppDataImportService } from '../../appdata/AppDataImportService';
+import { runImportWizard } from '../../appdata/runImportWizard';
 
 const styles = {
   container: cxs({
@@ -245,7 +245,7 @@ export const CreateWorkspaceWindow: React.FC<{
               <p>
                 You can also&nbsp;
                 <a href="#" onClick={async () => {
-                  await AppDataImportService.initiateImportWizard(appData);
+                  await runImportWizard(appData);
                   props.onImported();
                 }}>
                   import an existing workspace

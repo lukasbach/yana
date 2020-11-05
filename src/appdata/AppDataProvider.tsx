@@ -33,6 +33,7 @@ export const AppDataContext = React.createContext<AppDataContextValue>(null as a
 export const useAppData = () => useContext(AppDataContext);
 export const useSettings = () => useAppData().settings;
 
+// TODO redo AppDataService and encapsulate load/save calls in there, really redundant in this file!
 export const AppDataProvider: React.FC = props => {
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
   const [appData, setAppData] = useState<AppData>({ workspaces: [], settings: defaultSettings });
