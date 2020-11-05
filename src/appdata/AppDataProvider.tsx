@@ -45,7 +45,7 @@ export const AppDataProvider: React.FC = props => {
 
   useAsyncEffect(async () => {
     if (!fsLib.existsSync(userDataFolder)) {
-      fsLib.mkdirSync(userDataFolder);
+      await fs.mkdir(userDataFolder);
     }
 
     let appData: AppData = {
@@ -54,9 +54,9 @@ export const AppDataProvider: React.FC = props => {
     };
 
     if (!fsLib.existsSync(appDataFile)) {
-      fsLib.writeFileSync(appDataFile, JSON.stringify(appData));
+      await fs.writeFile(appDataFile, JSON.stringify(appData));
     } else {
-      appData = JSON.parse(fsLib.readFileSync(appDataFile, { encoding: 'utf8' }));
+      appData = JSON.parse(await fs.readFile(appDataFile, { encoding: 'utf8' }));
     }
 
     appData.settings = { ...defaultSettings, ...appData.settings };
@@ -94,7 +94,7 @@ export const AppDataProvider: React.FC = props => {
         ],
       };
 
-      fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+      await fs.writeFile(appDataFile, JSON.stringify(newAppData));
       setAppData(newAppData);
       autoBackup?.addWorkspace(workspace);
       setCurrentWorkspace(workspace);
@@ -110,7 +110,7 @@ export const AppDataProvider: React.FC = props => {
         ],
       };
 
-      fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+      await fs.writeFile(appDataFile, JSON.stringify(newAppData));
       setAppData(newAppData);
       autoBackup?.addWorkspace(workspace);
       setCurrentWorkspace(workspace);
@@ -133,7 +133,7 @@ export const AppDataProvider: React.FC = props => {
         workspaces: appData.workspaces.filter(w => w.name !== workspace.name),
       };
 
-      fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+      await fs.writeFile(appDataFile, JSON.stringify(newAppData));
       setAppData(newAppData);
       autoBackup?.removeWorkspace(workspace);
       setCurrentWorkspace(newAppData.workspaces[0]);
@@ -144,7 +144,7 @@ export const AppDataProvider: React.FC = props => {
         settings: { ...defaultSettings, ...appData.settings, ...settings }
       };
 
-      fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+      await fs.writeFile(appDataFile, JSON.stringify(newAppData));
       setAppData(newAppData);
       webFrame.setZoomFactor(newAppData.settings.zoomFactor);
     },

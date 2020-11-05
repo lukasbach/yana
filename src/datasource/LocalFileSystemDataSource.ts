@@ -59,18 +59,18 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     const mediaDataPath = path.join(sourcePath, MEDIA_DIR);
 
     if (!fsLib.existsSync(sourcePath)) {
-      fsLib.mkdirSync(sourcePath, { recursive: true });
+      await fs.mkdir(sourcePath, { recursive: true });
     }
 
     if (!fsLib.existsSync(noteDataPath)) {
-      fsLib.mkdirSync(noteDataPath, { recursive: true });
+      await fs.mkdir(noteDataPath, { recursive: true });
     }
 
     if (!fsLib.existsSync(mediaDataPath)) {
-      fsLib.mkdirSync(mediaDataPath, { recursive: true });
+      await fs.mkdir(mediaDataPath, { recursive: true });
     }
 
-    fsLib.writeFileSync(
+    await fs.writeFile(
       path.join(options.sourcePath, STRUCTURE_FILE),
       JSON.stringify({
         items: {}
@@ -79,7 +79,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   }
 
   public async load() {
-    this.structure = JSON.parse(fsLib.readFileSync(this.resolvePath(STRUCTURE_FILE), { encoding: UTF8 }));
+    this.structure = JSON.parse(await fs.readFile(this.resolvePath(STRUCTURE_FILE), { encoding: UTF8 }));
   }
 
   public async reload() {
@@ -94,12 +94,12 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
   }
 
   public async getNoteItemContent<C extends object>(id: string): Promise<C> {
-    const content = fsLib.readFileSync(this.resolvePath(NOTES_DIR, id + '.json'), { encoding: UTF8 });
+    const content = await fs.readFile(this.resolvePath(NOTES_DIR, id + '.json'), { encoding: UTF8 });
     return JSON.parse(content);
   }
 
   public async writeNoteItemContent<C extends object>(id: string, content: C): Promise<DataSourceActionResult> {
-    fsLib.writeFileSync(this.resolvePath(NOTES_DIR, id + '.json'), JSON.stringify(content));
+    await fs.writeFile(this.resolvePath(NOTES_DIR, id + '.json'), JSON.stringify(content));
   }
 
   public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>): Promise<DataItem<K>> {
@@ -112,9 +112,9 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     const item = this.structure.items[id];
 
     if (isNoteItem(item)) {
-      fsLib.unlinkSync(this.resolvePath(NOTES_DIR, id + '.json'));
+      await fs.unlink(this.resolvePath(NOTES_DIR, id + '.json'));
     } else if (isMediaItem(item)) {
-      fsLib.unlinkSync(this.resolvePath(MEDIA_DIR, id + '.' + item.extension));
+      await fs.unlink(this.resolvePath(MEDIA_DIR, id + '.' + item.extension));
     }
 
     delete this.structure.items[id];
@@ -154,7 +154,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
 
   public async loadMediaItemContent(id: string): Promise<Buffer | Blob> {
     const mediaItem = this.structure.items[id] as MediaItem;
-    return fsLib.readFileSync(this.resolvePath(MEDIA_DIR, id + '.' + mediaItem.extension));
+    return await fs.readFile(this.resolvePath(MEDIA_DIR, id + '.' + mediaItem.extension));
   }
 
   public async loadMediaItemContentAsPath(id: string): Promise<string> {
@@ -180,17 +180,17 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     const mediaItem = this.structure.items[id] as MediaItem;
     logger.log("Storing media item content", [], {id, localPath, mediaItem, thumbnail});
     if (!mediaItem.referencePath) {
-      fsLib.copyFileSync(localPath, this.resolvePath(MEDIA_DIR, id + '.' + mediaItem.extension));
+      await fs.copyFile(localPath, this.resolvePath(MEDIA_DIR, id + '.' + mediaItem.extension));
     }
 
     if (thumbnail && (thumbnail.width || thumbnail?.height) && this.thumbnailExtensions.includes(mediaItem.extension)) {
       logger.log("Preparing thumbnail", [], {thumbnail, mediaItem, localPath});
-      const file = fsLib.readFileSync(localPath);
+      const file = await fs.readFile(localPath);
       const jimpImage = await Jimp.read(file);
       logger.log("Read original image", [], {jimpImage});
       const resized = await jimpImage.resize(thumbnail.width || Jimp.AUTO, thumbnail.height || Jimp.AUTO);
       const buffer = await resized.getBufferAsync(resized.getMIME());
-      fsLib.writeFileSync(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension), buffer);
+      await fs.writeFile(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension), buffer);
        // .writeAsync(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension));
       logger.log("Resized image and stored thumbnail", [], {});
     }
@@ -200,17 +200,17 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     const mediaPath = this.resolvePath(MEDIA_DIR, item.id + '.' + item.extension);
     const thumbPath = this.resolvePath(MEDIA_DIR, item.id + '.thumb.' + item.extension);
     logger.log("Removing media contents", [], {item, mediaPath, thumbPath, hasThumb: item.hasThumbnail});
-    fsLib.unlinkSync(mediaPath);
+    await fs.unlink(mediaPath);
 
     if (item.hasThumbnail) {
-      fsLib.unlinkSync(thumbPath);
+      await fs.unlink(thumbPath);
     }
   }
 
   public async persist() {
     const data = JSON.stringify(this.structure, null, 1);
     logger.log("Persisting to", [this.resolvePath(STRUCTURE_FILE)], {data, structure: this.structure});
-    fsLib.writeFileSync(this.resolvePath(STRUCTURE_FILE), data);
+    await fs.writeFile(this.resolvePath(STRUCTURE_FILE), data);
   }
 
   public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {
