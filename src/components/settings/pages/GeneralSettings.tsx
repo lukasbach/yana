@@ -68,6 +68,12 @@ export const GeneralSettings: React.FC<{}> = props => {
           settingsKey={'autoBackupLocation'}
           label={"Backup Location"}
         />
+        <SettingsClickable
+          title="Open Backup Location"
+          icon="folder-open"
+          subtitle="Open the folder where backups are stored in the native file explorer."
+          onClick={() => remote.shell.openPath(settings.settings.autoBackupLocation)}
+        />
       </SettingsSection>
 
       <SettingsSection title="Updates">
