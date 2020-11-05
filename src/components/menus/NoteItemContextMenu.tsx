@@ -5,7 +5,7 @@ import {
   MainContentContextType,
 } from '../mainContent/context';
 import { DataInterface } from '../../datasource/DataInterface';
-import { createDeletionItems, createOpenItems, createRenameItems } from './commonItems';
+import { createDeletionItems, createMetaItems, createOpenItems, createRenameItems } from './commonItems';
 
 export const NoteItemContextMenu: React.FC<{
   item: NoteDataItem<any>;
@@ -23,6 +23,8 @@ export const NoteItemContextMenu: React.FC<{
         childs: [
           ...createOpenItems(mainContent, item, 'document-open'),
           ...createRenameItems(item, dataInterface, onStartRename),
+          'divider',
+          ...createMetaItems(dataInterface, item),
           'divider',
           ...createDeletionItems(dataInterface, item),
         ]

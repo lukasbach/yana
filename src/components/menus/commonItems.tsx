@@ -98,3 +98,21 @@ export const createDeletionItems = (dataInterface: DataInterface, item: DataItem
     }
   ]
 );
+
+export const createMetaItems = (dataInterface: DataInterface, item: DataItem): Array<MenuItemDefinition | 'divider'> => {
+  const isStarred = item.tags.includes(InternalTag.Starred);
+
+  return [
+    {
+      text: isStarred ? 'Remove Star' : 'Star Item',
+      icon: isStarred ? 'star' : 'star-empty',
+      onClick: (e) => {
+        if (isStarred) {
+          dataInterface.changeItem(item.id, i => ({ tags: i.tags.filter(tag => tag !== InternalTag.Starred) }));
+        } else {
+          dataInterface.changeItem(item.id, i => ({ tags: [...i.tags, InternalTag.Starred] }));
+        }
+      }
+    }
+  ];
+};

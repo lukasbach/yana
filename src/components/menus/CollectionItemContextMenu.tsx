@@ -3,7 +3,13 @@ import { CollectionDataItem, DataItem } from '../../types';
 import { MenuRenderer } from './types';
 import { MainContentContextType } from '../mainContent/context';
 import { DataInterface } from '../../datasource/DataInterface';
-import { createDeletionItems, createNewChildsItems, createOpenItems, createRenameItems } from './commonItems';
+import {
+  createDeletionItems,
+  createMetaItems,
+  createNewChildsItems,
+  createOpenItems,
+  createRenameItems,
+} from './commonItems';
 
 export const CollectionItemContextMenu: React.FC<{
   item: CollectionDataItem;
@@ -23,6 +29,8 @@ export const CollectionItemContextMenu: React.FC<{
           ...createRenameItems(item, dataInterface, onStartRename),
           'divider',
           ...createNewChildsItems(item, dataInterface, onCreatedItem),
+          'divider',
+          ...createMetaItems(dataInterface, item),
           'divider',
           ...createDeletionItems(dataInterface, item),
         ]
