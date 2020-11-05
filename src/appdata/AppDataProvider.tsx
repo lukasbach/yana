@@ -156,9 +156,19 @@ export const AppDataProvider: React.FC = props => {
         { isCreatingWorkspace || isInInitialCreationScreen ? (
           <CreateWorkspaceWindow
             onClose={() => isInInitialCreationScreen ? remote.getCurrentWindow().close() : setIsCreatingWorkspace(false)}
-            onCreate={(name, wsPath) => {
-              ctx.createWorkSpace(name, wsPath);
-              setIsCreatingWorkspace(false);
+            onCreate={async (name, wsPath) => {
+              try {
+                await ctx.createWorkSpace(name, wsPath);
+                setIsCreatingWorkspace(false);
+              } catch(e) {
+                Alerter.Instance.alert({
+                  content: `Error: ${e.message}`,
+                  intent: 'danger',
+                  canEscapeKeyCancel: true,
+                  canOutsideClickCancel: true,
+                  icon: 'warning-sign',
+                });
+              }
             }}
             onImported={() => {
               setCurrentWorkspace(appData.workspaces[0]);

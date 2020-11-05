@@ -9,6 +9,7 @@ import { getElectronPath } from '../../utils';
 import pkg from '../../../package.json';
 import { remote } from "electron";
 import { runImportWizard } from '../../appdata/runImportWizard';
+import { Alerter } from '../Alerter';
 
 const styles = {
   container: cxs({
@@ -169,6 +170,7 @@ export const CreateWorkspaceWindow: React.FC<{
 
   return (
     <div className={styles.container}>
+      <Alerter.Instance.Container />
       <div className={styles.draggableContainer}>
         <div className={styles.closeContainer}>
           <button onClick={props.onClose}>

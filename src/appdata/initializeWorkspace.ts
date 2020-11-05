@@ -1,8 +1,14 @@
 import { DataItemKind, NoteDataItem, WorkSpace } from '../types';
 import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { InternalTag } from '../datasource/InternalTag';
+import * as fs from 'fs';
+import * as pathLib from 'path';
 
 export const initializeWorkspace = async (name: string, path: string): Promise<WorkSpace> => {
+  if (fs.existsSync(pathLib.join(path, 'notebook.json'))) {
+    throw Error('A workspace already exists at the specified location.');
+  }
+
   const options = { sourcePath: path };
   await LocalFileSystemDataSource.init(options);
   const dataSource = new LocalFileSystemDataSource(options);
