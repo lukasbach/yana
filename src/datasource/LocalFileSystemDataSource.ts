@@ -145,6 +145,10 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
         SearchHelper.sortItems(a, b, search.sortColumn!, search.sortDirection));
     }
 
+    if (search.limit) {
+      result = result.slice(0, search.limit);
+    }
+
     onFind(result);
   }
 

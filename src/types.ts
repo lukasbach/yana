@@ -63,6 +63,7 @@ export interface SearchQuery {
   all?: boolean;
   sortColumn?: SearchQuerySortColumn;
   sortDirection?: SearchQuerySortDirection;
+  limit?: number;
 }
 
 export interface WorkSpace {

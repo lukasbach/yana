@@ -13,16 +13,22 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
   const dataInterface = useDataInterface();
   const [items, setItems] = useState<DataItem[]>([]);
   const [expandedIds, setExpandedIds] = useState<string[]>(initiallyExpanded);
+  const [oldRootItemIds, setOldRootItemIds] = useState<string[]>([]);
   const rootItemIds = rootItems.map(item => typeof item === 'string' ? item : item.id); // TODO maybe not neccessary or better implemented otherwise more efficiently?
 
   useAsyncEffect(async () => {
-    const loadedRootItems = await Promise.all<DataItem>(rootItems.map(rootItem => typeof rootItem === 'string' ? dataInterface.getDataItem(rootItem) : new Promise(r => r(rootItem))));
+    const loadedRootItems = await Promise.all<DataItem>(rootItems.map(rootItem => typeof rootItem === 'string'
+      ? dataInterface.getDataItem(rootItem)
+      : new Promise(r => r(rootItem))));
     const loadedRootItemIds = loadedRootItems.map(item => item.id);
 
+    logger.log("rootItems changed", [], { loadedRootItemIds, loadedRootItems, items, rootItems });
+
     setItems(i => [
-      ...i.filter(item => !loadedRootItemIds.includes(item.id)),
+      ...i.filter(item => !loadedRootItemIds.includes(item.id) && !(oldRootItemIds.includes(item.id) && !rootItemIds.includes(item.id))),
       ...loadedRootItems
     ]);
+    setOldRootItemIds(loadedRootItemIds);
   }, [rootItems]);
 
   useEventChangeHandler(dataInterface.onChangeItems, async changes => {

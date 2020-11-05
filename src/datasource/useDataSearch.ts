@@ -11,6 +11,7 @@ const logger = LogService.getLogger('useDataSearch');
 export const useDataSearch = (search: SearchQuery) => {
   const dataInterface = useDataInterface();
   const [refreshedItems, setRefreshedItems] = useState<Array<DataItem<any>>>([]);
+  const refreshedItemIds = refreshedItems.map(item => item.id);
 
   useEffect(() => {
     logger.log('search query changed', [JSON.stringify(search)], {refreshedItems, search})
@@ -19,7 +20,6 @@ export const useDataSearch = (search: SearchQuery) => {
   }, [JSON.stringify(search)]) // TODO dont stringify? causes infinite loop
 
   useEventChangeHandler(dataInterface.onChangeItems, async (changes) => {
-    const refreshedItemIds = refreshedItems.map(item => item.id);
 
     const addItems: Array<DataItem<any>> = [];
     const changedItems: Array<DataItem<any>> = [];
@@ -42,15 +42,30 @@ export const useDataSearch = (search: SearchQuery) => {
     }
 
     if (addItems.length || changedItems.length || removeItemIds.length) {
-      logger.log('Changes found to current search', [JSON.stringify(search)], {search, addItems, changedItems, removeItemIds, refreshedItems})
-      setRefreshedItems(i => [
+      logger.log('Changes found to current search', [JSON.stringify(search)], {search, addItems, changedItems, removeItemIds, refreshedItems});
+
+      let newItems = [
         ...addItems,
-        ...i
+        ...refreshedItems
           .filter(item => !removeItemIds.includes(item.id))
           .map(item => changedItems.find(updatedItem => updatedItem.id === item.id) || item)
-      ]);
+      ];
+
+      // TODO if removeItemIds.length>0, and newItems.length<limit, we should do a re-search
+
+      if (search.sortColumn) {
+        newItems = newItems.sort((a, b) =>
+          SearchHelper.sortItems(a, b, search.sortColumn!, search.sortDirection));
+      }
+
+      if (search.limit) {
+        newItems = newItems.slice(0, search.limit);
+      }
+
+      setRefreshedItems(newItems);
+      // TODO using setRefreshedItems(i => ...) doesnt seem to work, as i and refreshedItems dont seem to be up to date. Actually refreshedItems seems to be out of date, but in practice it looks somewhat okay atm
     }
-  }, [search, refreshedItems]);
+  }, [JSON.stringify(search), refreshedItemIds.join('___')]);
 
   return refreshedItems;
 };
