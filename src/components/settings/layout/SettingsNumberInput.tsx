@@ -15,11 +15,13 @@ export const SettingsNumberInput: React.FC<{
   min?: number,
   max?: number,
   divideFactor?: number,
+  enabledTrigger?: keyof SettingsObject,
 }> = props => {
   const settings = useSettingsPageContext();
   const id = props.label.toLowerCase().replace(/\s/g, '_');
   const val = settings.settings[props.settingsKey] as number;
   const divideFactor = props.divideFactor ?? 1;
+  const disabled = props.enabledTrigger && !settings.settings[props.enabledTrigger];
 
   return (
     <FormGroup
@@ -27,6 +29,7 @@ export const SettingsNumberInput: React.FC<{
       label={props.label}
       labelInfo={props.labelInfo}
       labelFor={id}
+      disabled={disabled}
     >
       <ControlGroup className="bp3-numeric-input">
         <InputGroup
@@ -42,6 +45,7 @@ export const SettingsNumberInput: React.FC<{
             settings.changeSettings({ [props.settingsKey]: newValue });
           }}
           formAction="Test"
+          disabled={disabled}
         />
         <div className="bp3-button-group bp3-vertical bp3-fixed">
           <Button
@@ -52,6 +56,7 @@ export const SettingsNumberInput: React.FC<{
               if (props.max) newValue = Math.min(props.max, newValue);
               settings.changeSettings({ [props.settingsKey]: newValue });
             }}
+            disabled={disabled}
           />
           <Button
             icon="chevron-down"
@@ -61,6 +66,7 @@ export const SettingsNumberInput: React.FC<{
               if (props.max) newValue = Math.min(props.max, newValue);
               settings.changeSettings({ [props.settingsKey]: newValue });
             }}
+            disabled={disabled}
           />
         </div>
       </ControlGroup>

@@ -1,17 +1,16 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { PageContainer } from '../common/PageContainer';
 import { PageHeader } from '../common/PageHeader';
 import { Button, Tab, Tabs } from '@blueprintjs/core';
 import { SettingsTabs } from './SettingsTabs';
-import { useState } from 'react';
 import { SettingsContext } from './SettingsContext';
 import { useAppData } from '../../appdata/AppDataProvider';
 import { SettingsObject } from '../../settings/types';
 import { GeneralSettings } from './pages/GeneralSettings';
-import { defaultSettings } from '../../settings/defaultSettings';
 import { EditorSettings } from './pages/EditorSettings';
 import { DevSettings } from './pages/DevSettings';
-import { remote, webFrame } from 'electron';
+import { SidebarSettings } from './pages/SidebarSettings';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();
@@ -49,6 +48,7 @@ export const Settings: React.FC<{}> = props => {
           lowerContent={(
             <Tabs onChange={(newTabId: SettingsTabs) => setCurrentTab(newTabId)} selectedTabId={currentTab}>
               <Tab id={SettingsTabs.General} title="General" />
+              <Tab id={SettingsTabs.Sidebar} title="Sidebar" />
               <Tab id={SettingsTabs.Editors} title="Editors" />
               <Tab id={SettingsTabs.Hotkeys} title="Hotkeys" />
               <Tab id={SettingsTabs.Devtools} title="Dev Tools" />
@@ -64,6 +64,8 @@ export const Settings: React.FC<{}> = props => {
               return <div />;
             case SettingsTabs.Devtools:
               return <DevSettings />;
+            case SettingsTabs.Sidebar:
+              return <SidebarSettings />;
             case SettingsTabs.General:
             default:
               return <GeneralSettings />;

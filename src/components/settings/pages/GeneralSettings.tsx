@@ -1,28 +1,17 @@
 import * as React from 'react';
 import { SettingsSection } from '../layout/SettingsSection';
-import { SettingsTextInput } from '../layout/SettingsTextInput';
-import { SettingsSelectInput } from '../layout/SettingsSelectInput';
-import { SideBarItemAction } from '../../../settings/types';
 import { SettingsSwitchInput } from '../layout/SettingsSwitchInput';
 import { SettingsNumberInput } from '../layout/SettingsNumberInput';
-import { DetailedListItem } from '../../common/DetailedListItem';
 import { SettingsClickable } from '../layout/SettingsClickable';
 import { useMainContentContext } from '../../mainContent/context';
 import { PageIndex } from '../../../PageIndex';
 import { remote } from "electron";
 import { AppDataExportService } from '../../../appdata/AppDataExportService';
-import { Button } from '@blueprintjs/core';
 import { useAppData, useSettings } from '../../../appdata/AppDataProvider';
 import { SettingsFilesystemPathInput } from '../layout/SettingsFilesystemPathInput';
 import { SettingsColorInput } from '../layout/SettingsColorInput';
 import { useSettingsPageContext } from '../SettingsContext';
 import { defaultTheme } from '../../../common/theming';
-
-const sidebarActions = [
-  { value: SideBarItemAction.OpenInNewTab, label: 'Open in new Tab' },
-  { value: SideBarItemAction.OpenInCurrentTab, label: 'Open in current Tab' },
-  { value: SideBarItemAction.ToggleExpansion, label: 'Toggle in sidebar' },
-];
 
 export const GeneralSettings: React.FC<{}> = props => {
   const mainContent = useMainContentContext();
@@ -38,77 +27,6 @@ export const GeneralSettings: React.FC<{}> = props => {
           step={.1}
           min={.4}
           max={5}
-        />
-      </SettingsSection>
-
-      <SettingsSection title="Sidebar">
-        <SettingsClickable
-          title="General Sidebar Settings"
-        />
-
-        <SettingsNumberInput
-          settingsKey={'sidebarNumberOfUntruncatedItems'}
-          label="Number of childs shown by default"
-          helperText="When an item in the sidebar has more than this many children, the rest will be truncated."
-        />
-
-        <SettingsNumberInput
-          settingsKey={'sidebarOffsetPerLevel'}
-          label="Offset per level"
-          helperText="Number of pixels that every level should be offset in the sidebar."
-        />
-
-        <SettingsClickable
-          title="Sidebar Action Customizations"
-          subtitle="Here you can customize which actions are performed by clicking on the background or the text of an item in the sidebar, or by middle-clicking on an item."
-        />
-
-        <SettingsSelectInput
-          settingsKey={'sidebarNoteItemNameAction'}
-          label={"Action when clicking on the name of a Note Item"}
-          options={sidebarActions}
-        />
-        <SettingsSelectInput
-          settingsKey={'sidebarNoteItemBackgroundAction'}
-          label={"Action when clicking on the background of a Note Item"}
-          options={sidebarActions}
-        />
-        <SettingsSelectInput
-          settingsKey={'sidebarNoteItemMiddleClickAction'}
-          label={"Action when middle-clicking on a Note Item"}
-          options={sidebarActions}
-        />
-
-        <SettingsSelectInput
-          settingsKey={'sidebarCollectionItemNameAction'}
-          label={"Action when clicking on the name of a Collection Item"}
-          options={sidebarActions}
-        />
-        <SettingsSelectInput
-          settingsKey={'sidebarCollectionItemBackgroundAction'}
-          label={"Action when clicking on the background of a Collection Item"}
-          options={sidebarActions}
-        />
-        <SettingsSelectInput
-          settingsKey={'sidebarCollectionItemMiddleClickAction'}
-          label={"Action when middle-clicking on a Collection Item"}
-          options={sidebarActions}
-        />
-
-        <SettingsSelectInput
-          settingsKey={'sidebarMediaItemNameAction'}
-          label={"Action when clicking on the name of a Media Item"}
-          options={sidebarActions}
-        />
-        <SettingsSelectInput
-          settingsKey={'sidebarMediaItemBackgroundAction'}
-          label={"Action when clicking on the background of a Media Item"}
-          options={sidebarActions}
-        />
-        <SettingsSelectInput
-          settingsKey={'sidebarMediaItemMiddleClickAction'}
-          label={"Action when middle-clicking on a Media Item"}
-          options={sidebarActions}
         />
       </SettingsSection>
 
