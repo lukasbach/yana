@@ -1,4 +1,4 @@
-import { app, BrowserWindow, ipcMain, protocol } from 'electron';
+import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import { IpcChannel } from './IpcChannel';
@@ -68,6 +68,11 @@ app.on('ready', () => {
 
   mainWindow.on('closed', () => {
     mainWindow = null;
+  });
+
+  mainWindow.webContents.on('new-window', function(e, url) {
+    e.preventDefault();
+    shell.openExternal(url);
   });
 });
 
