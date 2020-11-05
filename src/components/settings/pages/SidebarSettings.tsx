@@ -17,10 +17,6 @@ export const SidebarSettings: React.FC<{}> = props => {
   return (
     <div>
       <SettingsSection title="Sidebar">
-        <SettingsClickable
-          title="General Sidebar Settings"
-        />
-
         <SettingsNumberInput
           settingsKey={'sidebarNumberOfUntruncatedItems'}
           label="Number of childs shown by default"

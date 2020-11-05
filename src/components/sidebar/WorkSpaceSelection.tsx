@@ -100,8 +100,13 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
               />
               <MenuItem
                 text="Manage Workspaces"
-                icon="cog"
+                icon="database"
                 onClick={() => mainContent.openInCurrentTab(PageIndex.ManageWorkspaces)}
+              />
+              <MenuItem
+                text="Yana Settings"
+                icon="cog"
+                onClick={() => mainContent.openInCurrentTab(PageIndex.Settings)}
               />
               <MenuItem
                 text="About Yana"
