@@ -27,8 +27,9 @@ app.whenReady().then(() => {
 
 app.on('ready', () => {
   let mainWindow: Electron.BrowserWindow | null = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1370,
+    height: 780,
+    center: true,
     frame: false,
     resizable: true,
 
