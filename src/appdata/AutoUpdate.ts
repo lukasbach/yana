@@ -29,11 +29,12 @@ export class AutoUpdate {
 
   async runAutoUpdateIfSettingsSet() {
     if (this.shouldAutoUpdate) {
+      await this.prepareDownloadUpdate();
       await autoUpdater.checkForUpdates();
     }
   }
 
-  async runUpdate() {
+  async prepareDownloadUpdate() {
     autoUpdater.once('update-available', async () => {
       logger.log('Update is available. Initiate update.');
 
