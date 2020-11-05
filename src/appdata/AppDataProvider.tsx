@@ -19,9 +19,10 @@ const fs = fsLib.promises;
 
 export interface AppDataContextValue extends AppData {
   createWorkSpace: (name: string, path: string) => Promise<void>;
+  addWorkSpace: (name: string, path: string) => Promise<void>;
   setWorkSpace: (workspace: WorkSpace) => void;
   currentWorkspace: WorkSpace;
-  deleteWorkspace(workspace: WorkSpace): void;
+  deleteWorkspace: (workspace: WorkSpace, deleteData?: boolean) => Promise<void>;
   saveSettings(settings: SettingsObject): Promise<void>;
   lastAutoBackup: number;
   openWorkspaceCreationWindow: () => void;
@@ -75,6 +76,28 @@ export const AppDataProvider: React.FC = props => {
     currentWorkspace: currentWorkspace,
     setWorkSpace: setCurrentWorkspace,
     openWorkspaceCreationWindow: () => setIsCreatingWorkspace(true),
+    addWorkSpace: async (name, path) => {
+      const workspace: WorkSpace = {
+        name,
+        dataSourceType: 'fs',
+        dataSourceOptions: {
+          sourcePath: path
+        }
+      };
+
+      const newAppData: AppData = {
+        ...appData,
+        workspaces: [
+          ...appData.workspaces,
+          workspace,
+        ],
+      };
+
+      fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+      setAppData(newAppData);
+      autoBackup?.addWorkspace(workspace);
+      setCurrentWorkspace(workspace);
+    },
     createWorkSpace: async (name, path) => {
       const workspace = await initializeWorkspace(name, path);
 
@@ -91,21 +114,28 @@ export const AppDataProvider: React.FC = props => {
       autoBackup?.addWorkspace(workspace);
       setCurrentWorkspace(workspace);
     },
-    deleteWorkspace(workspace: WorkSpace) {
-      rimraf(workspace.dataSourceOptions.sourcePath, error => {
-        if (error) {
-          Alerter.Instance.alert({ content: 'Error: ' + error.message });
-        }
+    deleteWorkspace: async (workspace, deleteData) => {
+      if (deleteData) {
+        await new Promise((res, rev) => {
+          rimraf(workspace.dataSourceOptions.sourcePath, error => {
+            if (error) {
+              Alerter.Instance.alert({ content: 'Error: ' + error.message });
+            } else {
+              res();
+            }
+          });
+        })
+      }
 
-        const newAppData: AppData = {
-          ...appData,
-          workspaces: appData.workspaces.filter(w => w.name !== workspace.name),
-        };
+      const newAppData: AppData = {
+        ...appData,
+        workspaces: appData.workspaces.filter(w => w.name !== workspace.name),
+      };
 
-        fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
-        setAppData(newAppData);
-        autoBackup?.removeWorkspace(workspace);
-      });
+      fsLib.writeFileSync(appDataFile, JSON.stringify(newAppData));
+      setAppData(newAppData);
+      autoBackup?.removeWorkspace(workspace);
+      setCurrentWorkspace(newAppData.workspaces[0]);
     },
     saveSettings: async (settings: Partial<SettingsObject>) => {
       const newAppData: AppData = {

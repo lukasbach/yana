@@ -9,6 +9,7 @@ import { remote } from "electron";
 import { AppDataExportService } from '../../appdata/AppDataExportService';
 import { Alerter } from '../Alerter';
 import { AppDataImportService } from '../../appdata/AppDataImportService';
+import { runRemoveWorkspaceWizard } from '../../appdata/runRemoveWorkspaceWizard';
 
 export const ManageWorkspaces: React.FC<{}> = props => {
   const appData = useAppData();
@@ -18,19 +19,6 @@ export const ManageWorkspaces: React.FC<{}> = props => {
       <PageHeader
         title="Manage workspaces"
         icon="cog"
-        rightContent={(
-          <>
-            <Button outlined onClick={async () => {
-              await AppDataImportService.initiateImportWizard(appData);
-            }}>
-              Import workspace
-            </Button>
-            {' '}
-            <Button intent="primary" onClick={() => appData.openWorkspaceCreationWindow()} outlined>
-              Create new workspace
-            </Button>
-          </>
-        )}
       />
     )}>
       <DetailedListContainer>
@@ -73,37 +61,7 @@ export const ManageWorkspaces: React.FC<{}> = props => {
                       outlined
                       intent="danger"
                       icon={'trash'}
-                      onClick={async () => {
-                        const securityCheckPassed: boolean = await new Promise(res => {
-                          const supposedInput = workspace.name.toLowerCase().replace(/\s/g, '');
-
-                          Alerter.Instance.alert({
-                            confirmButtonText: 'Okay',
-                            cancelButtonText: 'Cancel',
-                            intent: 'danger',
-                            icon: 'warning-sign',
-                            content: <>
-                              <p><b>Warning</b>: This is a destructive operation! The workspace will be deleted and cannot
-                                be restored.</p>
-                              <p>To continue, type the following text in the input below: <b>{supposedInput}</b></p>
-                            </>,
-                            canOutsideClickCancel: true,
-                            canEscapeKeyCancel: true,
-                            prompt: {
-                              type: 'string',
-                              onConfirmText: value => {
-                                res(value === supposedInput)
-                              }
-                            }
-                          });
-                        });
-
-                        if (securityCheckPassed) {
-                          appData.deleteWorkspace(workspace);
-                        } else {
-                          Alerter.Instance.alert({ content: 'The workspace name you wrote was incorrect.' });
-                        }
-                      }}
+                      onClick={async () => runRemoveWorkspaceWizard(workspace, appData)}
                     />
                   </Tooltip>
                 </>
@@ -111,6 +69,27 @@ export const ManageWorkspaces: React.FC<{}> = props => {
             />
           ))
         }
+      </DetailedListContainer>
+
+      <DetailedListContainer>
+        <DetailedListItem
+          title="Create new workspace"
+          subtitle="Initialize an empty workspace on your drive to hold lots of notes!"
+          icon="new-object"
+          onClick={() => appData.openWorkspaceCreationWindow()}
+        />
+        <DetailedListItem
+          title="Import workspace"
+          subtitle="Import a zipped workspace which you've exported from Yana before."
+          icon="bring-data"
+          onClick={() => AppDataImportService.initiateImportWizard(appData)}
+        />
+        <DetailedListItem
+          title="Add existing workspace"
+          subtitle="Add a local workspace from your local drive. You can use this to add a workspace within a cloud folder that was created on another device."
+          icon="new-link"
+          onClick={() => AppDataImportService.initiateAddWorkspaceWizard(appData)}
+        />
       </DetailedListContainer>
     </PageContainer>
   );
