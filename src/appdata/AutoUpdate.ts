@@ -40,7 +40,10 @@ export class AutoUpdate {
 
       if (this.shouldBackupBefore) {
         for (const ws of this.appData.workspaces) {
-          const dest = path.join(this.appData.settings.autoBackupLocation, `backup_before_update__${Date.now()}.zip`);
+          const dest = path.join(
+            this.appData.settings.autoBackupLocation,
+            `backup_before_update__${ws.name.toLowerCase().replace(/\s/g, '-')}__${Date.now()}.zip`
+          );
           logger.log(`Backing up ${ws.name} to ${dest}`);
           await AppDataExportService.exportTo(dest, ws, logger.log);
           logger.log('Finished backing up ', [ws.name]);

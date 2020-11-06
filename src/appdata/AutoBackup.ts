@@ -9,6 +9,9 @@ import { LogService } from '../common/LogService';
 
 const logger = LogService.getLogger('AutoBackup');
 
+// TODO backup queueing is probably not required
+// TODO inform user with toasts about finished backups?
+
 export class AutoBackup {
   private lastBackup: number = 0;
   private nextBackup: number = 0;
@@ -24,6 +27,7 @@ export class AutoBackup {
   }
 
   public async load() {
+    logger.log('Loading AutoBackups for ', [this.workspace.name]);
     const dataInterface = new DataInterface(new LocalFileSystemDataSource(this.workspace.dataSourceOptions), null as any, 300);
     await dataInterface.load();
     this.lastBackup = (await dataInterface.getStructure('backup'))?.lastBackup || 0;
@@ -57,8 +61,11 @@ export class AutoBackup {
       console.log
     )
 
-    if (await this.countExistingBackups() > this.settings.autoBackupCount) {
-      await this.removeOldestBackup();
+    const numberOfExistingBackups = await this.countExistingBackups();
+    const numberOfBackupsToKeep = this.settings.autoBackupCount;
+
+    if (numberOfExistingBackups > numberOfBackupsToKeep) {
+      await this.removeOldestBackups(numberOfBackupsToKeep - numberOfExistingBackups);
     }
 
     this.lastBackup = Date.now();
@@ -78,12 +85,16 @@ export class AutoBackup {
     return backupsFromThisWorkspace.length;
   }
 
-  private async removeOldestBackup() {
+  private async removeOldestBackups(numberOfBackupsToDelete: number) {
     if (!fs.existsSync(this.settings.autoBackupLocation)) return 0;
     const backups = await fs.promises.readdir(this.settings.autoBackupLocation);
     const backupsFromThisWorkspace = backups.filter(b => b.startsWith(this.backupIdentifier));
-    const backupToPurge = backupsFromThisWorkspace.sort((a, b) => a.localeCompare(b))[0];
-    await fs.promises.unlink(path.join(this.settings.autoBackupLocation, backupToPurge));
+    const backupsSorted = backupsFromThisWorkspace.sort((a, b) => a.localeCompare(b));
+
+    for (let i = 0; i < numberOfBackupsToDelete; i++) {
+      const backupToPurge = backupsSorted[i];
+      await fs.promises.unlink(path.join(this.settings.autoBackupLocation, backupToPurge));
+    }
   }
 
   private scheduleNextBackup() {
@@ -92,10 +103,15 @@ export class AutoBackup {
     if (this.timer) {
       clearInterval(this.timer);
     }
-    this.timer = setTimeout(
-      () => this.queueBackup(() => this.performBackup()),
-      nextBackup
-    ) as unknown as number;
+
+    if (nextBackup <= 100) { // effectively now
+      this.queueBackup(() => this.performBackup());
+    } else {
+      this.timer = setTimeout(
+        () => this.queueBackup(() => this.performBackup()),
+        nextBackup
+      ) as unknown as number;
+    }
   }
 
 
