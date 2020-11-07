@@ -1,8 +1,6 @@
-import { app } from 'electron';
 import * as fsLib from 'fs';
 import * as path from 'path';
 import { AppData } from '../types';
-import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { defaultSettings } from '../settings/defaultSettings';
 import { getElectronPath } from '../utils';
 

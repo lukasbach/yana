@@ -1,11 +1,11 @@
 import { DataInterface } from '../datasource/DataInterface';
 import { WorkSpace } from '../types';
-import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import path from 'path';
 import fs from 'fs';
 import rimraf from 'rimraf';
 import { getElectronPath, isMediaItem, isNoteItem } from '../utils';
 import archiver from 'archiver';
+import { DataSourceRegistry } from '../datasource/DataSourceRegistry';
 
 export class AppDataExportService {
   public static async exportTo(destination: string, workspace: WorkSpace, onUpdate: (message: string) => void) {
@@ -22,7 +22,7 @@ export class AppDataExportService {
     await fs.promises.mkdir(path.resolve(folder, 'notes'));
 
     const di = new DataInterface(
-      new LocalFileSystemDataSource(workspace.dataSourceOptions),
+      DataSourceRegistry.getDataSource(workspace),
       null as any, // because used in electron-main, and editor registry contains monaco code
       300
     );

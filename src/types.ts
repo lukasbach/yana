@@ -1,5 +1,6 @@
 import { LocalFileSystemDataSourceOptions } from './datasource/LocalFileSystemDataSource';
 import { SettingsObject } from './settings/types';
+import { LocalSqliteDataSourceOptions } from './datasource/LocalSqliteDataSource';
 
 export enum DataItemKind {
   NoteItem = 'note',
@@ -66,9 +67,11 @@ export interface SearchQuery {
   limit?: number;
 }
 
+export type DataSourceType = 'fs' | 'sqlite3';
+
 export interface WorkSpace {
-  dataSourceType: 'fs';
-  dataSourceOptions: LocalFileSystemDataSourceOptions;
+  dataSourceType: DataSourceType;
+  dataSourceOptions: LocalFileSystemDataSourceOptions | LocalSqliteDataSourceOptions;
   name: string;
 }
 

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { useAppData } from '../appdata/AppDataProvider';
-import { LocalFileSystemDataSource } from './LocalFileSystemDataSource';
 import { DataInterface } from './DataInterface';
 import { useAsyncEffect } from '../utils';
 import { EditorRegistry } from '../editors/EditorRegistry';
 import { useDevTools } from '../components/devtools/DevToolsContextProvider';
 import { useCloseEvent } from '../common/useCloseEvent';
+import { DataSourceRegistry } from './DataSourceRegistry';
 
 export const useDataInterface = () => useContext(DataInterfaceContext);
 export const DataInterfaceContext = React.createContext<DataInterface>(null as any);
@@ -22,7 +22,7 @@ export const DataInterfaceProvider: React.FC = props => {
       }
 
       const di = new DataInterface(
-        new LocalFileSystemDataSource(appData.currentWorkspace.dataSourceOptions),
+        DataSourceRegistry.getDataSource(appData.currentWorkspace),
         EditorRegistry.Instance,
         undefined,
         devtools

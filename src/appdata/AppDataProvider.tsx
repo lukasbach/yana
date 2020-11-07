@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { AppData, WorkSpace } from '../types';
+import { AppData, DataSourceType, WorkSpace } from '../types';
 import { remote, webFrame } from 'electron';
 import path from 'path';
 import { getElectronPath, useAsyncEffect } from '../utils';
 import * as fsLib from 'fs';
-import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { initializeWorkspace } from './initializeWorkspace';
 import rimraf from 'rimraf';
 import { Alerter } from '../components/Alerter';
@@ -18,7 +17,7 @@ import { appDataFile, userDataFolder } from './paths';
 const fs = fsLib.promises;
 
 export interface AppDataContextValue extends AppData {
-  createWorkSpace: (name: string, path: string) => Promise<void>;
+  createWorkSpace: (name: string, path: string, dataSourceType: DataSourceType) => Promise<void>;
   addWorkSpace: (name: string, path: string) => Promise<void>;
   setWorkSpace: (workspace: WorkSpace) => void;
   currentWorkspace: WorkSpace;
@@ -99,8 +98,8 @@ export const AppDataProvider: React.FC = props => {
       autoBackup?.addWorkspace(workspace);
       setCurrentWorkspace(workspace);
     },
-    createWorkSpace: async (name, path) => {
-      const workspace = await initializeWorkspace(name, path);
+    createWorkSpace: async (name, path, dataSourceType) => {
+      const workspace = await initializeWorkspace(name, path, dataSourceType);
 
       const newAppData: AppData = {
         ...appData,
@@ -158,7 +157,7 @@ export const AppDataProvider: React.FC = props => {
             onClose={() => isInInitialCreationScreen ? remote.getCurrentWindow().close() : setIsCreatingWorkspace(false)}
             onCreate={async (name, wsPath) => {
               try {
-                await ctx.createWorkSpace(name, wsPath);
+                await ctx.createWorkSpace(name, wsPath, 'sqlite3'); // TODO
                 setIsCreatingWorkspace(false);
               } catch(e) {
                 Alerter.Instance.alert({

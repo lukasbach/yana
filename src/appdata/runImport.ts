@@ -4,11 +4,11 @@ import { getElectronPath, isMediaItem, isNoteItem } from '../utils';
 import rimraf from 'rimraf';
 import fs from "fs";
 import { DataInterface } from '../datasource/DataInterface';
-import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { EditorRegistry } from '../editors/EditorRegistry';
 import unzipper from 'unzipper';
 import { DataItem } from '../types';
 import { Alerter } from '../components/Alerter';
+import { LocalSqliteDataSource } from '../datasource/LocalSqliteDataSource';
 
 export const runImport = async (
   sourcePath: string,
@@ -24,9 +24,9 @@ export const runImport = async (
     await new Promise(r => rimraf(folder, r));
     await fs.promises.mkdir(folder, {recursive: true});
 
-    await appDataContext.createWorkSpace(name, newWorkspaceFolder);
+    await appDataContext.createWorkSpace(name, newWorkspaceFolder, 'sqlite3'); // TODO
 
-    const di = new DataInterface(new LocalFileSystemDataSource({
+    const di = new DataInterface(new LocalSqliteDataSource({ // TODO
       sourcePath: newWorkspaceFolder
     }), EditorRegistry.Instance, 50);
 

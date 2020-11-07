@@ -17,6 +17,7 @@ export const arrayIntersection = <T>(arr1: T[], arr2: T[]): T[] => arr1
   .map(item1 => arr2.includes(item1) ? item1 : null)
   .filter(item => item !== null)
   .reduce<T[]>((a, b) => [...a, b!], []);
+export const arrayDiff = <T>(bigArr: T[], smolArr: T[]) => bigArr.filter(el => !smolArr.includes(el));
 export const mergeSearchQueries = (sq1: SearchQuery, sq2: SearchQuery): SearchQuery => ({
   parents: (sq1.parents || sq2.parents) && undup([...(sq1.parents || []), ...(sq2.parents || [])]),
   exactParents: (sq1.exactParents || sq2.exactParents) && undup([...(sq1.exactParents || []), ...(sq2.exactParents || [])]),

@@ -1,11 +1,11 @@
 import { DataInterface } from '../datasource/DataInterface';
 import { WorkSpace } from '../types';
-import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { SettingsObject } from '../settings/types';
 import * as fs from 'fs';
 import { AppDataExportService } from './AppDataExportService';
 import path from 'path';
 import { LogService } from '../common/LogService';
+import { DataSourceRegistry } from '../datasource/DataSourceRegistry';
 
 const logger = LogService.getLogger('AutoBackup');
 
@@ -28,7 +28,7 @@ export class AutoBackup {
 
   public async load() {
     logger.log('Loading AutoBackups for ', [this.workspace.name]);
-    const dataInterface = new DataInterface(new LocalFileSystemDataSource(this.workspace.dataSourceOptions), null as any, 300);
+    const dataInterface = new DataInterface(DataSourceRegistry.getDataSource(this.workspace), null as any, 300);
     await dataInterface.load();
     this.lastBackup = (await dataInterface.getStructure('backup'))?.lastBackup || 0;
     await dataInterface.unload();
@@ -49,7 +49,7 @@ export class AutoBackup {
 
     logger.log("Performing automatic backup for workspace", [this.workspace.name], {workspace: this.workspace});
 
-    const dataInterface = new DataInterface(new LocalFileSystemDataSource(this.workspace.dataSourceOptions), null as any, 300);
+    const dataInterface = new DataInterface(DataSourceRegistry.getDataSource(this.workspace), null as any, 300);
     await dataInterface.load();
 
     const now = new Date();

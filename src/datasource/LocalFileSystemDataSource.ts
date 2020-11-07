@@ -115,6 +115,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
       await fs.unlink(this.resolvePath(NOTES_DIR, id + '.json'));
     } else if (isMediaItem(item)) {
       await fs.unlink(this.resolvePath(MEDIA_DIR, id + '.' + item.extension));
+      // TODO delete thumbnail
     }
 
     delete this.structure.items[id];

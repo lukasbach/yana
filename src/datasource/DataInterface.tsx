@@ -107,7 +107,9 @@ export class DataInterface implements AbstractDataSource {
 
   public async getDataItem<K extends DataItemKind>(id: string): Promise<DataItem<K>> {
     this.devtools?.increaseCounter('DI getDataItem');
-    return await this.tryCache(id, () => this.dataSource.getDataItem(id));
+    const item = await this.tryCache(id, () => this.dataSource.getDataItem(id));
+    logger.log('Getting item with Id', [id], {item});
+    return item;
   }
 
   public async getNoteItemContent<C extends object>(id: string): Promise<C> {
@@ -273,6 +275,7 @@ export class DataInterface implements AbstractDataSource {
   ): Promise<DataSourceActionResult> {
     this.devtools?.increaseCounter('DI search');
     if (Object.keys(search).length === 0) return;
+    logger.log("Performing search", [], {search});
     return await this.dataSource.search(search, onFind);
   }
 

@@ -1,4 +1,3 @@
-import { LocalFileSystemDataSource } from '../datasource/LocalFileSystemDataSource';
 import { Alerter } from '../components/Alerter';
 import { remote } from "electron";
 import { DataItemKind } from '../types';
@@ -6,6 +5,7 @@ import { InternalTag } from '../datasource/InternalTag';
 import { AppDataContextValue } from './AppDataProvider';
 import { DataInterface } from '../datasource/DataInterface';
 import { EditorRegistry } from '../editors/EditorRegistry';
+import { LocalSqliteDataSource } from '../datasource/LocalSqliteDataSource';
 
 const BIG_FOLDER_CHILD_COUNTS = [10, 25, 50, 100, 250, 500, 1000];
 
@@ -37,10 +37,10 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
   const workspacePath = workspacePathDialog.filePaths[0];
 
   const currentWorkspace = appDataContext.currentWorkspace;
-  await appDataContext.createWorkSpace(workspaceName, workspacePath);
+  await appDataContext.createWorkSpace(workspaceName, workspacePath, 'sqlite3');  // TODO
   await appDataContext.setWorkSpace(currentWorkspace);
 
-  const di = new DataInterface(new LocalFileSystemDataSource({
+  const di = new DataInterface(new LocalSqliteDataSource({ // TODO
     sourcePath: workspacePath
   }), EditorRegistry.Instance, 500);
 
