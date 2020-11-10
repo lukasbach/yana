@@ -29,6 +29,8 @@ export const parseSearch = (value: string): SearchQuery => {
         case 'kind':
           query.kind = value.toLowerCase() as DataItemKind;
           break;
+        case 'intext':
+          query.containsInContents = value === 'true';
       }
     } else {
       addToList(piece.toLowerCase(), 'contains');

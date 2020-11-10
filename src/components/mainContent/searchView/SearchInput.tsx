@@ -20,6 +20,7 @@ export const SearchInput: React.FC<{
   const searchInputChangeHandler = useRef<number | undefined>();
   const [isActive, setIsActive] = useState(false);
   const tags = useAvailableTags();
+  const query = parseSearch(value);
 
   useEffect(() => {
     console.log(value)
@@ -90,6 +91,19 @@ export const SearchInput: React.FC<{
             Filter by data kind
           </Button>
         </Select>
+        <Button
+          minimal small icon="search-text"
+          active={query.containsInContents}
+          onClick={() => {
+            if (query.containsInContents) {
+              setValue(v => v.replace(/(\s*intext\:[^\s]*\s*)/g, ''));
+            } else {
+              setValue(v => `${v} intext:true`);
+            }
+          }}
+        >
+          Search through note contents
+        </Button>
       </div>
     </>
   );

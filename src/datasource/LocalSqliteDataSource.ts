@@ -324,18 +324,26 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       query = query.leftJoin('items_tags', 'items.id', 'items_tags.noteId');
     }
     if (search.childs) {
-      query = query.leftJoin({ childs: 'items_childs' }, 'items.id', 'childs.parentId')
+      query = query.leftJoin({ childs: 'items_childs' }, 'items.id', 'childs.parentId');
     }
     if (search.parents) {
-      query = query.leftJoin({ parents: 'items_childs' }, 'items.id', 'parents.childId')
+      query = query.leftJoin({ parents: 'items_childs' }, 'items.id', 'parents.childId');
+    }
+    if (search.containsInContents) {
+      query = query.leftJoin('note_contents', 'items.id', 'note_contents.noteId');
     }
 
     if (search.contains) {
-      query = query.where(qb => {
-        for (const contains of search.contains!) {
-          qb.orWhere('name', 'like', `%${contains}%`);
+      for (const contains of search.contains!) {
+        if (!search.containsInContents) {
+          query = query.andWhere('name', 'like', `%${contains}%`);
+        } else {
+          query = query.where(qb => {
+            qb.orWhere('name', 'like', `%${contains}%`);
+            qb.orWhere('note_contents.content', 'like', `%${contains}%`);
+          });
         }
-      });
+      }
     }
 
     if (search.kind) {

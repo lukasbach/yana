@@ -55,6 +55,7 @@ export enum SearchQuerySortDirection {
 
 export interface SearchQuery {
   contains?: string[];
+  containsInContents?: boolean;
   tags?: string[];
   notTags?: string[];
   parents?: string[];
