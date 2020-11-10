@@ -318,7 +318,17 @@ export class LocalSqliteDataSource implements AbstractDataSource {
 
   public async search(search: SearchQuery): Promise<SearchResult> {
     let query = this.db('items')
-      .select('*');
+      .select('items.*');
+
+    if (search.tags || search.notTags) {
+      query = query.leftJoin('items_tags', 'items.id', 'items_tags.noteId');
+    }
+    if (search.childs) {
+      query = query.leftJoin({ childs: 'items_childs' }, 'items.id', 'childs.parentId')
+    }
+    if (search.parents) {
+      query = query.leftJoin({ parents: 'items_childs' }, 'items.id', 'parents.childId')
+    }
 
     if (search.contains) {
       query = query.where(qb => {
@@ -334,74 +344,37 @@ export class LocalSqliteDataSource implements AbstractDataSource {
 
     if (search.tags) {
       for (const tag of search.tags) {
-        query = query.whereExists(
-          this.db('items_tags')
-            .select('*')
-            .whereRaw(`items_tags.tagName = "${tag}"`)
-            .andWhereRaw(`items_tags.noteId = items.id`)
-        );
-      } // TODO maybe this for loop can be compressed into a single where clause?
+        query = query.where('items_tags.tagName', tag);
+      }
     }
 
     if (search.notTags) {
       for (const tag of search.notTags) {
-        query = query.whereNotExists(
-          this.db('items_tags')
-            .select('*')
-            .whereRaw(`items_tags.tagName = "${tag}"`)
-            .andWhereRaw(`items.id = items_tags.noteId`)
-        );
-      } // TODO maybe this for loop can be compressed into a single where clause?
+        query = query.where(qb => {
+          qb.where('items_tags.tagName', '<>', tag)
+            .orWhereNull('items_tags.tagName')
+        })
+      }
     }
 
     if (search.childs) {
-      // TODO implement
-      // TODO and instead of or?
-      // query = query.where(qb => {
-      //   for (const child of search.childs!) {
-      //     qb = query.orWhereIn(
-      //       'id',
-      //       this.db('parentId').where('childId', child).from('items_childs')
-      //     )
-      //   } // TODO maybe this for loop can be compressed into a single where clause?
-      // });
+      for (const child of search.childs) {
+        query = query.where('childs.childId', child);
+      }
     }
 
     if (search.parents) {
       query = query.where(qb => {
         for (const parent of search.parents!) {
-          qb.orWhereExists(
-            this.db('items_childs')
-              .select('*')
-              .whereRaw(`items_childs.parentId = "${parent}"`)
-              .andWhereRaw(`items_childs.childId = items.id`)
-          );
+          qb.orWhere('parents.parentId', parent);
         }
-      })
-      // query = query.where(qb => {
-      //   for (const parent of search.parents!) {
-      //     qb = query.orWhereIn(
-      //       'id',
-      //       this.db('childId').where('parentId', parent).from('items_childs')
-      //     )
-      //   } // TODO maybe this for loop can be compressed into a single where clause?
-      // });
+      });
     }
 
     if (search.exactParents) {
       for (const parent of search.exactParents) {
-        query = query.whereExists(
-          this.db('items_childs')
-            .select('*')
-            .whereRaw(`items_childs.parentId = "${parent}"`)
-            .andWhereRaw(`items_childs.childId = items.id`)
-        );
-
-        // query = query.whereIn(
-        //   'id',
-        //   this.db('childId').where('parentId', parent).from('items_childs')
-        // )
-      } // TODO maybe this for loop can be compressed into a single where clause?
+        query = query.where('parents.parentId', parent);
+      }
     }
 
     if (search.pagingValue) {
@@ -434,7 +407,7 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       .filter(item => !!item) as DataItem[];
     // TODO search content table
 
-    logger.log("Search yielded items: ", [], {items});
+    logger.log("Search yielded items: ", [], {items, itemIds, search});
 
     return {
       results: items,

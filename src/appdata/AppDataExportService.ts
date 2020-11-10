@@ -29,7 +29,7 @@ export class AppDataExportService {
     onUpdate('Loading workspace');
     await di.load();
 
-    onUpdate('Loading data items from workspace');
+    onUpdate('Loading data items from workspace'); // TODO paginate
     const { results } = await di.search({ all: true });
     for (const item of results) {
       await fs.promises.writeFile(path.resolve(folder, 'items', `${item.id}.json`), JSON.stringify(item));

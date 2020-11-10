@@ -124,7 +124,7 @@ export const SearchView: React.FC<{
                 )
               )}
               overscanColumnCount={0}
-              overscanRowCount={20}
+              overscanRowCount={6}
               rowHeight={searchViewCellDimensions.cellHeight}
               rowCount={rowCount + (nextPageAvailable ? 12 : 0)}
               onSectionRendered={section => {}}

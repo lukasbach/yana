@@ -83,7 +83,7 @@ export const SearchViewCard: React.FC<{
       icon={dataItem.icon || (isNoteItem(dataItem) ? 'document' : 'folder-open') as any}
       iconColor={dataItem.color}
       thumbnail={thumbnail}
-      preview={(isNoteItem(dataItem) && <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} />) || undefined}
+      preview={isNoteItem(dataItem) ? <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} /> : undefined}
       footerText={ago(new Date(dataItem.lastChange))}
     />
   );
