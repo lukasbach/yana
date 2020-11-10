@@ -22,19 +22,23 @@ const styles = {
       }
     }
   }),
-  chevronContainer: cxs({
-    paddingRight: '6px',
+  clickableContainer: cxs({
+    display: 'flex',
+    flexGrow: 1,
     cursor: 'pointer',
     ':hover': {
       color: '#fff'
-    }
+    },
+  }),
+  chevronContainer: cxs({
+    paddingRight: '6px',
   }),
   titleContainer: cxs({
     flexGrow: 1,
     fontWeight: 'bolder',
     textTransform: 'uppercase',
     fontSize: '.8em',
-    padding: '2px'
+    padding: '2px',
   }),
   addContainer: cxs({
     opacity: 0,
@@ -65,17 +69,18 @@ export const SideBarTreeHeader: React.FC<{
       })
     )}>
       <div
-        className={styles.chevronContainer}
+        className={styles.clickableContainer}
         onClick={() => props.onChangeIsExpanded(!props.isExpanded)}
       >
-        <Icon
-          icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
-        />
+        <div className={styles.chevronContainer}>
+          <Icon
+            icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
+          />
+        </div>
+        <div className={styles.titleContainer}>
+          { props.title }
+        </div>
       </div>
-      <div className={styles.titleContainer}>
-        { props.title }
-      </div>
-
       { props.masterItem && (
         <Popover
           content={(
