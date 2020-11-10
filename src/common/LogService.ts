@@ -24,6 +24,7 @@ export interface Logger {
 
 
 export class LogService {
+  public static enabled = true;
   private static loggers: Logger[] = [];
   private static colorCounter = 0;
   private static colors = [
@@ -43,6 +44,8 @@ export class LogService {
     const color = LogService.colors[LogService.colorCounter];
 
     const createLogHandler = (level: LogLevel): LogHandler => (description, appendedValues = [], subStructure) => {
+      if (!LogService.enabled) return;
+
       let handler: (...a: any[]) => void;
       let prefixColor: Chalk;
       let prefixValue: string;

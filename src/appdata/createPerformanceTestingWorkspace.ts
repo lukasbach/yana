@@ -6,8 +6,9 @@ import { AppDataContextValue } from './AppDataProvider';
 import { DataInterface } from '../datasource/DataInterface';
 import { EditorRegistry } from '../editors/EditorRegistry';
 import { LocalSqliteDataSource } from '../datasource/LocalSqliteDataSource';
+import { LogService } from '../common/LogService';
 
-const BIG_FOLDER_CHILD_COUNTS = [10, 25, 50, 100, 250, 500, 1000];
+const BIG_FOLDER_CHILD_COUNTS = [10, 25, 50, 100, 250, 500, 1_000, 20_000];
 
 export const createPerformanceTestingWorkspace = async (appDataContext: AppDataContextValue) => {
   const workspaceName: string | undefined = await new Promise(res => {
@@ -46,7 +47,10 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
 
   await di.load();
 
-  const [root] = await di.searchImmediate({ tags: [InternalTag.WorkspaceRoot] });
+  LogService.enabled = false;
+
+  const searchResult = await di.search({ tags: [InternalTag.WorkspaceRoot], limit: 1 });
+  const root = searchResult.results[0];
 
   const bigFoldersContainer = await di.createDataItemUnderParent({
     name: 'Folders with many items',
@@ -67,6 +71,9 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
   }, root.id);
 
   for (const count of BIG_FOLDER_CHILD_COUNTS) {
+    console.log('Creating big folders of size' + count);
+    let lastAnnouncedPercentage = 0;
+
     const container = await di.createDataItemUnderParent({
       name: `${count} items`,
       created: new Date().getTime(),
@@ -77,6 +84,13 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
     }, bigFoldersContainer.id);
 
     for (let i = 0; i < count; i++) {
+      const percentage = Math.floor((i / count) * 100);
+
+      if (percentage > lastAnnouncedPercentage) {
+        lastAnnouncedPercentage = percentage;
+        console.log(percentage + '% done of folder with ' + count + ' items');
+      }
+
       const note = await di.createDataItemUnderParent({
         name: `Item ${i}/${count}`,
         created: new Date().getTime(),
@@ -119,4 +133,6 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
   await di.unload();
 
   Alerter.Instance.alert({ content: 'Done.' });
+
+  LogService.enabled = true;
 }
