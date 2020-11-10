@@ -161,9 +161,10 @@ export const CreateWorkspaceWindow: React.FC<{
   onClose: () => void,
   onCreate: (name: string, path: string) => void,
   onImported: () => void,
+  defaultWorkspaceName?: string,
 }> = props => {
   const appData = useAppData();
-  const [createWorkspaceName, setCreateWorkspaceName] = useState('New Workspace');
+  const [createWorkspaceName, setCreateWorkspaceName] = useState(props.defaultWorkspaceName ?? 'My thoughts');
   const [createWorkspacePath, setCreateWorkspacePath] = useState(
     path.join(getElectronPath('home'), 'yana-workspace')
   );

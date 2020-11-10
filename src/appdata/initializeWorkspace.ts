@@ -58,6 +58,7 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
   });
 
   await dataSource.persist();
+  await dataSource.unload();
 
   return {
     name,

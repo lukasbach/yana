@@ -13,6 +13,7 @@ import { SettingsObject } from '../settings/types';
 import { AutoBackupService } from './AutoBackupService';
 import { CreateWorkspaceWindow } from '../components/appdata/CreateWorkspaceWindow';
 import { appDataFile, userDataFolder } from './paths';
+import { getNewWorkspaceName } from './getNewWorkspaceName';
 
 const fs = fsLib.promises;
 
@@ -79,7 +80,7 @@ export const AppDataProvider: React.FC = props => {
     addWorkSpace: async (name, path) => {
       const workspace: WorkSpace = {
         name,
-        dataSourceType: 'fs',
+        dataSourceType: 'sqlite3', // TODO
         dataSourceOptions: {
           sourcePath: path
         }
@@ -99,6 +100,10 @@ export const AppDataProvider: React.FC = props => {
       setCurrentWorkspace(workspace);
     },
     createWorkSpace: async (name, path, dataSourceType) => {
+      if (appData.workspaces.find(ws => ws.name === name)) {
+        throw Error('A workspace with that name already exists.');
+      }
+
       const workspace = await initializeWorkspace(name, path, dataSourceType);
 
       const newAppData: AppData = {
@@ -115,6 +120,19 @@ export const AppDataProvider: React.FC = props => {
       setCurrentWorkspace(workspace);
     },
     deleteWorkspace: async (workspace, deleteData) => {
+      const differentWorkspace = appData.workspaces.find(ws => ws.dataSourceOptions.sourcePath !== workspace.dataSourceOptions.sourcePath);
+      if (!differentWorkspace) {
+        return Alerter.Instance.alert({
+          content: `Cannot create the only existing workspace`,
+          intent: 'danger',
+          canEscapeKeyCancel: true,
+          canOutsideClickCancel: true,
+          icon: 'warning-sign',
+        });
+      } else {
+        await ctx.setWorkSpace(differentWorkspace);
+      }
+
       if (deleteData) {
         await new Promise((res, rev) => {
           rimraf(workspace.dataSourceOptions.sourcePath, error => {
@@ -154,6 +172,7 @@ export const AppDataProvider: React.FC = props => {
       <div key={currentWorkspace?.dataSourceOptions?.sourcePath || '__'} style={{ height: '100%' }}>
         { isCreatingWorkspace || isInInitialCreationScreen ? (
           <CreateWorkspaceWindow
+            defaultWorkspaceName={getNewWorkspaceName(ctx)}
             onClose={() => isInInitialCreationScreen ? remote.getCurrentWindow().close() : setIsCreatingWorkspace(false)}
             onCreate={async (name, wsPath) => {
               try {
