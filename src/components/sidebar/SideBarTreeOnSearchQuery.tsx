@@ -12,7 +12,7 @@ export const SideBarTreeOnSearchQuery: React.FC<{
   title: string,
   masterItem?: DataItem,
 }> = props => {
-  const items = useDataSearch(props.search);
+  const { items } = useDataSearch(props.search);
 
   useEffect(() => logger.log("items changed", [], {items}), [items]);
 

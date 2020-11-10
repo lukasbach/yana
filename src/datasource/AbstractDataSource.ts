@@ -1,4 +1,12 @@
-import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery, UiError } from '../types';
+import {
+  DataItem,
+  DataItemKind,
+  DataSourceActionResult,
+  MediaItem,
+  SearchQuery,
+  SearchResult,
+  UiError,
+} from '../types';
 
 export interface AbstractDataSource {
   load: () => Promise<DataSourceActionResult>;
@@ -13,7 +21,7 @@ export interface AbstractDataSource {
   changeItem: <K extends DataItemKind>(id: string, overwriteItem: DataItem<K>) => Promise<DataSourceActionResult>;
 
   getParentsOf: <K extends DataItemKind>(childId: string) => Promise<DataItem<K>[]>;
-  search: (search: SearchQuery, onFind: (result: Array<DataItem<any>>) => any) => Promise<DataSourceActionResult>;
+  search: (search: SearchQuery) => Promise<SearchResult>;
 
   storeStructure: (id: string, structure: any) => Promise<DataSourceActionResult>;
   getStructure: (id: string) => Promise<any>;

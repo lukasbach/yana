@@ -53,7 +53,7 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
         }
       } else if (reason === ItemChangeEventReason.Created) {
         const changedItem = await dataInterface.getDataItem(id);
-        const changedItemParents = await dataInterface.searchImmediate({ childs: [changedItem.id] });
+        const { results: changedItemParents } = await dataInterface.search({ childs: [changedItem.id] });
         const itemIdsToChange = arrayIntersection(changedItemParents.map(i => i.id), itemIds);
         const itemsToChange = await Promise.all(itemIdsToChange.map(id => dataInterface.getDataItem(id)));
         updated.push(...itemsToChange);
@@ -116,7 +116,7 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
   }, [rootItems, items, dataInterface]);
 
   const expand = useCallback(async (id: string) => {
-    const childs = await dataInterface.searchImmediate({ parents: [id] });
+    const { results: childs } = await dataInterface.search({ parents: [id] });
     const childIds = childs.map(child => child.id);
     setItems(items => [...items.filter(item => !childIds.includes(item.id)), ...childs]);
     setExpandedIds(ids => [...ids, id]);

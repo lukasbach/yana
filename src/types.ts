@@ -65,6 +65,13 @@ export interface SearchQuery {
   sortColumn?: SearchQuerySortColumn;
   sortDirection?: SearchQuerySortDirection;
   limit?: number;
+  pagingValue?: string | number;
+}
+
+export interface SearchResult {
+  nextPageAvailable: boolean;
+  nextPagingValue?: string | number;
+  results: DataItem[];
 }
 
 export type DataSourceType = 'fs' | 'sqlite3';

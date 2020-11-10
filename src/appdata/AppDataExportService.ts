@@ -30,8 +30,8 @@ export class AppDataExportService {
     await di.load();
 
     onUpdate('Loading data items from workspace');
-    const result = await di.searchImmediate({ all: true });
-    for (const item of result) {
+    const { results } = await di.search({ all: true });
+    for (const item of results) {
       await fs.promises.writeFile(path.resolve(folder, 'items', `${item.id}.json`), JSON.stringify(item));
 
       if (isMediaItem(item) && !item.referencePath) {

@@ -10,8 +10,9 @@ import { useSettings } from '../../appdata/AppDataProvider';
 import { SideBarTreeOnSearchQuery } from './SideBarTreeOnSearchQuery';
 
 export const SideBarContent: React.FC<{}> = props => {
-  const [rootCollection] = useDataSearch({ tags: [InternalTag.WorkspaceRoot] });
-  const rootChilds = useDataSearch(rootCollection ? { parents: [rootCollection.id] } : {})
+  const searchResult = useDataSearch({ tags: [InternalTag.WorkspaceRoot], limit: 1 });
+  const rootCollection = searchResult.items[0];
+  const { items: rootChilds } = useDataSearch(rootCollection ? { parents: [rootCollection.id] } : {});
   const settings = useSettings();
 
   useEffect(() => console.log(`Changed rootCollection`, rootCollection), [rootCollection])

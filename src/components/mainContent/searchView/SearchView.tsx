@@ -24,7 +24,12 @@ export const SearchView: React.FC<{
   const [userSearch, setUserSearch] = useState(props.defaultSearch);
   // const [searchQuery, setSearchQuery] = useState<SearchQuery>({ ...props.hiddenSearch, ...props.defaultSearch });
   const searchQuery = { ...hiddenSearch, ...userSearch };
-  const items = useDataSearch(Object.keys(searchQuery).length === 0 ? { all: true } : searchQuery);
+  const {
+    items,
+    nextPageAvailable,
+    fetchNextPage,
+    isFetching
+  } = useDataSearch(Object.keys(searchQuery).length === 0 ? { all: true } : searchQuery, 200);
   const previews = useDataItemPreviews(items);
   // TODO currently, all previews are loaded at once. Use Grid.onSectionRendered() to only load previews when they enter the viewport
 
@@ -69,7 +74,10 @@ export const SearchView: React.FC<{
             <Grid
               cellRenderer={cellProps => {
                 const itemId = cellProps.rowIndex * Math.floor(width / searchViewCellDimensions.cellWidth) + cellProps.columnIndex;
-                if (itemId >= items.length) return null;
+                if (itemId >= items.length) {
+                  fetchNextPage();
+                  return null;
+                }
                 const item = items[itemId];
 
                 return (
@@ -91,9 +99,10 @@ export const SearchView: React.FC<{
                 />
               )}
               overscanColumnCount={2}
-              overscanRowCount={4}
+              overscanRowCount={12}
               rowHeight={searchViewCellDimensions.cellHeight}
-              rowCount={rowCount}
+              rowCount={rowCount + (nextPageAvailable ? 12 : 0)}
+              onSectionRendered={section => {}}
               height={height}
               width={width}
             />

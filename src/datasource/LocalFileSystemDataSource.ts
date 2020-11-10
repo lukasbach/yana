@@ -1,5 +1,5 @@
 import { AbstractDataSource } from './AbstractDataSource';
-import { DataSourceActionResult, DataItemKind, MediaItem, SearchQuery, DataItem } from '../types';
+import { DataSourceActionResult, DataItemKind, MediaItem, SearchQuery, DataItem, SearchResult } from '../types';
 import * as fsLib from 'fs';
 import * as path from 'path';
 import { isMediaItem, isNoteItem } from '../utils';
@@ -130,8 +130,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
 
   public async search(
     search: SearchQuery,
-    onFind: (collections: Array<DataItem<any>>) => any
-  ): Promise<DataSourceActionResult> {
+  ): Promise<SearchResult> {
     let result: DataItem[] = [];
     console.log("Search")
 
@@ -150,7 +149,11 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
       result = result.slice(0, search.limit);
     }
 
-    onFind(result);
+    return {
+      results: result,
+      nextPageAvailable: false,
+      nextPagingValue: undefined,
+    };
   }
 
   public async loadMediaItemContent(id: string): Promise<Buffer | Blob> {

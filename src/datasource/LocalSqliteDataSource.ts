@@ -6,7 +6,9 @@ import {
   DataSourceActionResult,
   MediaItem,
   SearchQuery,
+  SearchQuerySortColumn,
   SearchQuerySortDirection,
+  SearchResult,
 } from '../types';
 import Knex from 'knex';
 import fsLib from 'fs';
@@ -51,7 +53,7 @@ export class LocalSqliteDataSource implements AbstractDataSource {
     return uuid();
   }
 
-  private static getDb(sourcePath: string) {
+  public static getDb(sourcePath: string) {
     return Knex({
       client: "sqlite3",
       connection: {
@@ -177,7 +179,8 @@ export class LocalSqliteDataSource implements AbstractDataSource {
   public async getNoteItemContent<C extends object>(id: string): Promise<C> {
     const [item] = await this.db('note_contents')
       .select('content', 'noteId')
-      .where('noteId', id);
+      .where('noteId', id)
+      .limit(1);
 
     return item?.content ? JSON.parse(item.content) : null;
   }
@@ -313,7 +316,7 @@ export class LocalSqliteDataSource implements AbstractDataSource {
     return (await Promise.all(parentIds.map(({ parentId }) => this.getDataItem(parentId)))).filter(el => !!el) as any;
   }
 
-  public async search(search: SearchQuery, onFind: (result: Array<DataItem<any>>) => any): Promise<DataSourceActionResult> {
+  public async search(search: SearchQuery): Promise<SearchResult> {
     let query = this.db('items')
       .select('*');
 
@@ -401,32 +404,43 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       } // TODO maybe this for loop can be compressed into a single where clause?
     }
 
-    if (search.limit) {
-      query = query.limit(search.limit);
+    if (search.pagingValue) {
+      query = query.where(
+        search.sortColumn ?? SearchQuerySortColumn.Name,
+        search.sortDirection === SearchQuerySortDirection.Descending ? '<' : '>', // TODO correct?
+        search.pagingValue
+      )
     }
 
-    if (search.sortColumn) {
-      query = query.orderBy(
-        search.sortColumn,
-        search.sortDirection === SearchQuerySortDirection.Descending ? 'desc' : 'asc'
-      );
+    if (search.limit) {
+      query = query.limit(search.limit);
+    } else {
+      logger.warn('Performing search without limit!', [], {search});
     }
+
+    query = query.orderBy(
+      search.sortColumn ?? SearchQuerySortColumn.Name,
+      search.sortDirection === SearchQuerySortDirection.Descending ? 'desc' : 'asc'
+    );
 
     logger.log("Performing sqlite search " + query.toQuery());
 
     const itemIds: Array<{ id: string }> = await query;
 
-    logger.log("Search yielded IDs: ", [], {itemIds});
+    logger.log("Search yielded IDs: ", [], {itemIds, search, query: query.toQuery()});
 
     // TODO extract getDataItem code into seperate call and use it to complete data items instead of refetching
     const items = (await Promise.all(itemIds.map(({id}) => this.getDataItem(id))))
-      .filter(item => !!item);
+      .filter(item => !!item) as DataItem[];
+    // TODO search content table
 
     logger.log("Search yielded items: ", [], {items});
 
-    onFind(items as any);
-
-    // TODO search content table
+    return {
+      results: items,
+      nextPagingValue: items[items.length - 1]?.[search.sortColumn ?? SearchQuerySortColumn.Name],
+      nextPageAvailable: !!search.limit && items.length === search.limit
+    };
   }
 
   public async loadMediaItemContent(id: string): Promise<Buffer | Blob> {

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { AbstractDataSource } from './AbstractDataSource';
-import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery } from '../types';
+import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery, SearchResult } from '../types';
 import { EventEmitter } from '../common/EventEmitter';
 import type { EditorRegistry } from '../editors/EditorRegistry';
 import { isMediaItem, isNoteItem } from '../utils';
@@ -271,20 +271,16 @@ export class DataInterface implements AbstractDataSource {
 
   public async search(
     search: SearchQuery,
-    onFind: (result: Array<DataItem<any>>) => any
-  ): Promise<DataSourceActionResult> {
+  ): Promise<SearchResult> {
     this.devtools?.increaseCounter('DI search');
-    if (Object.keys(search).length === 0) return;
+    if (Object.keys(search).filter(key => (search as any)[key] !== undefined).length === 0) {
+      return {
+        results: [],
+        nextPageAvailable: false,
+      };
+    }
     logger.log("Performing search", [], {search});
-    return await this.dataSource.search(search, onFind);
-  }
-
-  public async searchImmediate(search: SearchQuery): Promise<Array<DataItem>> {
-    this.devtools?.increaseCounter('DI searchImmediate');
-    const items: DataItem[] = [];
-    await this.search(search, result => items.push(...result));
-    logger.out("Performing immediate search", [], { search, items });
-    return items;
+    return await this.dataSource.search(search);
   }
 
   public async loadMediaItemContent(id: string): Promise<Buffer | Blob> {

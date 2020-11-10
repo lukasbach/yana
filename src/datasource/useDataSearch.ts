@@ -1,26 +1,47 @@
 import { DataItem, SearchQuery } from '../types';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useEventChangeHandler } from '../common/useEventChangeHandler';
 import { SearchHelper } from './SearchHelper';
 import { ItemChangeEventReason} from './DataInterface';
 import { useDataInterface } from './DataInterfaceContext';
 import { LogService } from '../common/LogService';
+import { useAsyncEffect } from '../utils';
 
 const logger = LogService.getLogger('useDataSearch');
 
-export const useDataSearch = (search: SearchQuery) => {
+export const useDataSearch = (search: SearchQuery, pagingSize?: number) => {
   const dataInterface = useDataInterface();
   const [refreshedItems, setRefreshedItems] = useState<Array<DataItem<any>>>([]);
   const refreshedItemIds = refreshedItems.map(item => item.id);
+  const [nextPagingValue, setNextPagingValue] = useState<undefined | string | number>();
+  const [nextPageAvailable, setNextPageAvailable] = useState(true);
+  const [isFetching, setIsFetching] = useState(false);
+  const fetchLock = useRef(false);
 
-  useEffect(() => {
+  const limit = pagingSize ?? search.limit;
+
+  const fetchNextPage = async (force = false) => {
+    if (force || (nextPageAvailable && !fetchLock.current)) {
+      setIsFetching(true);
+      fetchLock.current = true;
+      const result = await dataInterface.search({ ...search, limit, pagingValue: !force ? nextPagingValue : undefined });
+      setRefreshedItems(oldItems => [...oldItems, ...result.results]);
+      setNextPagingValue(result.nextPagingValue);
+      setNextPageAvailable(result.nextPageAvailable);
+      setIsFetching(false);
+      fetchLock.current = false;
+    }
+  }
+
+  useAsyncEffect(async () => {
     logger.log('search query changed', [JSON.stringify(search)], {refreshedItems, search})
     setRefreshedItems([]);
-    dataInterface.search(search, items => setRefreshedItems(oldItems => [...oldItems, ...items]));
+    setNextPageAvailable(true);
+    setNextPagingValue(undefined);
+    await fetchNextPage(true);
   }, [JSON.stringify(search)]) // TODO dont stringify? causes infinite loop
 
   useEventChangeHandler(dataInterface.onChangeItems, async (changes) => {
-
     const addItems: Array<DataItem<any>> = [];
     const changedItems: Array<DataItem<any>> = [];
     const removeItemIds: Array<string> = [];
@@ -67,5 +88,10 @@ export const useDataSearch = (search: SearchQuery) => {
     }
   }, [JSON.stringify(search), refreshedItemIds.join('___')]);
 
-  return refreshedItems;
+  return {
+    items: refreshedItems,
+    nextPageAvailable,
+    fetchNextPage,
+    isFetching
+  };
 };
