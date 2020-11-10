@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Button, IconName, InputGroup, NonIdealState, Popover } from '@blueprintjs/core';
+import { Button, IconName, InputGroup, NonIdealState, Popover, Spinner } from '@blueprintjs/core';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { DataItem, SearchQuery, SearchQuerySortDirection } from '../../../types';
 import { PageHeader } from '../../common/PageHeader';
@@ -11,6 +11,7 @@ import { PageContainer } from '../../common/PageContainer';
 import { SearchInput } from './SearchInput';
 import { SearchSortingMenu } from './SearchSortingMenu';
 import { useDataItemPreviews } from '../../../datasource/useDataItemPreviews';
+import { LoadingSearchViewCard } from './LoadingSearchViewCard';
 
 export const SearchView: React.FC<{
   title: string,
@@ -74,17 +75,34 @@ export const SearchView: React.FC<{
             <Grid
               cellRenderer={cellProps => {
                 const itemId = cellProps.rowIndex * Math.floor(width / searchViewCellDimensions.cellWidth) + cellProps.columnIndex;
-                if (itemId >= items.length) {
-                  fetchNextPage();
-                  return null;
+                const additionalLeftMargin = (width - columnCount * searchViewCellDimensions.cellWidth) / 2;
+
+                if (items.length === 0) {
+                  return null; // Provoke non ideal state
                 }
+
+                if (itemId >= items.length) {
+                  if (!nextPageAvailable) {
+                    return null;
+                  }
+
+                  fetchNextPage();
+                  return (
+                    <LoadingSearchViewCard
+                      key={cellProps.key}
+                      additionalLeftMargin={additionalLeftMargin}
+                      containerStyle={cellProps.style}
+                    />
+                  );
+                }
+
                 const item = items[itemId];
 
                 return (
                   <SearchViewCard
                     cellProps={cellProps}
                     dataItem={item}
-                    additionalLeftMargin={(width - columnCount * searchViewCellDimensions.cellWidth) / 2}
+                    additionalLeftMargin={additionalLeftMargin}
                     onClick={props.onClickItem ? (() => props.onClickItem?.(item)) : undefined}
                     preview={previews[item.id]}
                   />
@@ -93,13 +111,20 @@ export const SearchView: React.FC<{
               columnWidth={searchViewCellDimensions.cellWidth}
               columnCount={columnCount}
               noContentRenderer={() => (
-                <NonIdealState
-                  icon={'warning-sign'}
-                  title="No items found"
-                />
+                isFetching ? (
+                  <NonIdealState
+                    icon={<Spinner />}
+                    title="Loading items..."
+                  />
+                ) : (
+                  <NonIdealState
+                    icon={'warning-sign'}
+                    title="No items found"
+                  />
+                )
               )}
-              overscanColumnCount={2}
-              overscanRowCount={12}
+              overscanColumnCount={0}
+              overscanRowCount={20}
               rowHeight={searchViewCellDimensions.cellHeight}
               rowCount={rowCount + (nextPageAvailable ? 12 : 0)}
               onSectionRendered={section => {}}

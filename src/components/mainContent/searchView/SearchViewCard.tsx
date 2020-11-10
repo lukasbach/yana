@@ -13,6 +13,7 @@ import { DataItemContextMenu } from '../../menus/DataItemContextMenu';
 import { Bp3MenuRenderer } from '../../menus/Bp3MenuRenderer';
 import { useDataInterface } from '../../../datasource/DataInterfaceContext';
 import { useEffect, useState } from 'react';
+import { SearchViewCardUi } from './SearchViewCardUi';
 
 const styles = {
   itemCard: cxs({
@@ -71,29 +72,19 @@ export const SearchViewCard: React.FC<{
   const noteItemContent = typeof preview === 'object' ? preview : undefined;
 
   return (
-    <div
+    <SearchViewCardUi
       key={cellProps.key}
-      style={{
-        ...cellProps.style,
-        transform: `translateX(${additionalLeftMargin}px)`
-      }}
+      containerStyle={cellProps.style}
+      containerProps={contextMenuProps}
+      additionalLeftMargin={additionalLeftMargin}
       onClick={onClick || (() => mainContent.openInCurrentTab(dataItem))}
-      {...contextMenuProps}
-    >
-      <div className={styles.itemCard}>
-        <div className={styles.cardHeader}>
-          <h4>
-            <Icon icon={dataItem.icon || (isNoteItem(dataItem) ? 'document' : 'folder-open') as any} color={dataItem.color} />
-            { dataItem.name }
-          </h4>
-        </div>
-        <div className={styles.cardMiddle} style={{ backgroundImage: thumbnail && `url("file:///${thumbnail.replace(/\\/g, '/')}")` }}>
-          { isNoteItem(dataItem) && <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} /> }
-        </div>
-        <div className={styles.cardFooter}>
-          { ago(new Date(dataItem.lastChange)) }
-        </div>
-      </div>
-    </div>
+      interactive={true}
+      header={dataItem.name}
+      icon={dataItem.icon || (isNoteItem(dataItem) ? 'document' : 'folder-open') as any}
+      iconColor={dataItem.color}
+      thumbnail={thumbnail}
+      preview={(isNoteItem(dataItem) && <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} />) || undefined}
+      footerText={ago(new Date(dataItem.lastChange))}
+    />
   );
 };

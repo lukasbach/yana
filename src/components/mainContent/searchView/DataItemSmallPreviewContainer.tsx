@@ -3,6 +3,7 @@ import { DataItem, NoteDataItem } from '../../../types';
 import { EditorRegistry } from '../../../editors/EditorRegistry';
 import { useDataItemContent } from '../../../datasource/useDataItemContent';
 import cxs from 'cxs';
+import { NonIdealState, Spinner } from '@blueprintjs/core';
 
 const containerStyle = cxs({
   height: '100%',
@@ -20,7 +21,7 @@ const containerStyle = cxs({
 export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<any>, noteItemContent?: object }> = props => {
   const editor = EditorRegistry.Instance.getEditorWithId(props.noteItem.noteType);
 
-  if (!editor || !editor.smallPreviewComponent || !props.noteItemContent) {
+  if (!editor || !editor.smallPreviewComponent) {
     return null;
   }
 
@@ -28,7 +29,11 @@ export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<an
 
   return (
     <div className={containerStyle}>
-      <PreviewComponent item={props.noteItem} content={props.noteItemContent} />
+      { props.noteItemContent ? (
+        <PreviewComponent item={props.noteItem} content={props.noteItemContent} />
+      ) : (
+        <NonIdealState icon={<Spinner />} />
+      ) }
     </div>
   );
 };
