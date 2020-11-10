@@ -5,6 +5,7 @@ import { useTheme } from '../../common/theming';
 import { Classes, Icon, IconName, Popover } from '@blueprintjs/core';
 import { useEffect, useRef, useState } from 'react';
 import { useContextMenu } from '../useContextMenu';
+import { useSettings } from '../../appdata/AppDataProvider';
 
 const styles = {
   itemContainer: cxs({
@@ -99,6 +100,7 @@ export const SideBarTreeItemUi: React.FC<{
   iconColor?: string;
 }> = props => {
   const theme = useTheme();
+  const settings = useSettings();
   const [isActive, setIsActive] = useState(props.isActive || false);
   const [name, setName] = useState(props.text);
   const renameInputRef = useRef<HTMLInputElement>(null);
@@ -118,6 +120,7 @@ export const SideBarTreeItemUi: React.FC<{
         isActive && styles.itemContainerActive,
         cxs({
           color: theme.sidebarTextColor,
+          padding: settings.sidebarItemPadding,
           ':hover': {
             backgroundColor: !props.isActive ? theme.sidebarHoverColor : undefined,
           }

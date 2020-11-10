@@ -4,6 +4,13 @@ export enum SideBarItemAction {
   ToggleExpansion = 'toggle',
 }
 
+export enum SidebarPadding {
+  Compact = '2px 4px',
+  Default = '4px 12px',
+  Relaxed = '6px 12px',
+  VeryRelaxed = '8px 12px',
+}
+
 export interface SettingsObject {
   sidebarNoteItemNameAction: SideBarItemAction,
   sidebarNoteItemBackgroundAction: SideBarItemAction,
@@ -20,6 +27,7 @@ export interface SettingsObject {
   sidebarShowStarredItemsCount: number,
   sidebarShowRecentItems: boolean,
   sidebarShowRecentItemsCount: number,
+  sidebarItemPadding: string,
   noteItemSaveDelay: number,
   noteItemMaximumSaveInterval: number,
   autoBackupActive: boolean,

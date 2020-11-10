@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SettingsSection } from '../layout/SettingsSection';
 import { SettingsSelectInput } from '../layout/SettingsSelectInput';
-import { SideBarItemAction } from '../../../settings/types';
+import { SideBarItemAction, SidebarPadding } from '../../../settings/types';
 import { SettingsSwitchInput } from '../layout/SettingsSwitchInput';
 import { SettingsNumberInput } from '../layout/SettingsNumberInput';
 import { SettingsClickable } from '../layout/SettingsClickable';
@@ -17,6 +17,17 @@ export const SidebarSettings: React.FC<{}> = props => {
   return (
     <div>
       <SettingsSection title="Sidebar">
+        <SettingsSelectInput
+          settingsKey={'sidebarItemPadding'}
+          label="Sidebar Item Density"
+          options={[
+            { value: SidebarPadding.Compact, label: 'Compact' },
+            { value: SidebarPadding.Default, label: 'Default' },
+            { value: SidebarPadding.Relaxed, label: 'Comfortable' },
+            { value: SidebarPadding.VeryRelaxed, label: 'Very Comfortable' },
+          ]}
+        />
+
         <SettingsNumberInput
           settingsKey={'sidebarNumberOfUntruncatedItems'}
           label="Number of childs shown by default"

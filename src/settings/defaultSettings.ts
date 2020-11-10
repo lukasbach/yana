@@ -1,4 +1,4 @@
-import { SettingsObject, SideBarItemAction } from './types';
+import { SettingsObject, SideBarItemAction, SidebarPadding } from './types';
 import path from "path";
 import { remote } from "electron";
 import { getElectronPath } from '../utils';
@@ -37,6 +37,7 @@ export const defaultSettings: SettingsObject = {
   sidebarShowRecentItemsCount: 5,
   sidebarShowStarredItems: true,
   sidebarShowStarredItemsCount: 5,
+  sidebarItemPadding: SidebarPadding.Default,
   devToolsOpen: false,
   themePrimaryColor: defaultTheme.primaryColor,
   themeSidebarColor: defaultTheme.sidebarColor,
