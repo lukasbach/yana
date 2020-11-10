@@ -7,6 +7,7 @@ import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
 import { DataItemContextMenu } from '../menus/DataItemContextMenu';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { SettingsObject, SideBarItemAction } from '../../settings/types';
+import { IconName } from '@blueprintjs/core';
 
 enum ActionKind { BackgroundClick, MiddleClick, TitleClick }
 
@@ -89,6 +90,20 @@ export const SideBarTreeItem: React.FC<{
     />
   );
 
+  let icon: IconName | undefined = item.icon as IconName;
+
+  if (!icon) {
+    if (item.kind === DataItemKind.NoteItem) {
+      icon = 'document';
+    } else if (item.kind === DataItemKind.MediaItem) {
+      icon = 'media';
+    } else if (isExpanded) {
+      icon = 'folder-open';
+    } else {
+      icon = 'folder-close';
+    }
+  }
+
   return (
     <SideBarTreeItemUi
       text={item.name}
@@ -104,7 +119,7 @@ export const SideBarTreeItem: React.FC<{
       onMiddleClick={createOnAction(getActionPropertyFromSettings(ActionKind.MiddleClick, item.kind, settings))}
       onTitleClick={createOnAction(getActionPropertyFromSettings(ActionKind.TitleClick, item.kind, settings))}
       menu={menu}
-      icon={item.icon || (item.kind === DataItemKind.NoteItem ? 'document' : 'folder-open') as any}
+      icon={icon}
       iconColor={item.color}
     />
   );

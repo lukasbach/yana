@@ -9,11 +9,13 @@ import { Alerter } from './components/Alerter';
 import { DropZoneContainer } from './components/dropZone/DropZoneContainer';
 import { remote } from 'electron';
 import { ContextMenu, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
+import { DevToolsContextProvider } from './components/devtools/DevToolsContextProvider';
+// @ts-ignore
+import {IntlProvider} from 'react-intl';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
-import { AutoUpdate } from './appdata/AutoUpdate';
-import { DevToolsContextProvider } from './components/devtools/DevToolsContextProvider';
+import 'animate.css/animate.min.css';
 
 (window as any).ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
@@ -44,22 +46,24 @@ remote.getCurrentWebContents().on('context-menu', (event, params) => {
       </Menu>
     ), { top: params.y, left: params.x});
   }
-})
+});
 
 // TODO closing a open tab removes its file contents, because the editor isnt mounted anymore and the content getter returns {}, which overwrites the previous content
 ReactDOM.render(
-  <AppDataProvider>
-    <ThemeProvider>
-      <DevToolsContextProvider>
-        <DataInterfaceProvider>
-          <MainContentContextProvider>
-            <LayoutContainer />
-            <Alerter.Instance.Container />
-            <DropZoneContainer />
-          </MainContentContextProvider>
-        </DataInterfaceProvider>
-      </DevToolsContextProvider>
-    </ThemeProvider>
-  </AppDataProvider>,
+  <IntlProvider locale='en'>
+    <AppDataProvider>
+      <ThemeProvider>
+        <DevToolsContextProvider>
+          <DataInterfaceProvider>
+            <MainContentContextProvider>
+              <LayoutContainer />
+              <Alerter.Instance.Container />
+              <DropZoneContainer />
+            </MainContentContextProvider>
+          </DataInterfaceProvider>
+        </DevToolsContextProvider>
+      </ThemeProvider>
+    </AppDataProvider>
+  </IntlProvider>,
   document.getElementById('root')
 );
