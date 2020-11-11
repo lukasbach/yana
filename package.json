@@ -1,6 +1,6 @@
 {
   "name": "yana",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "description": "Minimalistic React + TypeScript + Electron Boilerplate. Nothing more.",
   "main": "app/electron-main.js",
   "scripts": {
