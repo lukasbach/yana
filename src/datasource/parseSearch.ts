@@ -37,7 +37,5 @@ export const parseSearch = (value: string): SearchQuery => {
     }
   }
 
-  console.log(query, pieces, value)
-
   return query;
 }

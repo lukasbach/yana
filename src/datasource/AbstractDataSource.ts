@@ -16,7 +16,7 @@ export interface AbstractDataSource {
   getDataItem: <K extends DataItemKind>(id: string) => Promise<null | DataItem<K>>;
   getNoteItemContent: <C extends object>(id: string) => Promise<C>;
   writeNoteItemContent: <C extends object>(id: string, content: C) => Promise<DataSourceActionResult>;
-  createDataItem: <K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>) => Promise<DataItem<K>>;
+  createDataItem: <K extends DataItemKind>(item: Omit<DataItem<K>, 'id'> & { id?: string }) => Promise<DataItem<K>>;
   removeItem: (id: string) => Promise<DataSourceActionResult>;
   changeItem: <K extends DataItemKind>(id: string, overwriteItem: DataItem<K>) => Promise<DataSourceActionResult>;
 

@@ -1,4 +1,4 @@
-import { AppDataContextValue } from './AppDataProvider';
+import { AppDataContext, AppDataContextValue } from './AppDataProvider';
 import path from "path";
 import { getElectronPath, isMediaItem, isNoteItem } from '../utils';
 import rimraf from 'rimraf';
@@ -24,23 +24,30 @@ export const runImport = async (
     await new Promise(r => rimraf(folder, r));
     await fs.promises.mkdir(folder, {recursive: true});
 
-    await appDataContext.createWorkSpace(name, newWorkspaceFolder, 'sqlite3'); // TODO
+    onUpdate('Creating new workspace');
+    const workspace = await appDataContext.createWorkSpace(name, newWorkspaceFolder, 'sqlite3', true); // TODO
 
+    onUpdate('Initiating DataInterface');
     const di = new DataInterface(new LocalSqliteDataSource({ // TODO
       sourcePath: newWorkspaceFolder
     }), EditorRegistry.Instance, 50);
 
+    onUpdate('Loading DataInterface');
     await di.load();
 
+    onUpdate('Unzipping exported zip');
     await new Promise(res => fs.createReadStream(sourcePath)
       .pipe(unzipper.Extract({path: folder})).on('close', () => res()));
 
+    onUpdate('Ceating media.json');
     const media: { [id: string]: string } = JSON.parse(await fs.promises.readFile(
       path.join(folder, 'media.json'), {encoding: 'utf8'}));
 
+    onUpdate('Creating data items');
     for (const itemName of await fs.promises.readdir(path.join(folder, 'items'))) {
       const item: DataItem = JSON.parse(await fs.promises.readFile(
         path.join(folder, 'items', itemName), {encoding: 'utf8'}));
+      onUpdate('Creating item ' + item.name);
 
       await di.createDataItem(item);
 
@@ -52,8 +59,10 @@ export const runImport = async (
         await di.storeMediaItemContent(item.id, path.join(folder, media[item.id]), {width: 300});
       }
     }
+    onUpdate('Finished creating items. Unloading DataInterface.');
 
     await di.unload();
+    appDataContext.setWorkSpace(workspace);
   } catch(e) {
     Alerter.Instance.alert({
       content: `Error: ${e.message}`,

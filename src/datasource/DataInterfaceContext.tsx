@@ -39,7 +39,12 @@ export const DataInterfaceProvider: React.FC = props => {
   useCloseEvent(async () => {
     if (dataInterface) {
       await dataInterface.persist();
+      await dataInterface.unload();
     }
+  }, [dataInterface]);
+
+  useEffect(() => () => {
+    dataInterface?.unload();
   }, [dataInterface])
 
   return (

@@ -1,5 +1,5 @@
 import { DataInterface } from '../datasource/DataInterface';
-import { WorkSpace } from '../types';
+import { SearchResult, WorkSpace } from '../types';
 import path from 'path';
 import fs from 'fs';
 import rimraf from 'rimraf';
@@ -30,21 +30,24 @@ export class AppDataExportService {
     await di.load();
 
     onUpdate('Loading data items from workspace'); // TODO paginate
-    const { results } = await di.search({ all: true });
-    for (const item of results) {
-      await fs.promises.writeFile(path.resolve(folder, 'items', `${item.id}.json`), JSON.stringify(item));
 
-      if (isMediaItem(item) && !item.referencePath) {
-        const mediaItem = await di.loadMediaItemContentAsPath(item.id);
-        const internalPath = `media/${path.basename(mediaItem)}`;
-        console.log("!!", internalPath)
-        await fs.promises.copyFile(mediaItem, path.resolve(folder, internalPath));
-        mediaItems[item.id] = internalPath;
-      } else if (isNoteItem(item)) {
-        const content = await di.getNoteItemContent(item.id);
-        await fs.promises.writeFile(path.resolve(folder, 'notes', `${item.id}.json`), JSON.stringify(content));
+    let result: SearchResult = { nextPageAvailable: true, results: [] };
+    do {
+      result = await di.search({ all: true, limit: 200, pagingValue: result.nextPagingValue });
+      for (const item of result.results) {
+        await fs.promises.writeFile(path.resolve(folder, 'items', `${item.id}.json`), JSON.stringify(item));
+
+        if (isMediaItem(item) && !item.referencePath) {
+          const mediaItem = await di.loadMediaItemContentAsPath(item.id);
+          const internalPath = `media/${path.basename(mediaItem)}`;
+          await fs.promises.copyFile(mediaItem, path.resolve(folder, internalPath));
+          mediaItems[item.id] = internalPath;
+        } else if (isNoteItem(item)) {
+          const content = await di.getNoteItemContent(item.id);
+          await fs.promises.writeFile(path.resolve(folder, 'notes', `${item.id}.json`), JSON.stringify(content));
+        }
       }
-    }
+    } while(result.nextPageAvailable);
 
     await di.unload();
 

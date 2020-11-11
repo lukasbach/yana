@@ -127,7 +127,7 @@ export class DataInterface implements AbstractDataSource {
     return result;
   }
 
-  public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>): Promise<DataItem<K>> {
+  public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'> & { id?: string }): Promise<DataItem<K>> {
     this.devtools?.increaseCounter('DI createDataItem');
     const result = await this.dataSource.createDataItem<K>(item);
     await this.initializeNoteContent(result);
@@ -198,6 +198,7 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async moveItem(id: string, originalParentId: string, targetParentId: string, targetIndex: number) {
+    // TODO move changeItem logic in here (we dont need tag change logic here) and send onChange event immediately to fix drag-and-drop herpiness in sidebar
     this.devtools?.increaseCounter('DI moveItem');
     // const item = await this.getDataItem(id);
     const originalParent = await this.getDataItem(originalParentId);

@@ -191,8 +191,18 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       .update('content', JSON.stringify(content));
   }
 
-  public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, "id">): Promise<DataItem<K>> {
-    const id = this.createId();
+  private async breakSqlCommandsDown<T>(items: T[], doPerSetOfItems: (items: T[]) => Promise<void>) {
+    const itemsAtATime = 100;
+
+    for (let i = 0; i < items.length; i += itemsAtATime) {
+      await doPerSetOfItems(items.slice(i, i + itemsAtATime));
+    }
+  }
+
+
+
+  public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, "id"> & { id?: string }): Promise<DataItem<K>> {
+    const id = item.id ?? this.createId();
     await this.db('items').insert([{
       id: id,
       name: item.name,
@@ -205,17 +215,17 @@ export class LocalSqliteDataSource implements AbstractDataSource {
     }]);
 
     if (item.tags.length > 0) {
-      await this.db('items_tags').insert(item.tags.map(tag => ({
+      await this.breakSqlCommandsDown(item.tags.map(tag => ({
         tagName: tag,
         noteId: id
-      })));
+      })), async setOfItems => await this.db('items_tags').insert(setOfItems));
     }
 
     if (item.childIds.length > 0) {
-      await this.db('items_childs').insert(item.childIds.map(childId => ({
+      await this.breakSqlCommandsDown(item.childIds.map(childId => ({
         parentId: id,
         childId
-      })));
+      })), async setOfItems => await this.db('items_childs').insert(setOfItems));
     }
 
     if (isNoteItem(item as any)) {

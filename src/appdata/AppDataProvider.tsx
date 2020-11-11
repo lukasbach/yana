@@ -18,7 +18,7 @@ import { getNewWorkspaceName } from './getNewWorkspaceName';
 const fs = fsLib.promises;
 
 export interface AppDataContextValue extends AppData {
-  createWorkSpace: (name: string, path: string, dataSourceType: DataSourceType) => Promise<void>;
+  createWorkSpace: (name: string, path: string, dataSourceType: DataSourceType, empty?: boolean) => Promise<WorkSpace>;
   addWorkSpace: (name: string, path: string) => Promise<void>;
   setWorkSpace: (workspace: WorkSpace) => void;
   currentWorkspace: WorkSpace;
@@ -99,12 +99,12 @@ export const AppDataProvider: React.FC = props => {
       autoBackup?.addWorkspace(workspace);
       setCurrentWorkspace(workspace);
     },
-    createWorkSpace: async (name, path, dataSourceType) => {
+    createWorkSpace: async (name, path, dataSourceType, empty?: boolean) => {
       if (appData.workspaces.find(ws => ws.name === name)) {
         throw Error('A workspace with that name already exists.');
       }
 
-      const workspace = await initializeWorkspace(name, path, dataSourceType);
+      const workspace = await initializeWorkspace(name, path, dataSourceType, empty);
 
       const newAppData: AppData = {
         ...appData,
@@ -117,20 +117,17 @@ export const AppDataProvider: React.FC = props => {
       await fs.writeFile(appDataFile, JSON.stringify(newAppData));
       setAppData(newAppData);
       autoBackup?.addWorkspace(workspace);
-      setCurrentWorkspace(workspace);
+      return workspace;
     },
     deleteWorkspace: async (workspace, deleteData) => {
-      const differentWorkspace = appData.workspaces.find(ws => ws.dataSourceOptions.sourcePath !== workspace.dataSourceOptions.sourcePath);
-      if (!differentWorkspace) {
+      if (currentWorkspace.dataSourceOptions.sourcePath === workspace.dataSourceOptions.sourcePath) {
         return Alerter.Instance.alert({
-          content: `Cannot create the only existing workspace`,
+          content: `Cannot delete the workspace that is currently opened. Please open a different workspace and retry deletion.`,
           intent: 'danger',
           canEscapeKeyCancel: true,
           canOutsideClickCancel: true,
           icon: 'warning-sign',
         });
-      } else {
-        await ctx.setWorkSpace(differentWorkspace);
       }
 
       if (deleteData) {
@@ -176,7 +173,8 @@ export const AppDataProvider: React.FC = props => {
             onClose={() => isInInitialCreationScreen ? remote.getCurrentWindow().close() : setIsCreatingWorkspace(false)}
             onCreate={async (name, wsPath) => {
               try {
-                await ctx.createWorkSpace(name, wsPath, 'sqlite3'); // TODO
+                const workspace = await ctx.createWorkSpace(name, wsPath, 'sqlite3'); // TODO
+                setCurrentWorkspace(workspace);
                 setIsCreatingWorkspace(false);
               } catch(e) {
                 Alerter.Instance.alert({
