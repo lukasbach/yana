@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { FileDropZone } from './FileDropZone';
-import { Button, Classes, Dialog, Spinner, Switch } from '@blueprintjs/core';
+import { Button, Callout, Classes, Dialog, Spinner, Switch } from '@blueprintjs/core';
 import { FilePreview } from './FilePreview';
 import { UploadEntity } from './UploadEntity';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
@@ -80,6 +80,9 @@ export const DropZoneContainer: React.FC<{}> = props => {
         icon="upload"
       >
         <div className={Classes.DIALOG_BODY}>
+          <Callout intent={'danger'} icon={'warning-sign'}>
+            Adding files is currently in beta. Use at your own risk!
+          </Callout>
           {
             droppedFiles.map(file => (
               <FilePreview
