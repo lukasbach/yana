@@ -102,8 +102,8 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     await fs.writeFile(this.resolvePath(NOTES_DIR, id + '.json'), JSON.stringify(content));
   }
 
-  public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>): Promise<DataItem<K>> {
-    let itemCopy: DataItem<K> = { ...item, id: (item as any).id || this.createId(item.kind) };
+  public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'> & { id?: string }): Promise<DataItem<K>> {
+    let itemCopy: DataItem<K> = { ...item, id: item.id || this.createId(item.kind) };
     this.structure.items[itemCopy.id] = itemCopy;
     return itemCopy;
   }
@@ -132,7 +132,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     search: SearchQuery,
   ): Promise<SearchResult> {
     let result: DataItem[] = [];
-    console.log("Search")
+    const start = search.pagingValue as number ?? 0;
 
     for (const item of Object.values(this.structure.items)) {
       if (await SearchHelper.satisfiesSearch(item, search, this)) {
@@ -146,13 +146,13 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     }
 
     if (search.limit) {
-      result = result.slice(0, search.limit);
+      result = result.slice(start, start + search.limit);
     }
 
     return {
       results: result,
-      nextPageAvailable: false,
-      nextPagingValue: undefined,
+      nextPageAvailable: !!(search.limit && start + search.limit < result.length),
+      nextPagingValue: search.limit ? start + search.limit : undefined,
     };
   }
 
