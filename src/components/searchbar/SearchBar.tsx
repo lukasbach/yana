@@ -22,8 +22,8 @@ export const SearchBar: React.FC<{
   onChangeSearchQuery?: (searchQuery: SearchQuery) => void,
 }> = props => {
   const [value, setValue] = useState(props.initialValue || '');
+  const [query, setQuery] = useState(parseSearch(props.initialValue || ''));
   const searchInputChangeHandler = useRef<number | undefined>();
-  const query = parseSearch(value);
 
   useEffect(() => {
     console.log(value)
@@ -33,6 +33,7 @@ export const SearchBar: React.FC<{
     searchInputChangeHandler.current = setTimeout(() => {
       const query = parseSearch(value);
       props.onChangeSearchQuery?.(query);
+      setQuery(query);
       searchInputChangeHandler.current = undefined;
     }, 500) as any;
   }, [value]);
