@@ -12,6 +12,7 @@ import { SearchInput } from './SearchInput';
 import { SearchSortingMenu } from './SearchSortingMenu';
 import { useDataItemPreviews } from '../../../datasource/useDataItemPreviews';
 import { LoadingSearchViewCard } from './LoadingSearchViewCard';
+import { SearchBar } from '../../searchbar/SearchBar';
 
 export const SearchView: React.FC<{
   title: string,
@@ -44,7 +45,9 @@ export const SearchView: React.FC<{
         icon={props.icon}
         iconColor={props.iconColor}
         lowerContent={(
-          <SearchInput onChangeSearchQuery={setUserSearch} />
+          <SearchBar onChangeSearchQuery={setUserSearch}>
+            <SearchInput />
+          </SearchBar>
         )}
         rightContent={(
           <Popover

@@ -16,6 +16,8 @@ import {IntlProvider} from 'react-intl';
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'animate.css/animate.min.css';
+import { OverlaySearch } from './components/overlaySearch/OverlaySearch';
+import { OverlaySearchProvider } from './components/overlaySearch/OverlaySearchProvider';
 
 (window as any).ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
@@ -56,9 +58,11 @@ ReactDOM.render(
         <DevToolsContextProvider>
           <DataInterfaceProvider>
             <MainContentContextProvider>
-              <LayoutContainer />
-              <Alerter.Instance.Container />
-              <DropZoneContainer />
+              <OverlaySearchProvider>
+                <LayoutContainer />
+                <Alerter.Instance.Container />
+                <DropZoneContainer />
+              </OverlaySearchProvider>
             </MainContentContextProvider>
           </DataInterfaceProvider>
         </DevToolsContextProvider>

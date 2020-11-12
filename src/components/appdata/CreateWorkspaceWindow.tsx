@@ -10,6 +10,7 @@ import pkg from '../../../package.json';
 import { remote } from "electron";
 import { runImportWizard } from '../../appdata/runImportWizard';
 import { Alerter } from '../Alerter';
+import { OverlayCloseButton } from '../common/OverlayCloseButton';
 
 const styles = {
   container: cxs({
@@ -29,21 +30,7 @@ const styles = {
     position: 'fixed',
     top: 0,
     right: 0,
-    padding: '16px',
-    '> button': {
-      padding: '16px',
-      borderRadius: '1000px',
-      backgroundColor: 'transparent',
-      border: 0,
-      cursor: 'pointer',
-      WebkitAppRegion: 'no-drag',
-      ':hover': {
-        backgroundColor: '#eee',
-      },
-      ':active': {
-        backgroundColor: '#d2d2d2',
-      }
-    }
+    padding: '16px'
   }),
   mainContainer: cxs({
     flexGrow: 1,
@@ -174,9 +161,7 @@ export const CreateWorkspaceWindow: React.FC<{
       <Alerter.Instance.Container />
       <div className={styles.draggableContainer}>
         <div className={styles.closeContainer}>
-          <button onClick={props.onClose}>
-            <Icon icon={'cross'} iconSize={32} />
-          </button>
+          <OverlayCloseButton onClose={props.onClose} />
         </div>
         <div className={styles.mainContainer}>
           <div className={styles.left}>
