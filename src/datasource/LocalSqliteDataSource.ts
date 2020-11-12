@@ -199,8 +199,6 @@ export class LocalSqliteDataSource implements AbstractDataSource {
     }
   }
 
-
-
   public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, "id"> & { id?: string }): Promise<DataItem<K>> {
     const id = item.id ?? this.createId();
     await this.db('items').insert([{
@@ -402,6 +400,8 @@ export class LocalSqliteDataSource implements AbstractDataSource {
         search.pagingValue
       )
     }
+
+    query = query.groupBy('items.id'); // Prevent duplicates from joins
 
     if (search.limit) {
       query = query.limit(search.limit);
