@@ -12,6 +12,7 @@ import { EditorSettings } from './pages/EditorSettings';
 import { DevSettings } from './pages/DevSettings';
 import { SidebarSettings } from './pages/SidebarSettings';
 import { LogService } from '../../common/LogService';
+import { SpellingSettings } from './pages/SpellingSettings';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();
@@ -54,7 +55,7 @@ export const Settings: React.FC<{}> = props => {
               <Tab id={SettingsTabs.General} title="General" />
               <Tab id={SettingsTabs.Sidebar} title="Sidebar" />
               <Tab id={SettingsTabs.Editors} title="Editors" />
-              <Tab id={SettingsTabs.Hotkeys} title="Hotkeys" />
+              <Tab id={SettingsTabs.Spelling} title="Spelling" />
               <Tab id={SettingsTabs.Devtools} title="Dev Tools" />
             </Tabs>
           )}
@@ -70,6 +71,8 @@ export const Settings: React.FC<{}> = props => {
               return <DevSettings />;
             case SettingsTabs.Sidebar:
               return <SidebarSettings />;
+            case SettingsTabs.Spelling:
+              return <SpellingSettings />;
             case SettingsTabs.General:
             default:
               return <GeneralSettings />;

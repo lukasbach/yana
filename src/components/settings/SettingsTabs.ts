@@ -3,5 +3,6 @@ export enum SettingsTabs {
   Sidebar,
   Editors,
   Hotkeys,
+  Spelling,
   Devtools,
 }
