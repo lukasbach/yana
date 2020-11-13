@@ -7,10 +7,11 @@ import { SearchResults } from './SearchResults';
 import { SearchBar } from '../searchbar/SearchBar';
 import { SearchBarModifiers } from '../searchbar/SearchBarModifiers';
 import { useState } from 'react';
-import { DataItem } from '../../types';
+import { DataItem, SearchQuery } from '../../types';
 import { SelectedItems } from './SelectedItems';
 import { SeachItemsContainer } from './SeachItemsContainer';
 import { OverlaySearchParameters } from './OverlaySearchProvider';
+import { SortingOptions } from './SortingOptions';
 
 const styles = {
   overlayContainer: cxs({
@@ -86,6 +87,7 @@ export const OverlaySearch: React.FC<{
   handler: (items: DataItem[] | undefined) => void,
 }> = props => {
   const [selectedItems, setSelectedItems] = useState<DataItem[]>([]);
+  const [hiddenSearch, setHiddenSearch] = useState<SearchQuery>({});
 
   return (
     <Overlay
@@ -119,6 +121,7 @@ export const OverlaySearch: React.FC<{
                 </SeachItemsContainer>
                 <SeachItemsContainer grow>
                   <SearchResults
+                    hiddenSearch={hiddenSearch}
                     hideItemIds={selectedItems.map(item => item.id)}
                     onClickItem={props.params.selectMultiple ? (
                       item => setSelectedItems(items => [...items, item])
@@ -143,6 +146,7 @@ export const OverlaySearch: React.FC<{
                       </Button>
                     ) }
                   </div>
+                  <SortingOptions searchQuery={hiddenSearch} onChange={setHiddenSearch} />
                 </div>
               </div>
             </div>

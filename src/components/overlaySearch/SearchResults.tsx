@@ -4,16 +4,17 @@ import { useSearchBar } from '../searchbar/SearchBar';
 import { useDataSearch } from '../../datasource/useDataSearch';
 import { AutoSizer, List } from 'react-virtualized';
 import { PageContainer } from '../common/PageContainer';
-import { DataItem, DataItemKind } from '../../types';
+import { DataItem, DataItemKind, SearchQuery } from '../../types';
 import ago from 's-ago';
 import { Spinner } from '@blueprintjs/core';
 
 export const SearchResults: React.FC<{
   onClickItem?: (item: DataItem) => void,
   hideItemIds: string[],
+  hiddenSearch: SearchQuery,
 }> = props => {
   const search = useSearchBar();
-  const searchResult = useDataSearch(search.searchQuery, 30);
+  const searchResult = useDataSearch({ ...search.searchQuery, ...props.hiddenSearch }, 30);
 
   const items = searchResult.items.filter(i => !props.hideItemIds.includes(i.id));
 

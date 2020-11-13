@@ -1,16 +1,17 @@
 import * as React from 'react';
-import { Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
-import { SearchQuery, SearchQuerySortColumn, SearchQuerySortDirection } from '../../../types';
+import { Button, H5 } from '@blueprintjs/core';
+import { SearchQuery, SearchQuerySortColumn, SearchQuerySortDirection } from '../../types';
 
-export const SearchSortingMenu: React.FC<{
+export const SortingOptions: React.FC<{
   searchQuery: SearchQuery,
   onChange: (changed: SearchQuery) => void,
 }> = props => {
 
   return (
-    <Menu>
-      <MenuDivider title="Sorting for column" />
-      <MenuItem
+    <div>
+      <br />
+      <H5>Sorting for column</H5>
+      <Button
         text="Name"
         icon={'sort-alphabetical'}
         onClick={() => props.onChange({
@@ -18,8 +19,10 @@ export const SearchSortingMenu: React.FC<{
           sortColumn: SearchQuerySortColumn.Name
         })}
         active={props.searchQuery.sortColumn === SearchQuerySortColumn.Name || !props.searchQuery.sortColumn}
+        minimal
       />
-      <MenuItem
+      <br />
+      <Button
         text="Last Change"
         icon={'sort-numerical'}
         onClick={() => props.onChange({
@@ -27,8 +30,10 @@ export const SearchSortingMenu: React.FC<{
           sortColumn: SearchQuerySortColumn.LastChange
         })}
         active={props.searchQuery.sortColumn === SearchQuerySortColumn.LastChange}
+        minimal
       />
-      <MenuItem
+      <br />
+      <Button
         text="Creation Date"
         icon={'sort-numerical'}
         onClick={() => props.onChange({
@@ -36,9 +41,12 @@ export const SearchSortingMenu: React.FC<{
           sortColumn: SearchQuerySortColumn.Created
         })}
         active={props.searchQuery.sortColumn === SearchQuerySortColumn.Created}
+        minimal
       />
-      <MenuDivider title="Sorting direction" />
-      <MenuItem
+      <br />
+      <br />
+      <H5>Sorting direction</H5>
+      <Button
         text="Ascending"
         icon={'sort-asc'}
         onClick={() => props.onChange({
@@ -46,8 +54,10 @@ export const SearchSortingMenu: React.FC<{
           sortDirection: SearchQuerySortDirection.Ascending
         })}
         active={props.searchQuery.sortDirection === SearchQuerySortDirection.Ascending || !props.searchQuery.sortDirection}
+        minimal
       />
-      <MenuItem
+      <br />
+      <Button
         text="Descending"
         icon={'sort-desc'}
         onClick={() => props.onChange({
@@ -55,7 +65,8 @@ export const SearchSortingMenu: React.FC<{
           sortDirection: SearchQuerySortDirection.Descending
         })}
         active={props.searchQuery.sortDirection === SearchQuerySortDirection.Descending}
+        minimal
       />
-    </Menu>
+    </div>
   );
 };
