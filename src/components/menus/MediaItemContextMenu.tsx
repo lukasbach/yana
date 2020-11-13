@@ -5,7 +5,8 @@ import {
   MainContentContextType,
 } from '../mainContent/context';
 import { DataInterface } from '../../datasource/DataInterface';
-import { createDeletionItems, createOpenItems, createRenameItems } from './commonItems';
+import { createDeletionItems, createOpenItems, createOrganizeItems, createRenameItems } from './commonItems';
+import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
 
 export const MediaItemContextMenu: React.FC<{
   item: MediaItem;
@@ -14,7 +15,8 @@ export const MediaItemContextMenu: React.FC<{
   onCreatedItem?: (item: DataItem) => void;
   mainContent: MainContentContextType;
   dataInterface: DataInterface;
-}> = ({ renderer, item, onStartRename, dataInterface, mainContent }) => {
+  overlaySearch: OverlaySearchContextValue;
+}> = ({ renderer, item, onStartRename, dataInterface, mainContent, overlaySearch }) => {
   const Renderer = renderer;
 
   return (
@@ -23,6 +25,8 @@ export const MediaItemContextMenu: React.FC<{
         childs: [
           ...createOpenItems(mainContent, item, 'document-open'),
           ...createRenameItems(item, dataInterface, onStartRename),
+          'divider',
+          ...createOrganizeItems(dataInterface, overlaySearch, item),
           'divider',
           ...createDeletionItems(dataInterface, item),
         ]

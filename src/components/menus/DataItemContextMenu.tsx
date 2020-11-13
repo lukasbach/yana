@@ -7,6 +7,7 @@ import { NoteItemContextMenu } from './NoteItemContextMenu';
 import { MainContentContextType } from '../mainContent/context';
 import { DataInterface } from '../../datasource/DataInterface';
 import { MediaItemContextMenu } from './MediaItemContextMenu';
+import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
 
 export const DataItemContextMenu: React.FC<{
   item: DataItem;
@@ -15,6 +16,7 @@ export const DataItemContextMenu: React.FC<{
   onCreatedItem?: (item: DataItem) => void;
   mainContent: MainContentContextType;
   dataInterface: DataInterface;
+  overlaySearch: OverlaySearchContextValue;
 }> = props => {
   if (isNoteItem(props.item)) {
     return <NoteItemContextMenu {...props} item={props.item} />;

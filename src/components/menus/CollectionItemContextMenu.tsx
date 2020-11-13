@@ -7,9 +7,10 @@ import {
   createDeletionItems,
   createMetaItems,
   createNewChildsItems,
-  createOpenItems,
+  createOpenItems, createOrganizeItems,
   createRenameItems,
 } from './commonItems';
+import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
 
 export const CollectionItemContextMenu: React.FC<{
   item: CollectionDataItem;
@@ -18,7 +19,8 @@ export const CollectionItemContextMenu: React.FC<{
   onCreatedItem?: (item: DataItem) => void;
   mainContent: MainContentContextType;
   dataInterface: DataInterface;
-}> = ({ renderer, item, onStartRename, mainContent, dataInterface, onCreatedItem }) => {
+  overlaySearch: OverlaySearchContextValue;
+}> = ({ renderer, item, onStartRename, mainContent, dataInterface, onCreatedItem, overlaySearch }) => {
   const Renderer = renderer;
 
   return (
@@ -31,6 +33,8 @@ export const CollectionItemContextMenu: React.FC<{
           ...createNewChildsItems(item, dataInterface, onCreatedItem),
           'divider',
           ...createMetaItems(dataInterface, item),
+          'divider',
+          ...createOrganizeItems(dataInterface, overlaySearch, item),
           'divider',
           ...createDeletionItems(dataInterface, item),
         ]

@@ -9,6 +9,7 @@ import { Button, Popover } from '@blueprintjs/core';
 import { MediaItemContextMenu } from '../menus/MediaItemContextMenu';
 import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
 import { useMainContentContext } from './context';
+import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
 
 const styles = {
   mainContainer: cxs({
@@ -26,6 +27,7 @@ export const MediaView: React.FC<{
 }> = ({ dataItem}) => {
   const dataInterface = useDataInterface();
   const mainContent = useMainContentContext();
+  const overlaySearch = useOverlaySearch();
   const [previewPath, setPreviewPath] = useState<undefined | string>();
 
   useEffect(() => {
@@ -48,6 +50,7 @@ export const MediaView: React.FC<{
                   renderer={Bp3MenuRenderer}
                   mainContent={mainContent}
                   dataInterface={dataInterface}
+                  overlaySearch={overlaySearch}
                 />
               )}
             >

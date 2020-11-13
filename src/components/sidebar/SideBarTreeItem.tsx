@@ -8,6 +8,7 @@ import { DataItemContextMenu } from '../menus/DataItemContextMenu';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { SettingsObject, SideBarItemAction } from '../../settings/types';
 import { IconName } from '@blueprintjs/core';
+import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
 
 enum ActionKind { BackgroundClick, MiddleClick, TitleClick }
 
@@ -57,6 +58,7 @@ export const SideBarTreeItem: React.FC<{
 }> = props => {
   const dataInterface = useDataInterface();
   const mainContent = useMainContentContext();
+  const overlaySearch = useOverlaySearch();
   const { item, hasChildren, isExpanded, onExpand, onCollapse } = props;
   const settings = useSettings();
 
@@ -87,6 +89,7 @@ export const SideBarTreeItem: React.FC<{
       onCreatedItem={item => props.onStartRenameItem(item.id)}
       dataInterface={dataInterface}
       mainContent={mainContent}
+      overlaySearch={overlaySearch}
     />
   );
 

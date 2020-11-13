@@ -5,7 +5,14 @@ import {
   MainContentContextType,
 } from '../mainContent/context';
 import { DataInterface } from '../../datasource/DataInterface';
-import { createDeletionItems, createMetaItems, createOpenItems, createRenameItems } from './commonItems';
+import {
+  createDeletionItems,
+  createMetaItems,
+  createOpenItems,
+  createOrganizeItems,
+  createRenameItems,
+} from './commonItems';
+import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
 
 export const NoteItemContextMenu: React.FC<{
   item: NoteDataItem<any>;
@@ -14,7 +21,8 @@ export const NoteItemContextMenu: React.FC<{
   onCreatedItem?: (item: DataItem) => void;
   mainContent: MainContentContextType;
   dataInterface: DataInterface;
-}> = ({ renderer, item, onStartRename, dataInterface, mainContent }) => {
+  overlaySearch: OverlaySearchContextValue;
+}> = ({ renderer, item, onStartRename, dataInterface, mainContent, overlaySearch }) => {
   const Renderer = renderer;
 
   return (
@@ -25,6 +33,8 @@ export const NoteItemContextMenu: React.FC<{
           ...createRenameItems(item, dataInterface, onStartRename),
           'divider',
           ...createMetaItems(dataInterface, item),
+          'divider',
+          ...createOrganizeItems(dataInterface, overlaySearch, item),
           'divider',
           ...createDeletionItems(dataInterface, item),
         ]

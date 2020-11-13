@@ -1,12 +1,13 @@
 import { MenuItemDefinition } from './types';
 import { MainContentContextType } from '../mainContent/context';
-import { CollectionDataItem, DataItem, DataItemKind } from '../../types';
+import { DataItem, DataItemKind } from '../../types';
 import { Alerter } from '../Alerter';
 import * as React from 'react';
 import { DataInterface } from '../../datasource/DataInterface';
 import { InternalTag } from '../../datasource/InternalTag';
 import { undup } from '../../utils';
 import { IconName } from '@blueprintjs/core';
+import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
 
 export const createOpenItems = (mainContent: MainContentContextType, item: DataItem, icon: IconName): Array<MenuItemDefinition | 'divider'> => ([
   { text: 'Open', icon, onClick: () => mainContent.openInCurrentTab(item)  },
@@ -116,3 +117,51 @@ export const createMetaItems = (dataInterface: DataInterface, item: DataItem): A
     }
   ];
 };
+
+export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch: OverlaySearchContextValue, item: DataItem): Array<MenuItemDefinition | 'divider'> => {
+  return [
+    {
+      text: 'Move to...',
+      icon: 'exchange',
+      onClick: async () => {
+        // TODO await dataInterface.removeDataItemFromParent()
+      }
+    },
+    {
+      text: 'Copy to...',
+      icon: 'duplicate',
+      onClick: async () => {
+        const target = await overlaySearch.performSearch({
+          selectMultiple: false,
+          hiddenSearch: { kind: DataItemKind.Collection }
+        });
+        if (target) {
+          const content = await dataInterface.getNoteItemContent(item.id);
+          const { id } = await dataInterface.createDataItemUnderParent({ ...item, id: undefined } as any, target[0].id);
+          await dataInterface.writeNoteItemContent(id, content);
+        }
+      }
+    },
+    {
+      text: 'Mount to folder...',
+      icon: 'new-link',
+      onClick: async () => {
+        const target = await overlaySearch.performSearch({
+          selectMultiple: true,
+          buttonText: 'Add to folders',
+          hiddenSearch: { kind: DataItemKind.Collection }
+        });
+        if (target) {
+          await dataInterface.addDataItemToParent(item.id, target[0].id);
+        }
+      }
+    },
+    {
+      text: 'Dismount from folder',
+      icon: 'small-cross',
+      onClick: async () => {
+        // TODO await dataInterface.removeDataItemFromParent()
+      }
+    },
+  ]
+}

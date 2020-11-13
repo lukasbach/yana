@@ -14,6 +14,7 @@ import { Bp3MenuRenderer } from '../../menus/Bp3MenuRenderer';
 import { useDataInterface } from '../../../datasource/DataInterfaceContext';
 import { useEffect, useState } from 'react';
 import { SearchViewCardUi } from './SearchViewCardUi';
+import { useOverlaySearch } from '../../overlaySearch/OverlaySearchProvider';
 
 const styles = {
   itemCard: cxs({
@@ -66,7 +67,16 @@ export const SearchViewCard: React.FC<{
 }> = ({ cellProps, dataItem, additionalLeftMargin, onClick, preview }) => {
   const mainContent = useMainContentContext();
   const dataInterface = useDataInterface();
-  const contextMenuProps = useContextMenu(<DataItemContextMenu item={dataItem} renderer={Bp3MenuRenderer} mainContent={mainContent} dataInterface={dataInterface} />);
+  const overlaySearch = useOverlaySearch();
+  const contextMenuProps = useContextMenu(
+    <DataItemContextMenu
+      item={dataItem}
+      renderer={Bp3MenuRenderer}
+      mainContent={mainContent}
+      dataInterface={dataInterface}
+      overlaySearch={overlaySearch}
+    />
+  );
 
   const thumbnail = typeof preview === 'string' ? preview : undefined;
   const noteItemContent = typeof preview === 'object' ? preview : undefined;
