@@ -7,8 +7,9 @@ import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
 import { DataItemContextMenu } from '../menus/DataItemContextMenu';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { SettingsObject, SideBarItemAction } from '../../settings/types';
-import { IconName } from '@blueprintjs/core';
+import { IconName, Spinner } from '@blueprintjs/core';
 import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
+import { useState } from 'react';
 
 enum ActionKind { BackgroundClick, MiddleClick, TitleClick }
 
@@ -61,14 +62,17 @@ export const SideBarTreeItem: React.FC<{
   const overlaySearch = useOverlaySearch();
   const { item, hasChildren, isExpanded, onExpand, onCollapse } = props;
   const settings = useSettings();
+  const [waiting, setWaiting] = useState(false);
 
   const createOnAction = (action: SideBarItemAction) => () => {
     switch (action) {
       case SideBarItemAction.OpenInCurrentTab:
-        mainContent.openInCurrentTab(item);
+        setWaiting(true);
+        mainContent.openInCurrentTab(item).then(() => setWaiting(false));
         break;
       case SideBarItemAction.OpenInNewTab:
-        mainContent.newTab(item);
+        setWaiting(true);
+        mainContent.newTab(item).then(() => setWaiting(false));
         break;
       case SideBarItemAction.ToggleExpansion:
         if (isExpanded) {
@@ -123,6 +127,7 @@ export const SideBarTreeItem: React.FC<{
       onTitleClick={createOnAction(getActionPropertyFromSettings(ActionKind.TitleClick, item.kind, settings))}
       menu={menu}
       icon={icon}
+      waiting={waiting}
       iconColor={item.color}
     />
   );

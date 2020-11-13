@@ -2,7 +2,7 @@ import * as React from 'react';
 import cxs from 'cxs';
 import cx from 'classnames';
 import { useTheme } from '../../common/theming';
-import { Classes, Icon, IconName, Popover } from '@blueprintjs/core';
+import { Classes, Icon, IconName, MaybeElement, Popover, Spinner } from '@blueprintjs/core';
 import { useEffect, useRef, useState } from 'react';
 import { useContextMenu } from '../useContextMenu';
 import { useSettings } from '../../appdata/AppDataProvider';
@@ -96,7 +96,8 @@ export const SideBarTreeItemUi: React.FC<{
   onTitleClick?: () => any;
   menu?: JSX.Element;
   isActive?: boolean;
-  icon: IconName;
+  icon: IconName | MaybeElement;
+  waiting?: boolean;
   iconColor?: string;
 }> = props => {
   const theme = useTheme();
@@ -154,45 +155,52 @@ export const SideBarTreeItemUi: React.FC<{
       <div
         className={styles.textContainer}
       >
-        <Icon icon={props.icon} color={props.iconColor} />
-          {
-            props.isRenaming ? (
-              <form
-                className={styles.nameChangeContainer}
-                onSubmit={() => props.onRename?.(name)}
-                onClick={e => e.stopPropagation()}
+        { props.waiting ? (
+          <>
+            <Spinner size={16} />
+            &nbsp;
+          </>
+        ) : (
+          <Icon icon={props.icon} color={props.iconColor} />
+        )}
+        {
+          props.isRenaming ? (
+            <form
+              className={styles.nameChangeContainer}
+              onSubmit={() => props.onRename?.(name)}
+              onClick={e => e.stopPropagation()}
+            >
+              <input
+                ref={renameInputRef}
+                value={name}
+                onChange={(e: any) => setName(e.target.value)}
+              />
+              <button type="submit">
+                <Icon icon="tick" />
+              </button>
+            </form>
+          ) : (
+            <div className={styles.nameContainer}>
+              <span
+                className={cx(Classes.TEXT_OVERFLOW_ELLIPSIS, styles.nameContainerInner)}
               >
-                <input
-                  ref={renameInputRef}
-                  value={name}
-                  onChange={(e: any) => setName(e.target.value)}
-                />
-                <button type="submit">
-                  <Icon icon="tick" />
-                </button>
-              </form>
-            ) : (
-              <div className={styles.nameContainer}>
                 <span
-                  className={cx(Classes.TEXT_OVERFLOW_ELLIPSIS, styles.nameContainerInner)}
+                  onClick={e => {
+                    e.stopPropagation();
+                    if (props.onTitleClick) {
+                      props.onTitleClick();
+                    } else {
+                      props.onClick?.();
+                    }
+                  }}
                 >
-                  <span
-                    onClick={e => {
-                      e.stopPropagation();
-                      if (props.onTitleClick) {
-                        props.onTitleClick();
-                      } else {
-                        props.onClick?.();
-                      }
-                    }}
-                  >
-                    { props.text }
-                    { props.children }
-                  </span>
+                  { props.text }
+                  { props.children }
                 </span>
-              </div>
-            )
-          }
+              </span>
+            </div>
+          )
+        }
       </div>
 
       {
