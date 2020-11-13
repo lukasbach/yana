@@ -45,7 +45,6 @@ export class LogService {
     LogService.enabled = settings.devLoggerActive;
     LogService.whitelist = settings.devLoggerWhitelist.split('\n').map(el => el.replace(/\s/g, '')).filter(el => !!el);
     LogService.blacklist = settings.devLoggerBlacklist.split('\n').map(el => el.replace(/\s/g, '')).filter(el => !!el);
-    console.log("LogService status: ", { enabled: LogService.enabled, whitelist: LogService.whitelist, blacklist: LogService.blacklist })
   }
 
   private static createLogger(name: string, level: LogLevel = LogLevel.log) {

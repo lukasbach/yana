@@ -7,7 +7,6 @@ const closeEventEmitter = new EventEmitter<{}>();
 
 remote.ipcMain.removeAllListeners(IpcChannel.InitiateQuit);
 remote.ipcMain.on(IpcChannel.InitiateQuit, e => {
-  console.log("Received close event in renderer")
   closeEventEmitter.emit({}).then(() => {
     remote.ipcMain.emit(IpcChannel.ConfirmQuit);
   });

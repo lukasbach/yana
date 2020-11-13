@@ -15,7 +15,6 @@ export const SettingsSelectInput: React.FC<{
 }> = props => {
   const settings = useSettingsPageContext();
   const id = props.label.toLowerCase().replace(/\s/g, '_');
-  console.log(settings.settings, props)
 
   return (
     <FormGroup

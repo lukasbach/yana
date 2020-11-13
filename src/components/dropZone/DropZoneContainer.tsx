@@ -24,7 +24,6 @@ export const DropZoneContainer: React.FC<{}> = props => {
   // useEffect(() => setDroppedFiles([{"name":"cook-smarts-guide-to-flavoring-with-spices_543325358c24f_w1500.png","path":"C:\\Users\\Lukas Bach\\Desktop\\cook-smarts-guide-to-flavoring-with-spices_543325358c24f_w1500.png","lastModified":1590451333641,"size":425766,"type":"image/png"},{"name":"f1040x.pdf","path":"C:\\Users\\Lukas Bach\\Desktop\\f1040x.pdf","lastModified":1591965833329,"size":194012,"type":"application/pdf"},{"name":"HerbGuide_HorizontalScreen_Draft1.png","path":"C:\\Users\\Lukas Bach\\Desktop\\HerbGuide_HorizontalScreen_Draft1.png","lastModified":1590451347712,"size":193208,"type":"image/png"},{"name":"arkcalc.txt","path":"C:\\Users\\Lukas Bach\\Desktop\\arkcalc.txt","lastModified":1595019443022,"size":296,"type":"text/plain"},{"name":"arkcalc-new.txt","path":"C:\\Users\\Lukas Bach\\Desktop\\arkcalc-new.txt","lastModified":1593652111219,"size":457,"type":"text/plain"},{"name":"colored.png","path":"C:\\Users\\Lukas Bach\\Desktop\\colored.png","lastModified":1569449599523,"size":26124,"type":"image/png"} as any].map(i => ({file: i, name: i.name}))), []);
 
   useEffect(() => {
-    console.log(mainContent.openTab?.dataItem, EditorRegistry.Instance.getEditorWithId(mainContent.openTab?.dataItem?.kind))
     if (mainContent.openTab?.dataItem?.id && isNoteItem(mainContent.openTab.dataItem)) {
       const editor = EditorRegistry.Instance.getEditorWithId(mainContent.openTab.dataItem.noteType);
       if (editor && editor.canInsertFiles) {
@@ -34,8 +33,6 @@ export const DropZoneContainer: React.FC<{}> = props => {
     }
     setCanAddToCurrentEditor(false);
   }, [mainContent.openTab]);
-
-  console.log(droppedFiles)
 
   const confirm = async () => {
     setIsUploading(true);

@@ -27,10 +27,9 @@ export const RichEditor: React.FC<{}> = props => {
         legacyImageUploadProvider={
           new Promise(r =>
             r((e, ifn) => {
-              console.log(e, ifn);
               ifn({
                 src: URL.createObjectURL(file),
-                alt: 'abc',
+                alt: '',
               });
             })
           )
@@ -38,13 +37,13 @@ export const RichEditor: React.FC<{}> = props => {
         media={{
           allowMediaSingle: true,
           allowResizing: true,
-          customMediaPicker: {
-            on: () => console.log('on'),
-            removeAllListeners: () => console.log('removeAllListeners'),
-            emit: () => console.log('emit'),
-            destroy: () => console.log('destroy'),
-            setUploadParams: () => console.log('setUploadParams'),
-          },
+          // customMediaPicker: {
+          //   on: () => console.log('on'),
+          //   removeAllListeners: () => console.log('removeAllListeners'),
+          //   emit: () => console.log('emit'),
+          //   destroy: () => console.log('destroy'),
+          //   setUploadParams: () => console.log('setUploadParams'),
+          // },
           provider: new Promise(r =>
             r({
               uploadMediaClientConfig: {

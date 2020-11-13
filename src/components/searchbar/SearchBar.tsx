@@ -26,7 +26,6 @@ export const SearchBar: React.FC<{
   const searchInputChangeHandler = useRef<number | undefined>();
 
   useEffect(() => {
-    console.log(value)
     if (searchInputChangeHandler.current) {
       clearTimeout(searchInputChangeHandler.current);
     }

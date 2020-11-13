@@ -349,7 +349,6 @@ export class DataInterface implements AbstractDataSource {
 
   public async getAvailableTags(): Promise<Array<{ value: string }>> {
     this.devtools?.increaseCounter('DI getAvailableTags');
-    console.log("getAvailableTags", await this.getStructure('tags'));
     return Object.entries(await this.getStructure('tags')).map(([value, data]: any) => ({ value, ...data }));
   }
 

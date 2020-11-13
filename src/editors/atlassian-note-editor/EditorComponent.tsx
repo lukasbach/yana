@@ -33,7 +33,6 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
   useEffect(() => () => {
     if (editorRef.current) {
       editorRef.current.getValue().then(adf => {
-        console.log("1234asdf", adf);
         props.onDismount({adf});
       });
     }
@@ -59,7 +58,6 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
         isOpen={!!insertImageFn}
         onSetIsOpen={open => !open && setInsertImageFn(undefined)}
         onClickItem={(item) => {
-          console.log("????");
           (async () => {
             if (insertImageFn) {
               if (isMediaItem(item)) {
@@ -91,7 +89,6 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                     allowMediaSingle: true,
                   }}
                   legacyImageUploadProvider={new Promise(res => res((e: Event | undefined, insertImageFn: (props: InsertedImageProperties) => void) => {
-                    console.log("!!!", insertImageFn);
                     setInsertImageFn({ fn: insertImageFn });
                   }))}
                   allowExpand={true}

@@ -15,8 +15,6 @@ export const SideBarContent: React.FC<{}> = props => {
   const { items: rootChilds } = useDataSearch(rootCollection ? { parents: [rootCollection.id] } : {});
   const settings = useSettings();
 
-  useEffect(() => console.log(`Changed rootCollection`, rootCollection), [rootCollection])
-
   return (
     <>
       <WorkSpaceSelection />
