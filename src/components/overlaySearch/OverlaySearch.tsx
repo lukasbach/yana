@@ -87,7 +87,7 @@ export const OverlaySearch: React.FC<{
   handler: (items: DataItem[] | undefined) => void,
 }> = props => {
   const [selectedItems, setSelectedItems] = useState<DataItem[]>([]);
-  const [hiddenSearch, setHiddenSearch] = useState<SearchQuery>({});
+  const [hiddenSearch, setHiddenSearch] = useState<SearchQuery>(props.params.hiddenSearch || {});
 
   return (
     <Overlay
