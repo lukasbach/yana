@@ -124,7 +124,16 @@ export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch:
       text: 'Move to...',
       icon: 'exchange',
       onClick: async () => {
-        // TODO await dataInterface.removeDataItemFromParent()
+        const parent = (await dataInterface.getParentsOf(item.id))[0];
+        if (parent) {
+          const target = await overlaySearch.performSearch({
+            selectMultiple: false,
+            hiddenSearch: { kind: DataItemKind.Collection }
+          });
+          if (target) {
+            await dataInterface.moveItem(item.id, parent.id, target[0].id, 0);
+          }
+        }
       }
     },
     {
@@ -142,26 +151,25 @@ export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch:
         }
       }
     },
-    {
-      text: 'Mount to folder...',
-      icon: 'new-link',
-      onClick: async () => {
-        const target = await overlaySearch.performSearch({
-          selectMultiple: true,
-          buttonText: 'Add to folders',
-          hiddenSearch: { kind: DataItemKind.Collection }
-        });
-        if (target) {
-          await dataInterface.addDataItemToParent(item.id, target[0].id);
-        }
-      }
-    },
-    {
-      text: 'Dismount from folder',
-      icon: 'small-cross',
-      onClick: async () => {
-        // TODO await dataInterface.removeDataItemFromParent()
-      }
-    },
+    // {
+    //   text: 'Mount to folder...',
+    //   icon: 'new-link',
+    //   onClick: async () => {
+    //     const target = await overlaySearch.performSearch({
+    //       selectMultiple: false,
+    //       hiddenSearch: { kind: DataItemKind.Collection }
+    //     });
+    //     if (target) {
+    //       await dataInterface.addDataItemToParent(item.id, target[0].id);
+    //     }
+    //   }
+    // },
+    // {
+    //   text: 'Dismount from folder',
+    //   icon: 'small-cross',
+    //   onClick: async () => {
+    //     // TODO await dataInterface.removeDataItemFromParent()
+    //   }
+    // },
   ]
 }
