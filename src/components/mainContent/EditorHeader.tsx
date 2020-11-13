@@ -10,6 +10,11 @@ import { useEditItemDrawer } from '../drawers/editItemDrawer/useEditItemDrawer';
 import { PageHeader } from '../common/PageHeader';
 import { InternalTag } from '../../datasource/InternalTag';
 import { SaveIndicatorState } from './EditorContainer';
+import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
+import { DataItemContextMenu } from '../menus/DataItemContextMenu';
+import { useMainContentContext } from './context';
+import { useDataInterface } from '../../datasource/DataInterfaceContext';
+import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
 
 const styles = {
   container: cxs({
@@ -45,6 +50,9 @@ export const EditorHeader: React.FC<{
   onChange: (changed: NoteDataItem<any>) => Promise<void>,
   saveIndicator?: SaveIndicatorState,
 }> = props => {
+  const mainContent = useMainContentContext();
+  const dataInterface = useDataInterface();
+  const overlaySearch = useOverlaySearch();
   const { lastChange, created } = props.dataItem;
   const [titleValue, setTitleValue] = useState(props.dataItem.name);
   const [isEditingTags, setIsEditingTags] = useState(false);
@@ -128,6 +136,22 @@ export const EditorHeader: React.FC<{
             <div>
               <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>Edit Tags</Button>{' '}
               <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>Configure document</Button>{' '}
+              <Popover
+                interactionKind={'click'}
+                position={'bottom'}
+                captureDismiss={true}
+                content={(
+                  <DataItemContextMenu
+                    item={props.dataItem}
+                    renderer={Bp3MenuRenderer}
+                    mainContent={mainContent}
+                    dataInterface={dataInterface}
+                    overlaySearch={overlaySearch}
+                  />
+                )}
+              >
+                <Button outlined rightIcon={'chevron-down'}>More</Button>
+              </Popover>
             </div>
             {!isEditingTags && (
               <div>
