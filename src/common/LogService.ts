@@ -1,5 +1,5 @@
 import chalk, { Chalk } from 'chalk';
-import { log } from 'util';
+import { SettingsObject } from '../settings/types';
 
 enum LogLevel {
   debug,
@@ -25,6 +25,9 @@ export interface Logger {
 
 export class LogService {
   public static enabled = true;
+  private static whitelist: string[] = [];
+  private static blacklist: string[] = [];
+
   private static loggers: Logger[] = [];
   private static colorCounter = 0;
   private static colors = [
@@ -38,6 +41,13 @@ export class LogService {
     ['#95a5a6', '#2c3e50'],
   ];
 
+  public static applySettings = (settings: SettingsObject) => {
+    LogService.enabled = settings.devLoggerActive;
+    LogService.whitelist = settings.devLoggerWhitelist.split('\n').map(el => el.replace(/\s/g, '')).filter(el => !!el);
+    LogService.blacklist = settings.devLoggerBlacklist.split('\n').map(el => el.replace(/\s/g, '')).filter(el => !!el);
+    console.log("LogService status: ", { enabled: LogService.enabled, whitelist: LogService.whitelist, blacklist: LogService.blacklist })
+  }
+
   private static createLogger(name: string, level: LogLevel = LogLevel.log) {
     LogService.colorCounter++;
     LogService.colorCounter = LogService.colorCounter % LogService.colors.length;
@@ -45,6 +55,8 @@ export class LogService {
 
     const createLogHandler = (level: LogLevel): LogHandler => (description, appendedValues = [], subStructure) => {
       if (!LogService.enabled) return;
+      if (LogService.whitelist.length && !LogService.whitelist.includes(name)) return;
+      if (LogService.blacklist.length && LogService.blacklist.includes(name)) return;
 
       let handler: (...a: any[]) => void;
       let prefixColor: Chalk;

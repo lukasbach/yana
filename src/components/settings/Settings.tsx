@@ -11,6 +11,7 @@ import { GeneralSettings } from './pages/GeneralSettings';
 import { EditorSettings } from './pages/EditorSettings';
 import { DevSettings } from './pages/DevSettings';
 import { SidebarSettings } from './pages/SidebarSettings';
+import { LogService } from '../../common/LogService';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();
@@ -23,14 +24,17 @@ export const Settings: React.FC<{}> = props => {
     setDirty(true);
   };
 
+  const saveSettings = async () => {
+    setDirty(false);
+    LogService.applySettings(settings);
+    await appData.saveSettings(settings);
+  }
+
   return (
     <SettingsContext.Provider
       value={{
         changeSettings: updateSettings,
-        save: () => {
-          setDirty(false);
-          return appData.saveSettings(settings);
-        },
+        save: saveSettings,
         createStringHandler: key => value => updateSettings({ [key]: value }),
         createIntHandler: key => value => updateSettings({ [key]: typeof value === 'string' ? parseInt(value) : value }),
         createFloatHandler: key => value => updateSettings({ [key]: typeof value === 'string' ? parseFloat(value) : value }),
@@ -43,7 +47,7 @@ export const Settings: React.FC<{}> = props => {
           title={ dirty ? 'Settings*' : 'Settings' }
           titleSubtext="Some settings might require restarting Yana to take effect."
           icon="cog"
-          rightContent={dirty && <Button large outlined intent="primary" icon="floppy-disk" onClick={() => { setDirty(false); appData.saveSettings(settings); }}>Save Settings</Button>}
+          rightContent={dirty && <Button large outlined intent="primary" icon="floppy-disk" onClick={() => saveSettings()}>Save Settings</Button>}
           lowerContentFlush={true}
           lowerContent={(
             <Tabs onChange={(newTabId: SettingsTabs) => setCurrentTab(newTabId)} selectedTabId={currentTab}>

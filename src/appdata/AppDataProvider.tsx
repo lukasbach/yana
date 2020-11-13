@@ -14,6 +14,7 @@ import { AutoBackupService } from './AutoBackupService';
 import { CreateWorkspaceWindow } from '../components/appdata/CreateWorkspaceWindow';
 import { appDataFile, userDataFolder } from './paths';
 import { getNewWorkspaceName } from './getNewWorkspaceName';
+import { LogService } from '../common/LogService';
 
 const fs = fsLib.promises;
 
@@ -69,6 +70,7 @@ export const AppDataProvider: React.FC = props => {
     setAutoBackup(autoBackupService);
 
     webFrame.setZoomFactor(appData.settings.zoomFactor);
+    LogService.applySettings(appData.settings);
   }, []);
 
   const ctx: AppDataContextValue = {

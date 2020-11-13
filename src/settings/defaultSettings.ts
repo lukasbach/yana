@@ -3,6 +3,7 @@ import path from "path";
 import { remote } from "electron";
 import { getElectronPath } from '../utils';
 import { defaultTheme } from '../common/theming';
+import book from '@atlaskit/icon/glyph/book';
 
 export const defaultSettings: SettingsObject = {
   editorAtlassianAdvancedTables: true,
@@ -39,6 +40,9 @@ export const defaultSettings: SettingsObject = {
   sidebarShowStarredItemsCount: 5,
   sidebarItemPadding: SidebarPadding.Default,
   devToolsOpen: false,
+  devLoggerBlacklist: '',
+  devLoggerWhitelist: '',
+  devLoggerActive: false,
   themePrimaryColor: defaultTheme.primaryColor,
   themeSidebarColor: defaultTheme.sidebarColor,
   themeSidebarHoverColor: defaultTheme.sidebarHoverColor,
