@@ -3,9 +3,7 @@ import { Select } from '@blueprintjs/select';
 import { Button, MenuItem } from '@blueprintjs/core';
 import { DataItemKind } from '../../types';
 import { useAvailableTags } from '../../datasource/useAvailableTags';
-import { parseSearch } from '../../datasource/parseSearch';
 import { useSearchBar } from './SearchBar';
-import { IButtonProps } from '@blueprintjs/core/src/components/button/abstractButton';
 
 const dataItemKinds: Array<{ key: DataItemKind, text: string }> = [
   { key: DataItemKind.NoteItem, text: 'Note' },
@@ -14,7 +12,7 @@ const dataItemKinds: Array<{ key: DataItemKind, text: string }> = [
 ];
 
 export const SearchBarModifiers: React.FC<{
-  buttonProps?: IButtonProps,
+  buttonProps?: { minimal?: boolean, small?: boolean, big?: boolean, outlined?: boolean  },
 }> = props => {
   const { searchQuery, setSearchValue, searchValue } = useSearchBar();
   const tags = useAvailableTags();
