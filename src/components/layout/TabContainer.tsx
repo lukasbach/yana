@@ -2,7 +2,6 @@ import * as React from 'react';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import cxs from 'cxs';
 import Color from 'color';
-import { Colors } from '../../colors';
 import { useTheme } from '../../common/theming';
 import { useMainContentContext } from '../mainContent/context';
 import { pages } from '../../pages';

@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { Colors } from '../../colors';
 import cxs from 'cxs';
 import Color from 'color';
-import { remote } from 'electron';
 import { SideBarContent } from '../sidebar/SideBarContent';
 import cx from 'classnames';
 import { useTheme } from '../../common/theming';
@@ -32,30 +30,6 @@ const styles = {
     },
     ' ::-webkit-scrollbar-thumb:hover': {
       backgroundColor: '#666'
-    },
-  }),
-  tobBar: cxs({
-    height: '32px',
-  }),
-  tobBarControls: cxs({
-    float: 'right',
-    width: 4 * 46 + 'px',
-  }),
-  topBarControlButton: cxs({
-    fontFamily: 'Segoe MDL2 Assets',
-    fontSize: '10px',
-    width: '46px',
-    height: '100%',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'transparent',
-    border: 'none',
-    color: '#fff',
-    outline: 'none',
-    fontWeight: 'normal',
-    ':hover': {
-      backgroundColor: Color(Colors.primary).darken(0.2).toString(),
     },
   }),
   centralContainer: cxs({
