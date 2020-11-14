@@ -13,8 +13,6 @@ import {
   Popover, Tooltip,
 } from '@blueprintjs/core';
 import { useAppData } from '../../appdata/AppDataProvider';
-import { remote } from 'electron';
-import path from 'path';
 import cxs from 'cxs';
 import cx from 'classnames';
 import { useTheme } from '../../common/theming';
@@ -25,7 +23,7 @@ import { InternalTag } from '../../datasource/InternalTag';
 import { DataItemKind, NoteDataItem } from '../../types';
 import { PageIndex } from '../../PageIndex';
 // @ts-ignore
-import brand from '../../logo.png';
+import brand from '../../icons/icon-white-x1.png';
 
 const style = {
   popoverContainer: cxs({
@@ -41,7 +39,8 @@ const style = {
     cursor: 'pointer'
   }),
   iconContainer: cxs({
-    margin: '14px 8px 14px 14px',
+    margin: '8px 8px 8px 14px',
+    padding: '7px 0 0 0',
     '> img': {
       height: '30px',
     }
@@ -50,7 +49,7 @@ const style = {
     flexGrow: 1,
     display: 'inline-flex',
     alignItems: 'center',
-    margin: '14px 8px 14px 20px',
+    margin: '8px',
     fontWeight: 'bold',
     fontSize: '14px'
   }),
@@ -124,9 +123,9 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
               }
             })
           )}>
-            {/*<div className={style.iconContainer}>
+            <div className={style.iconContainer}>
               <img src={brand} />
-            </div>*/}
+            </div>
             <div
               className={cx(
                 Classes.TEXT_OVERFLOW_ELLIPSIS,
