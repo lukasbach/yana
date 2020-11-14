@@ -18,37 +18,13 @@ import '@blueprintjs/icons/lib/css/blueprint-icons.css';
 import 'animate.css/animate.min.css';
 import { OverlaySearch } from './components/overlaySearch/OverlaySearch';
 import { OverlaySearchProvider } from './components/overlaySearch/OverlaySearchProvider';
+import { registerCommonContextMenu } from './components/commonContextMenu/registerCommonContextMenu';
 
 (window as any).ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
 console.log('process.env.NODE_ENV=', process.env.NODE_ENV);
 
-remote.getCurrentWebContents().on('context-menu', (event, params) => {
-  if (params.misspelledWord) {
-    ContextMenu.show((
-      <Menu>
-        {
-          params.dictionarySuggestions.length ? (
-            params.dictionarySuggestions.map(sugg => (
-              <MenuItem
-                key={sugg}
-                text={sugg}
-                onClick={() => remote.getCurrentWebContents().replaceMisspelling(sugg)}
-              />
-            ))
-          ) : (
-            <MenuItem text="No suggestions available" disabled />
-          )
-        }
-        <MenuDivider />
-        <MenuItem
-          onClick={() => remote.getCurrentWebContents().session.addWordToSpellCheckerDictionary(params.misspelledWord)}
-          text={`Add to the dictionary`}
-        />
-      </Menu>
-    ), { top: params.y, left: params.x});
-  }
-});
+registerCommonContextMenu();
 
 // TODO closing a open tab removes its file contents, because the editor isnt mounted anymore and the content getter returns {}, which overwrites the previous content
 ReactDOM.render(
