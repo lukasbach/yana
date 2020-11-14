@@ -21,23 +21,31 @@ jobs:
         - yarn build
         - dir
         - dir out
-#    - stage: Build & Deploy Mac
-#      os: osx
-#      if: tag IS present
-#      script:
-#        - yarn build
-#        - dir
-#        - dir out
-#        - yarn release -- --mac
-#    - stage: Build & Deploy Linux
-#      os: linux
-#      dist: trusty
-#      if: tag IS present
-#      script:
-#        - yarn build
-#        - dir
-#        - dir out
-#        - yarn release
+    - stage: Build & Deploy Mac
+      os: osx
+      osx_image: xcode10.2
+      if: tag IS present
+      env:
+        - YARN_GPG=no
+      before_install:
+        - npm install -g yarn
+      script:
+        - yarn build
+        - dir
+        - dir out
+    - stage: Build & Deploy Linux
+      os: linux
+      sudo: required
+      dist: xenial
+      if: tag IS present
+      env:
+        - YARN_GPG=no
+      before_install:
+        - npm install -g yarn
+      script:
+        - yarn build
+        - dir
+        - dir out
 
 # deploy:
 #   provider: releases
