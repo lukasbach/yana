@@ -22,7 +22,11 @@
     "release": "build",
     "postinstall": "yarn rebuild"
   },
-  "author": "Lukas Bach",
+  "author": {
+    "name": "Lukas Bach",
+    "url": "https://lukasbach.com",
+    "email": "lbach@outlook.de"
+  },
   "license": "ISC",
   "dependencies": {
     "@atlaskit/button": "^14.0.4",
