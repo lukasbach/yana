@@ -13,7 +13,7 @@
     "publish": ["github"]
   },
   "linux": {
-    "target": ["snap", "deb", "tar.gz"],
+    "target": ["snap", "deb", "zip", "AppImage"],
     "publish": ["github"]
   },
   "mac": {
