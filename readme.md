@@ -2,6 +2,8 @@
 
 > Yet another notebook app
 
+![Yana Demo](./demo.gif)
+
 Currently in early alpha, but already fairly rich in features. Allows
 you to manage local workspaces of hierarchically structured taggable 
 and searchable notes. Yana supports multiple kinds of notes, currently
