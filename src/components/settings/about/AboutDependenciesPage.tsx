@@ -10,14 +10,14 @@ export const AboutDependenciesPage: React.FC<{}> = props => {
     <div>
       <SettingsSection title="Dependencies">
         <SettingsClickable
-          title="The following projects are direct dependencies used by Yana in production"
+          title="The following projects are direct dependencies used by Yana"
           icon={'info-sign'}
         />
         {
-          Object.keys(pkg.dependencies).map(dependency => (
+          Object.keys({ ...pkg.dependencies, ...pkg.devDependencies }).map(dependency => (
             <SettingsClickable
               title={dependency}
-              subtitle={(pkg.dependencies as any)[dependency]}
+              subtitle={(pkg.dependencies as any)[dependency] || (pkg.devDependencies as any)[dependency]}
               onClick={() => remote.shell.openExternal(`https://npmjs.com/package/${dependency}`)}
             />
           ))
