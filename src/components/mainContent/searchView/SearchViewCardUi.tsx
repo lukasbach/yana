@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Icon, IconName } from '@blueprintjs/core';
+import { Classes, Icon, IconName } from '@blueprintjs/core';
 import { isNoteItem } from '../../../utils';
 import { DataItemSmallPreviewContainer } from './DataItemSmallPreviewContainer';
 import ago from 's-ago';
@@ -78,7 +78,7 @@ export const SearchViewCardUi: React.FC<SearchViewCardUiProps> = props => {
     >
       <div className={styles.itemCard}>
         <div className={styles.cardHeader}>
-          <h4>
+          <h4 className={Classes.TEXT_OVERFLOW_ELLIPSIS}>
             <Icon icon={props.icon} color={props.iconColor} />
             { props.header }
           </h4>

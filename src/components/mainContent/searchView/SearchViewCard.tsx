@@ -5,7 +5,7 @@ import { searchViewCellDimensions } from './searchViewCellDimensions';
 import { DataItem } from '../../../types';
 import ago from 's-ago';
 import { Icon } from '@blueprintjs/core';
-import { isMediaItem, isNoteItem, useAsyncEffect } from '../../../utils';
+import { isCollectionItem, isMediaItem, isNoteItem, useAsyncEffect } from '../../../utils';
 import { DataItemSmallPreviewContainer } from './DataItemSmallPreviewContainer';
 import { useMainContentContext } from '../context';
 import { useContextMenu } from '../../useContextMenu';
@@ -90,7 +90,7 @@ export const SearchViewCard: React.FC<{
       onClick={onClick || (() => mainContent.openInCurrentTab(dataItem))}
       interactive={true}
       header={dataItem.name}
-      icon={dataItem.icon || (isNoteItem(dataItem) ? 'document' : 'folder-open') as any}
+      icon={dataItem.icon || (isNoteItem(dataItem) ? 'document' : isCollectionItem(dataItem) ? 'folder-open' : 'media') as any}
       iconColor={dataItem.color}
       thumbnail={thumbnail}
       preview={isNoteItem(dataItem) ? <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} /> : undefined}

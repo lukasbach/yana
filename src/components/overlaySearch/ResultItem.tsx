@@ -1,7 +1,7 @@
 import * as React from 'react';
 import cxs from 'cxs';
 import cx from 'classnames';
-import { Checkbox, Icon, IconName, MaybeElement } from '@blueprintjs/core';
+import { Checkbox, Classes, Icon, IconName, MaybeElement } from '@blueprintjs/core';
 import { useTheme } from '../../common/theming';
 import { CSSProperties, useState } from 'react';
 
@@ -77,7 +77,7 @@ export const ResultItem: React.FC<{
       <div className={styles.iconContainer}>
         <Icon icon={ props.icon } iconSize={16} />
       </div>
-      <div className={styles.titleContainer}>
+      <div className={styles.titleContainer + ' ' + Classes.TEXT_OVERFLOW_ELLIPSIS}>
         { props.title }
       </div>
       <div className={styles.metaContainer + ' ' + META_CONTAINER_CLASS}>
