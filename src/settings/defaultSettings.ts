@@ -49,4 +49,5 @@ export const defaultSettings: SettingsObject = {
   themeSidebarTextColor: defaultTheme.sidebarTextColor,
   themeTopbarColor: defaultTheme.topBarColor,
   zoomFactor: 1,
+  completedSpotlights: [],
 }

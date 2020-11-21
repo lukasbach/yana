@@ -24,6 +24,7 @@ import { DataItemKind, NoteDataItem } from '../../types';
 import { PageIndex } from '../../PageIndex';
 // @ts-ignore
 import brand from '../../icons/icon-white-x1.png';
+import { SpotlightTarget } from '@atlaskit/onboarding';
 
 const style = {
   popoverContainer: cxs({
@@ -137,36 +138,40 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
               <Icon icon={'chevron-down'} iconSize={12} />
             </div>
             <div className={style.actionsContainer}>
-              <Tooltip position={'bottom'} content={'Settings'}>
-                <button
-                  className={cx(actionsButtonClass, style.actionsButton)}
-                  onClick={e => {
-                    e.stopPropagation();
-                    mainContent.openInCurrentTab(PageIndex.Settings);
-                  }}
-                >
-                  <Icon icon="cog" />
-                </button>
-              </Tooltip>
-              <Tooltip position={'bottom'} content={'Create new draft note'}>
-                <button
-                  className={cx(actionsButtonClass, style.actionsButton)}
-                  onClick={e => {
-                    e.stopPropagation();
-                    dataInterface.createDataItem({
-                      name: 'New Draft',
-                      tags: [InternalTag.Draft],
-                      kind: DataItemKind.NoteItem,
-                      childIds: [],
-                      lastChange: new Date().getTime(),
-                      created: new Date().getTime(),
-                      noteType: 'atlaskit-editor-note'
-                    } as any).then(item => mainContent.newTab(item));
-                  }}
-                >
-                  <Icon icon="add" />
-                </button>
-              </Tooltip>
+              <SpotlightTarget name="sidebar-settings">
+                <Tooltip position={'bottom'} content={'Settings'}>
+                  <button
+                    className={cx(actionsButtonClass, style.actionsButton)}
+                    onClick={e => {
+                      e.stopPropagation();
+                      mainContent.openInCurrentTab(PageIndex.Settings);
+                    }}
+                  >
+                    <Icon icon="cog" />
+                  </button>
+                </Tooltip>
+              </SpotlightTarget>
+              <SpotlightTarget name="sidebar-new-draft">
+                <Tooltip position={'bottom'} content={'Create new draft note'}>
+                  <button
+                    className={cx(actionsButtonClass, style.actionsButton)}
+                    onClick={e => {
+                      e.stopPropagation();
+                      dataInterface.createDataItem({
+                        name: 'New Draft',
+                        tags: [InternalTag.Draft],
+                        kind: DataItemKind.NoteItem,
+                        childIds: [],
+                        lastChange: new Date().getTime(),
+                        created: new Date().getTime(),
+                        noteType: 'atlaskit-editor-note'
+                      } as any).then(item => mainContent.newTab(item));
+                    }}
+                  >
+                    <Icon icon="add" />
+                  </button>
+                </Tooltip>
+              </SpotlightTarget>
             </div>
           </div>
         </Popover>

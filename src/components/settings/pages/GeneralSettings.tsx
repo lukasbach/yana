@@ -5,18 +5,21 @@ import { SettingsNumberInput } from '../layout/SettingsNumberInput';
 import { SettingsClickable } from '../layout/SettingsClickable';
 import { useMainContentContext } from '../../mainContent/context';
 import { PageIndex } from '../../../PageIndex';
-import { remote } from "electron";
+import { remote } from 'electron';
 import { AppDataExportService } from '../../../appdata/AppDataExportService';
-import { useAppData, useSettings } from '../../../appdata/AppDataProvider';
+import { useAppData } from '../../../appdata/AppDataProvider';
 import { SettingsFilesystemPathInput } from '../layout/SettingsFilesystemPathInput';
 import { SettingsColorInput } from '../layout/SettingsColorInput';
 import { useSettingsPageContext } from '../SettingsContext';
 import { defaultTheme } from '../../../common/theming';
+import { useSpotlight } from '../../spotlight/SpotlightContainer';
+import { SpotlightScenarioId } from '../../spotlight/SpotlightScenarioId';
 
 export const GeneralSettings: React.FC<{}> = props => {
   const mainContent = useMainContentContext();
   const app = useAppData();
   const settings = useSettingsPageContext();
+  const spotlight = useSpotlight();
 
   return (
     <div>
@@ -27,6 +30,15 @@ export const GeneralSettings: React.FC<{}> = props => {
           step={.1}
           min={.4}
           max={5}
+        />
+
+        <SettingsClickable
+          title="Restart Tutorial"
+          subtitle="The tutorial explains the basics of Yana."
+          icon={'reset'}
+          onClick={() => {
+            spotlight.startScenario(SpotlightScenarioId.SidebarScenario, true);
+          }}
         />
       </SettingsSection>
 

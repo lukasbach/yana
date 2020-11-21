@@ -8,6 +8,7 @@ import { PageIndex } from '../../PageIndex';
 import { useMainContentContext } from '../mainContent/context';
 import { pages } from '../../pages';
 import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
+import { SpotlightTarget } from '@atlaskit/onboarding';
 
 const navTreePageIndices = [
   PageIndex.Home,
@@ -35,14 +36,16 @@ export const NavigationTree: React.FC<{}> = props => {
           <>
             {
               navTreePageIndices.map(idx => [idx, pages[idx]] as const).map(([idx, page]) => (
-                <SideBarTreeItemUi
-                  key={idx}
-                  text={page.title}
-                  isExpandable={false}
-                  isExpanded={false}
-                  onClick={() => mainContent.openInCurrentTab(idx)}
-                  icon={page.icon}
-                />
+                <SpotlightTarget name={`sidebar-navigationtree-${idx}`}>
+                  <SideBarTreeItemUi
+                    key={idx}
+                    text={page.title}
+                    isExpandable={false}
+                    isExpanded={false}
+                    onClick={() => mainContent.openInCurrentTab(idx)}
+                    icon={page.icon}
+                  />
+                </SpotlightTarget>
               ))
             }
             <SideBarTreeItemUi

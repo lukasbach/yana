@@ -12,6 +12,7 @@ import { Button, Icon, ResizeSensor } from '@blueprintjs/core';
 import { useCallback, useRef, useState } from 'react';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { DevToolsSidebar } from '../devtools/DevToolsSidebar';
+import { SpotlightTarget } from '@atlaskit/onboarding';
 
 const styles = {
   mainContainer: cxs({
@@ -97,7 +98,9 @@ export const LayoutContainer: React.FC<{}> = props => {
 
   return (
     <div className={styles.mainContainer}>
-      <TopBar />
+      <SpotlightTarget name="topbar">
+        <TopBar />
+      </SpotlightTarget>
       <div className={cx(
         styles.centralContainer,
         'app-central-container',
@@ -134,10 +137,12 @@ export const LayoutContainer: React.FC<{}> = props => {
               }
             }}>
               <div>
-                <div style={{ display: collapsed ? 'none' : 'block' }}>
-                  <SideBarContent />
-                </div>
-                { collapseButtonContainer }
+                <SpotlightTarget name="sidebar">
+                  <div style={{ display: collapsed ? 'none' : 'block' }}>
+                    <SideBarContent />
+                  </div>
+                  { collapseButtonContainer }
+                </SpotlightTarget>
               </div>
             </ResizeSensor>
           </div>

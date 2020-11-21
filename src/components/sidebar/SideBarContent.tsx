@@ -8,6 +8,7 @@ import { SideBarTreeOnIds } from './SideBarTreeOnIds';
 import { NavigationTree } from './NavigationTree';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { SideBarTreeOnSearchQuery } from './SideBarTreeOnSearchQuery';
+import { SpotlightTarget } from '@atlaskit/onboarding';
 
 export const SideBarContent: React.FC<{}> = props => {
   const searchResult = useDataSearch({ tags: [InternalTag.WorkspaceRoot], limit: 1 });
@@ -17,9 +18,13 @@ export const SideBarContent: React.FC<{}> = props => {
 
   return (
     <>
-      <WorkSpaceSelection />
+      <SpotlightTarget name="sidebar-workplace-selection">
+        <WorkSpaceSelection />
+      </SpotlightTarget>
 
-      <NavigationTree />
+      <SpotlightTarget name="sidebar-navigation-tree">
+        <NavigationTree />
+      </SpotlightTarget>
 
       { settings.sidebarShowRecentItems && (
         <SideBarTreeOnSearchQuery
@@ -44,16 +49,20 @@ export const SideBarContent: React.FC<{}> = props => {
         />
       ) }
 
-      {
-        rootChilds.map(rootChild => (
-          <SideBarTreeOnIds
-            key={rootChild.id}
-            title={rootChild.name}
-            rootItems={rootChild.childIds}
-            masterItem={rootChild}
-          />
-        ))
-      }
+      <SpotlightTarget name="sidebar-items">
+        <div>
+          {
+            rootChilds.map(rootChild => (
+              <SideBarTreeOnIds
+                key={rootChild.id}
+                title={rootChild.name}
+                rootItems={rootChild.childIds}
+                masterItem={rootChild}
+              />
+            ))
+          }
+        </div>
+      </SpotlightTarget>
     </>
   );
 };

@@ -132,6 +132,16 @@
     tslib "^2.0.0"
     use-memo-one "^1.1.1"
 
+"@atlaskit/analytics-next@^8.0.0":
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@atlaskit/analytics-next/-/analytics-next-8.1.1.tgz#d0b0e91be59417129ea4296b3b6984f2e58e32d2"
+  integrity sha512-cawCqnrSz/mjBGmlY1hz4mMGMdP+rkcEGQ1YHVz8LmeO+fm3OVWYDETSSMCYBrmwRVrOhCbiTQtbs38vKUHYrw==
+  dependencies:
+    "@atlaskit/analytics-next-stable-react-context" "1.0.1"
+    "@babel/runtime" "^7.0.0"
+    prop-types "^15.5.10"
+    use-memo-one "^1.1.1"
+
 "@atlaskit/avatar-group@^8.0.0":
   version "8.0.7"
   resolved "https://registry.yarnpkg.com/@atlaskit/avatar-group/-/avatar-group-8.0.7.tgz#31c493c054febd09676710212bc83e328831a5ce"
@@ -188,6 +198,17 @@
     "@atlaskit/theme" "^10.0.0"
     "@emotion/core" "^10.0.9"
     tslib "^2.0.0"
+
+"@atlaskit/button@^15.1.0":
+  version "15.1.4"
+  resolved "https://registry.yarnpkg.com/@atlaskit/button/-/button-15.1.4.tgz#d802c6284915bede449edb44f22e860b771fb995"
+  integrity sha512-QlnI8db6a69LgNWjvle2ydoIuAqBBSxRNaOKO5WOzeARJV2H5pWnBU9dKBy+R9173ggPOOF6CXiWG8Hlv6nj7w==
+  dependencies:
+    "@atlaskit/analytics-next" "^8.0.0"
+    "@atlaskit/spinner" "^15.0.0"
+    "@atlaskit/theme" "^11.0.0"
+    "@babel/runtime" "^7.0.0"
+    "@emotion/core" "^10.0.9"
 
 "@atlaskit/calendar@^10.0.0":
   version "10.0.5"
@@ -1152,6 +1173,26 @@
     shallow-equal "^1.0.0"
     unstated "^1.2.0"
 
+"@atlaskit/onboarding@^10.1.9":
+  version "10.1.9"
+  resolved "https://registry.yarnpkg.com/@atlaskit/onboarding/-/onboarding-10.1.9.tgz#a4b3a51184cbaaac92c76f92538829f466e3d94f"
+  integrity sha512-i4VUuhkY38AlKy5yXo7exWIIVq18XctGlivYscRAyu/A//McJgAE+UIcluDVGCT9+XtkUXZJvgEp+Zh2XPIHfA==
+  dependencies:
+    "@atlaskit/analytics-next" "^8.0.0"
+    "@atlaskit/button" "^15.1.0"
+    "@atlaskit/modal-dialog" "^11.2.0"
+    "@atlaskit/popper" "^5.0.0"
+    "@atlaskit/portal" "^4.0.0"
+    "@atlaskit/theme" "^11.0.0"
+    "@babel/runtime" "^7.0.0"
+    exenv "^1.2.2"
+    memoize-one "^5.1.0"
+    react-focus-lock "^1.19.1"
+    react-node-resolver "^1.0.1"
+    react-scrolllock "^5.0.1"
+    react-transition-group "^4.4.1"
+    scroll-into-view-if-needed "^2.2.20"
+
 "@atlaskit/outbound-auth-flow-client@^3.1.0":
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/@atlaskit/outbound-auth-flow-client/-/outbound-auth-flow-client-3.1.1.tgz#1af1ff7085f67000ca43c436594cb2bb1efd511a"
@@ -1380,6 +1421,15 @@
     exenv "^1.2.2"
     prop-types "^15.5.10"
     tslib "^2.0.0"
+
+"@atlaskit/theme@^11.0.0":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@atlaskit/theme/-/theme-11.0.2.tgz#e657763905853e23ad385ae84e5bd49c2571863e"
+  integrity sha512-1lUyifZGPBFfsTBmlsL9gRVWDS1h+75qqpWJHuMN3x9TwWs9KB5lA8yLhX5/FavNcyLIDa/GIRM4DfAilhvi5w==
+  dependencies:
+    "@babel/runtime" "^7.0.0"
+    exenv "^1.2.2"
+    prop-types "^15.5.10"
 
 "@atlaskit/tooltip@^17.0.0":
   version "17.0.1"
@@ -4054,6 +4104,11 @@ compression@^1.7.4:
     on-headers "~1.0.2"
     safe-buffer "5.1.2"
     vary "~1.1.2"
+
+compute-scroll-into-view@^1.0.16:
+  version "1.0.16"
+  resolved "https://registry.yarnpkg.com/compute-scroll-into-view/-/compute-scroll-into-view-1.0.16.tgz#5b7bf4f7127ea2c19b750353d7ce6776a90ee088"
+  integrity sha512-a85LHKY81oQnikatZYA90pufpZ6sQx++BoCxOEMsjpZx+ZnaKGQnCyCehTRr/1p9GBIAHTjcU9k71kSYWloLiQ==
 
 concat-map@0.0.1:
   version "0.0.1"
@@ -9750,6 +9805,13 @@ schema-utils@^2.6.6, schema-utils@^2.7.1:
     "@types/json-schema" "^7.0.5"
     ajv "^6.12.4"
     ajv-keywords "^3.5.2"
+
+scroll-into-view-if-needed@^2.2.20:
+  version "2.2.26"
+  resolved "https://registry.yarnpkg.com/scroll-into-view-if-needed/-/scroll-into-view-if-needed-2.2.26.tgz#e4917da0c820135ff65ad6f7e4b7d7af568c4f13"
+  integrity sha512-SQ6AOKfABaSchokAmmaxVnL9IArxEnLEX9j4wAZw+x4iUTb40q7irtHG3z4GtAWz5veVZcCnubXDBRyLVQaohw==
+  dependencies:
+    compute-scroll-into-view "^1.0.16"
 
 scrollparent@^2.0.1:
   version "2.0.1"
