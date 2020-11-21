@@ -125,14 +125,18 @@ export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch:
       icon: 'exchange',
       onClick: async () => {
         const parent = (await dataInterface.getParentsOf(item.id))[0];
+
+        const target = await overlaySearch.performSearch({
+          selectMultiple: false,
+          hiddenSearch: { kind: DataItemKind.Collection }
+        });
+
         if (parent) {
-          const target = await overlaySearch.performSearch({
-            selectMultiple: false,
-            hiddenSearch: { kind: DataItemKind.Collection }
-          });
           if (target) {
             await dataInterface.moveItem(item.id, parent.id, target[0].id, 0);
           }
+        } else if (target) {
+          await dataInterface.changeItem(target[0].id, old => ({ childIds: [...old.childIds, item.id] }));
         }
       }
     },
