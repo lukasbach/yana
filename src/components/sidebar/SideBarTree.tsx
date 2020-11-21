@@ -157,7 +157,6 @@ export const SideBarTree: React.FC<{
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
-                    title={item.id}
                   >
                     <SideBarTreeItem
                       item={item.data}
