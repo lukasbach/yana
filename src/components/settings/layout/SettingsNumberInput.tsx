@@ -2,7 +2,6 @@ import * as React from 'react';
 import { SettingsObject } from '../../../settings/types';
 import { Button, ControlGroup, FormGroup, InputGroup } from '@blueprintjs/core';
 import { useSettingsPageContext } from '../SettingsContext';
-import { ButtonGroup } from '@atlaskit/button';
 
 export const SettingsNumberInput: React.FC<{
   settingsKey: keyof SettingsObject,

@@ -12,11 +12,13 @@ import { DataItemKind, MediaItem } from '../../types';
 import { InsertedImageProperties } from '@atlaskit/editor-common/dist/cjs/provider-factory/image-upload-provider';
 import { isMediaItem } from '../../utils';
 import { useSettings } from '../../appdata/AppDataProvider';
+import { AutoSizer } from 'react-virtualized';
 
 const logger = LogService.getLogger('AtlaskitEditorComponent');
 
 const styles = {
   container: cxs({
+    height: '100%',
     ' .akEditor': {
       border: 'none'
     }
@@ -51,6 +53,60 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
 
   return (
     <div className={styles.container}>
+      <AutoSizer>
+        {({width, height}) => {
+          return (
+            <div className={cxs({
+              ' .akEditor': {
+                height: height + 'px',
+                width: width + 'px'
+              },
+              ' .akEditor > :nth-child(2)': {
+                height: height - 40 + 'px',
+                width: width + 'px',
+                overflow: 'auto'
+              }
+            })}>
+              <IgnoreErrorBoundary>
+                <EditorContext>
+                  <WithEditorActions
+                    render={actions => {
+                      logger.log("Render WithEditorActions")
+                      editorRef.current = actions;
+                      props.onRegister(async () => ({ adf: await actions.getValue() }));
+                      return (
+                        <Editor
+                          allowTables={{
+                            advanced: settings.editorAtlassianAdvancedTables,
+                          }}
+                          codeBlock={{
+                          }}
+                          media={{
+                            allowMediaSingle: true,
+                          }}
+                          legacyImageUploadProvider={new Promise(res => res((e: Event | undefined, insertImageFn: (props: InsertedImageProperties) => void) => {
+                            setInsertImageFn({ fn: insertImageFn });
+                          }))}
+                          allowExpand={true}
+                          insertMenuItems={[]}
+                          quickInsert={true}
+                          allowTextColor={true}
+                          allowTextAlignment={true}
+                          defaultValue={JSON.stringify(props.content.adf)}
+                          onChange={editorView => {
+                            // if (!isChangingNote.current) props.onChange();
+                            props.onChange();
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                </EditorContext>
+              </IgnoreErrorBoundary>
+            </div>
+          )
+        }}
+      </AutoSizer>
       <FindItemsDrawer
         title={"Insert file"}
         icon={'insert'}
@@ -71,42 +127,6 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
           })();
         }}
       />
-      <IgnoreErrorBoundary>
-        <EditorContext>
-          <WithEditorActions
-            render={actions => {
-              logger.log("Render WithEditorActions")
-              editorRef.current = actions;
-              props.onRegister(async () => ({ adf: await actions.getValue() }));
-              return (
-                <Editor
-                  allowTables={{
-                    advanced: settings.editorAtlassianAdvancedTables,
-                  }}
-                  codeBlock={{
-                  }}
-                  media={{
-                    allowMediaSingle: true,
-                  }}
-                  legacyImageUploadProvider={new Promise(res => res((e: Event | undefined, insertImageFn: (props: InsertedImageProperties) => void) => {
-                    setInsertImageFn({ fn: insertImageFn });
-                  }))}
-                  allowExpand={true}
-                  insertMenuItems={[]}
-                  quickInsert={true}
-                  allowTextColor={true}
-                  allowTextAlignment={true}
-                  defaultValue={JSON.stringify(props.content.adf)}
-                  onChange={editorView => {
-                    // if (!isChangingNote.current) props.onChange();
-                    props.onChange();
-                  }}
-                />
-              );
-            }}
-          />
-        </EditorContext>
-      </IgnoreErrorBoundary>
     </div>
   );
 };
