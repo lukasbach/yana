@@ -26,18 +26,12 @@ export const EditorContainer: React.FC<{
   const editor = EditorRegistry.Instance.getEditorWithId(props.noteItem.noteType);
   const [currentNote, setCurrentNote] = useState(props.noteItem);
   const [currentContent, setCurrentContent] = useState(props.currentContent);
-  // const [saveHandler, setSaveHandler] = useState<number | null>(null);
   const saveHandler = useRef<number | undefined>(undefined);
   const grabContentHandler = useRef<(() => Promise<object>) | undefined>();
   const settings = useSettings();
 
   useEffect(() => logger.log("changed noteitem", [props.noteItem.name]), [props.noteItem.id])
   useEffect(() => logger.log("changed currentContent", [], {content: props.currentContent, item: props.noteItem.name}), [props.currentContent])
-
-  // useEffect(() => {
-  //   setCurrentContent(props.currentContent);
-  //   setCurrentNote(props.noteItem);
-  // }, [props.noteItem]);
 
   const clearSaveHandler = () => {
     if (saveHandler.current) {
@@ -74,48 +68,11 @@ export const EditorContainer: React.FC<{
 
   useCloseEvent(save, [currentNote.id]);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     logger.log("Note ID changed", [], props);
-//
-  //     if (grabContentHandler.current && saveHandler.current) {
-  //       logger.log("Old note is still unsaved, saving...");
-  //       await save();
-  //     }
-//
-  //     setCurrentContent(props.currentContent);
-  //     setCurrentNote(props.noteItem);
-  //     // grabContentHandler.current = undefined; // TODO
-  //   })();
-  // }, [props.noteItem.id]);
-
-  // useEffect(() => {
-  //   return () => { save(); } // TODO this does more damage than it helps!!!!!!!
-  // }, [])
-
-  // useEffect(() => {
-  //   return () => {
-  //     (async () => {
-  //       logger.log("Unregister")
-  //       if (saveHandler.current && grabContentHandler.current) {
-  //         logger.log("Save before changing editor")
-  //         clearTimeout(saveHandler.current);
-  //         dataInterface.writeNoteItemContent(props.noteItem.id, await grabContentHandler.current());
-  //         saveHandler.current = undefined;
-  //       }
-  //     })();
-  //   }
-  //   // grabContentHandler.current = undefined;
-  // }, [props.noteItem.id]);
-
-  // useEffect(() => save, [props.noteItem.id]);
-
   if (!editor) {
     return <div>Error!</div>;
   }
 
   const EditorComponent = editor.editorComponent;
-  // console.log("Using content", currentContent, props)
 
   return (
     <EditorComponent
