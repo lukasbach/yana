@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SettingsObject } from '../../../settings/types';
-import { Button, ControlGroup, FormGroup, InputGroup } from '@blueprintjs/core';
+import { Button, ControlGroup, FormGroup, InputGroup, NumericInput } from '@blueprintjs/core';
 import { useSettingsPageContext } from '../SettingsContext';
 
 export const SettingsNumberInput: React.FC<{
@@ -31,43 +31,22 @@ export const SettingsNumberInput: React.FC<{
       disabled={disabled}
     >
       <ControlGroup className="bp3-numeric-input">
-        <InputGroup
+        <NumericInput
           fill
           id={id}
-          type="string"
           placeholder={props.placeholder || props.label}
-          value={'' + (val / divideFactor)}
-          onChange={(e: any) => {
-            let newValue = (props.isFloat ? parseFloat : parseInt)(e.target.value) * divideFactor;
-            if (props.min) newValue = Math.max(props.min, newValue);
-            if (props.max) newValue = Math.min(props.max, newValue);
-            settings.changeSettings({ [props.settingsKey]: newValue });
+          defaultValue={Math.round((val / divideFactor) * 100) / 100}
+          onValueChange={(val) => {
+            settings.changeSettings({ [props.settingsKey]: val * divideFactor });
           }}
-          formAction="Test"
           disabled={disabled}
+          stepSize={Math.round((props.step || 1) * 100 / divideFactor) / 100}
+          majorStepSize={null}
+          minorStepSize={null}
+          clampValueOnBlur={true}
+          min={props.min !== undefined ? props.min / divideFactor : undefined}
+          max={props.max !== undefined ? props.max / divideFactor : undefined}
         />
-        <div className="bp3-button-group bp3-vertical bp3-fixed">
-          <Button
-            icon="chevron-up"
-            onClick={() => {
-              let newValue = val + (props.step || 1)
-              if (props.min) newValue = Math.max(props.min, newValue);
-              if (props.max) newValue = Math.min(props.max, newValue);
-              settings.changeSettings({ [props.settingsKey]: newValue });
-            }}
-            disabled={disabled}
-          />
-          <Button
-            icon="chevron-down"
-            onClick={() => {
-              let newValue = val - (props.step || 1)
-              if (props.min) newValue = Math.max(props.min, newValue);
-              if (props.max) newValue = Math.min(props.max, newValue);
-              settings.changeSettings({ [props.settingsKey]: newValue });
-            }}
-            disabled={disabled}
-          />
-        </div>
       </ControlGroup>
     </FormGroup>
   );

@@ -61,7 +61,7 @@ export const GeneralSettings: React.FC<{}> = props => {
           settingsKey={'autoBackupInterval'}
           label={"Backup Interval, in Minutes"}
           divideFactor={1000 * 60}
-          step={1000}
+          step={1000 * 60}
           min={0}
         />
         <SettingsFilesystemPathInput
