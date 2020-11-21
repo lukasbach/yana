@@ -2,13 +2,16 @@
 
 > Yet another notebook app
 
-![Yana Demo](./demo.gif)
+<p align="center">
+    ![Yana Demo](./demo.gif)
+    [yana.js.org](https://yana.js.org)
+</p>
 
-Currently in early alpha, but already fairly rich in features. Allows
+Yana is a powerful notebook app which allows
 you to manage local workspaces of hierarchically structured taggable 
-and searchable notes. Yana supports multiple kinds of notes, currently
+and searchable notes. It supports multiple kinds of notes, currently
 rich-text notes (including embedded media and complex tables) and code
-snippets (based on the VSCode editor frontend) are implemented. Other
+snippets (based on the VSCode editor frontend) are supported. Other
 features include
 
 * Manage note structure via drag-and-drop
@@ -17,26 +20,8 @@ features include
 * Multiple notes can be opened at once in tabs
 * Starring of notes
 * Trashcan functionality
+* Scalability, working fluently even on notebooks with ten thousands of notes
 
 Download [the latest release](https://github.com/lukasbach/yana/releases).
-Currently only available for Windows, coming soon to Linux and Mac.
-
-## Release Process
-
-To release a new version,
-
-* update the field ``version`` in ``package.json`` to the ``X.X.X``,
-* author a new commit with the message ``vX.X.X``,
-* tag the commit with the title ``vX.X.X``,
-* push the commit and the tag to GitHub and
-* after the release was drafted by the CI pipeline, publish the draft.
-
-
-## Performance testing
-
-To evaluate the performance of Yana and its suitability for large
-workspaces, you can use a CLI script to generate a workspace with
-a set number of notes. The workspace is created at the specified
-location and can be added inside of Yana.
-
-    ts-node scripts/create-perftesting-workspace.ts -d ./perftest-10k -s 10000 -t 30
+Currently available for Windows, Linux and Mac.
+Find out more about Yana on [yana.js.org](https://yana.js.org).
