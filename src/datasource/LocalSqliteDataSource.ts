@@ -84,6 +84,7 @@ export class LocalSqliteDataSource implements AbstractDataSource {
         table.increments('id').notNullable().unique().primary().index();
         table.string('parentId').references('id').inTable('items');
         table.string('childId').references('id').inTable('items');
+        table.integer('ordering').notNullable();
       })
       .createTable('media_data', table => {
         table.string('noteId').primary().unique().index().references('id').inTable('items');
@@ -139,6 +140,17 @@ export class LocalSqliteDataSource implements AbstractDataSource {
 
   public async load(): Promise<DataSourceActionResult> {
     this.structures = JSON.parse(await fs.readFile(this.resolvePath(NOTEBOOK_FILE), { encoding: 'utf8' })).structures;
+
+    // Create items_childs ordering column if not existing already
+    // as this column was added in v1.0.1
+    const itemsChildsColumns = await this.db.raw('PRAGMA table_info(items_childs)');
+    const doesOrderingColumnExist = !!itemsChildsColumns.find((col: any) => col.name === 'ordering');
+
+    if (!doesOrderingColumnExist) {
+      await this.db.schema.alterTable('items_childs', table => {
+        table.integer('ordering').notNullable().defaultTo(0);
+      });
+    }
   }
 
   public async unload(): Promise<DataSourceActionResult> {
@@ -165,7 +177,8 @@ export class LocalSqliteDataSource implements AbstractDataSource {
 
     const childIds: Array<{ childId: string }> = await this.db('items_childs')
       .select('parentId', 'childId')
-      .where('parentId', id);
+      .where('parentId', id)
+      .orderBy('ordering', 'asc');
 
     // TODO joined query?
 
@@ -219,10 +232,12 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       })), async setOfItems => await this.db('items_tags').insert(setOfItems));
     }
 
+    let i = 0;
     if (item.childIds.length > 0) {
       await this.breakSqlCommandsDown(item.childIds.map(childId => ({
         parentId: id,
-        childId
+        childId,
+        ordering: i++
       })), async setOfItems => await this.db('items_childs').insert(setOfItems));
     }
 
@@ -267,10 +282,9 @@ export class LocalSqliteDataSource implements AbstractDataSource {
 
     const removedTags = !overwriteItem.tags ? [] : arrayDiff(item.tags, overwriteItem.tags);
     const addedTags = !overwriteItem.tags ? [] : arrayDiff(overwriteItem.tags, item.tags);
-    const removedChilds = !overwriteItem.childIds ? [] : arrayDiff(item.childIds, overwriteItem.childIds);
-    const addedChilds = !overwriteItem.childIds ? [] : arrayDiff(overwriteItem.childIds, item.childIds);
+    const haveChildsChanged = overwriteItem.childIds && overwriteItem.childIds.toString() !== item.childIds.toString();
 
-    logger.log("Updating tags and childs", [], {addedTags, removedTags, addedChilds, removedChilds});
+    logger.log("Updating tags and childs", [], {addedTags, removedTags, haveChildsChanged});
 
     if (addedTags.length > 0) {
       await this.db('items_tags').insert(addedTags.map(tag => ({
@@ -287,19 +301,19 @@ export class LocalSqliteDataSource implements AbstractDataSource {
         .del();
     }
 
-    if (addedChilds.length > 0) {
-      await this.db('items_childs').insert(addedChilds.map(childId => ({
-        parentId: id,
-        childId,
-      })));
-    }
-
-    if (removedChilds.length > 0) {
+    if (haveChildsChanged) {
       await this.db('items_childs')
         .where('parentId', id)
         .and
-        .whereIn('childId', removedChilds)
+        .whereIn('childId', item.childIds)
         .del();
+
+      let i = 0;
+      await this.db('items_childs').insert(overwriteItem.childIds.map(childId => ({
+        parentId: id,
+        childId,
+        ordering: i++
+      })));
     }
 
     await this.db('items')
