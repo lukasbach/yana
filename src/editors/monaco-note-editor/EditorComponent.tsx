@@ -10,6 +10,7 @@ import { editor } from 'monaco-editor';
 import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
 import * as monacoEditor from 'monaco-editor';
 import { useSettings } from '../../appdata/AppDataProvider';
+import { useScreenView } from '../../components/telemetry/useScreenView';
 
 const logger = LogService.getLogger('MonacoEditorComponent');
 
@@ -47,6 +48,8 @@ export const EditorComponent: React.FC<EditorComponentProps<MonacoNoteEditorCont
   const editorRef = useRef<IStandaloneCodeEditor>();
   const monacoRef = useRef<typeof monacoEditor>();
   const currentNoteValue = useRef<MonacoNoteEditorContent>({ content, language });
+
+  useScreenView('monaco-note-editor');
 
   useEffect(() => {
     currentNoteValue.current = { content, language };

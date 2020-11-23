@@ -13,6 +13,7 @@ import { InsertedImageProperties } from '@atlaskit/editor-common/dist/cjs/provid
 import { isMediaItem } from '../../utils';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { AutoSizer } from 'react-virtualized';
+import { useScreenView } from '../../components/telemetry/useScreenView';
 
 const logger = LogService.getLogger('AtlaskitEditorComponent');
 
@@ -30,6 +31,8 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
   const editorRef = useRef<EditorActions | null>(null);
   const [insertImageFn, setInsertImageFn] = useState< { fn: (props: InsertedImageProperties) => void } | undefined>();
   const dataInterface = useDataInterface();
+
+  useScreenView('atlassian-note-editor');
 
   useEffect(() => logger.log("Remount", [props.item.id], {content: props.content}), [])
   useEffect(() => () => {

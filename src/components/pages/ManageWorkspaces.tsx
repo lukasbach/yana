@@ -10,8 +10,10 @@ import { AppDataExportService } from '../../appdata/AppDataExportService';
 import { runRemoveWorkspaceWizard } from '../../appdata/runRemoveWorkspaceWizard';
 import { runImportWizard } from '../../appdata/runImportWizard';
 import { runAddWorkspaceWizard } from '../../appdata/runAddWorkspaceWizard';
+import { useScreenView } from '../telemetry/useScreenView';
 
 export const ManageWorkspaces: React.FC<{}> = props => {
+  useScreenView('manage-workspaces');
   const appData = useAppData();
 
   return (

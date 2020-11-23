@@ -12,6 +12,7 @@ import { SelectedItems } from './SelectedItems';
 import { SeachItemsContainer } from './SeachItemsContainer';
 import { OverlaySearchParameters } from './OverlaySearchProvider';
 import { SortingOptions } from './SortingOptions';
+import { useScreenView } from '../telemetry/useScreenView';
 
 const styles = {
   overlayContainer: cxs({
@@ -88,6 +89,7 @@ export const OverlaySearch: React.FC<{
 }> = props => {
   const [selectedItems, setSelectedItems] = useState<DataItem[]>([]);
   const [hiddenSearch, setHiddenSearch] = useState<SearchQuery>(props.params.hiddenSearch || {});
+  useScreenView('overlay-search');
 
   return (
     <Overlay
