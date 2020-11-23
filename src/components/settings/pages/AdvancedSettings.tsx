@@ -7,10 +7,29 @@ import { useAppData } from '../../../appdata/AppDataProvider';
 import { SettingsTextAreaInput } from '../layout/SettingsTextAreaInput';
 import { remote } from 'electron';
 
-export const DevSettings: React.FC<{}> = props => {
+const telemetryHelperText = `
+If you enable this feature, anonymous usage data such as events and hardware informations
+may be sent to Google Analytics. No information that can identify you or your notebook contents
+will be sent.
+`;
+
+export const AdvancedSettings: React.FC<{}> = props => {
   const appData = useAppData();
   return (
     <div>
+      <SettingsSection title="Privacy">
+        <SettingsSwitchInput
+          settingsKey={'telemetry'}
+          label="Help Yana improve"
+          helperText={telemetryHelperText}
+        />
+        <SettingsClickable
+          title="View Yana's privacy policy"
+          icon={'help'}
+          onClick={() => remote.shell.openExternal('https://yana.js.org/privacy-policy/app')}
+        />
+      </SettingsSection>
+
       <SettingsSection title="Devtools">
         <SettingsSwitchInput
           settingsKey={'devToolsOpen'}
@@ -22,6 +41,7 @@ export const DevSettings: React.FC<{}> = props => {
           onClick={() => createPerformanceTestingWorkspace(appData)}
         />
       </SettingsSection>
+
       <SettingsSection title="Logging">
         <SettingsSwitchInput
           settingsKey={'devLoggerActive'}

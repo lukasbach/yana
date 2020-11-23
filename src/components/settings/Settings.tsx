@@ -9,7 +9,7 @@ import { useAppData } from '../../appdata/AppDataProvider';
 import { SettingsObject } from '../../settings/types';
 import { GeneralSettings } from './pages/GeneralSettings';
 import { EditorSettings } from './pages/EditorSettings';
-import { DevSettings } from './pages/DevSettings';
+import { AdvancedSettings } from './pages/AdvancedSettings';
 import { SidebarSettings } from './pages/SidebarSettings';
 import { LogService } from '../../common/LogService';
 import { SpellingSettings } from './pages/SpellingSettings';
@@ -60,7 +60,7 @@ export const Settings: React.FC<{}> = props => {
               <Tab id={SettingsTabs.Sidebar} title="Sidebar" />
               <Tab id={SettingsTabs.Editors} title="Editors" />
               <Tab id={SettingsTabs.Spelling} title="Spelling" />
-              <Tab id={SettingsTabs.Devtools} title="Dev Tools" />
+              <Tab id={SettingsTabs.Advanced} title="Advanced" />
             </Tabs>
           )}
         />
@@ -71,8 +71,8 @@ export const Settings: React.FC<{}> = props => {
               return <EditorSettings />;
             case SettingsTabs.Hotkeys:
               return <div />;
-            case SettingsTabs.Devtools:
-              return <DevSettings />;
+            case SettingsTabs.Advanced:
+              return <AdvancedSettings />;
             case SettingsTabs.Sidebar:
               return <SidebarSettings />;
             case SettingsTabs.Spelling:

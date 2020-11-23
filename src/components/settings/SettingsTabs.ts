@@ -4,5 +4,5 @@ export enum SettingsTabs {
   Editors,
   Hotkeys,
   Spelling,
-  Devtools,
+  Advanced,
 }
