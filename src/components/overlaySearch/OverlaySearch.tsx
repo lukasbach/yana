@@ -6,7 +6,7 @@ import { SearchInput } from './SearchInput';
 import { SearchResults } from './SearchResults';
 import { SearchBar } from '../searchbar/SearchBar';
 import { SearchBarModifiers } from '../searchbar/SearchBarModifiers';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DataItem, SearchQuery } from '../../types';
 import { SelectedItems } from './SelectedItems';
 import { SeachItemsContainer } from './SeachItemsContainer';

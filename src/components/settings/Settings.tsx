@@ -13,12 +13,15 @@ import { DevSettings } from './pages/DevSettings';
 import { SidebarSettings } from './pages/SidebarSettings';
 import { LogService } from '../../common/LogService';
 import { SpellingSettings } from './pages/SpellingSettings';
+import { useTelemetry } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();
   const [settings, setSettings] = useState(appData.settings);
   const [currentTab, setCurrentTab] = useState(SettingsTabs.General);
   const [dirty, setDirty] = useState(false);
+  const telemetry = useTelemetry();
 
   const updateSettings = (changed: Partial<SettingsObject>) => {
     setSettings(v => ({ ...v, ...changed }));
@@ -29,6 +32,7 @@ export const Settings: React.FC<{}> = props => {
     setDirty(false);
     LogService.applySettings(settings);
     await appData.saveSettings(settings);
+    telemetry.trackEvent(...TelemetryEvents.Settings.saveSettings);
   }
 
   return (

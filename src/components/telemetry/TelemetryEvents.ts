@@ -25,6 +25,8 @@ export const TelemetryEvents = {
     createDraftItem: ['items', 'items_create_draft'],
     starFromNoteContainer: ['items', 'items_star_from_notecontainer'],
     starFromContextMenu: ['items', 'items_star_from_contextmenu'],
+    unStarFromNoteContainer: ['items', 'items_unstar_from_notecontainer'],
+    unStarFromContextMenu: ['items', 'items_unstar_from_contextmenu'],
   },
   Search: {
     performSearch: ['search', 'search_perform'],

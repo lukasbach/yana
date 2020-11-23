@@ -9,6 +9,8 @@ import unzipper from 'unzipper';
 import { DataItem } from '../types';
 import { Alerter } from '../components/Alerter';
 import { LocalSqliteDataSource } from '../datasource/LocalSqliteDataSource';
+import { TelemetryService } from '../components/telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
 
 export const runImport = async (
   sourcePath: string,
@@ -63,7 +65,9 @@ export const runImport = async (
 
     await di.unload();
     appDataContext.setWorkSpace(workspace);
+    TelemetryService?.trackEvent(...TelemetryEvents.Workspaces.import);
   } catch(e) {
+    TelemetryService?.trackException('import_workspace_error', true);
     Alerter.Instance.alert({
       content: `Error: ${e.message}`,
       intent: 'danger',

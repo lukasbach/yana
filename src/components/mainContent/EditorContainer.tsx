@@ -6,6 +6,8 @@ import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { LogService } from '../../common/LogService';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { useCloseEvent } from '../../common/useCloseEvent';
+import { useTelemetry } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 const logger = LogService.getLogger('EditorContainer');
 
@@ -29,9 +31,11 @@ export const EditorContainer: React.FC<{
   const saveHandler = useRef<number | undefined>(undefined);
   const grabContentHandler = useRef<(() => Promise<object>) | undefined>();
   const settings = useSettings();
+  const telemetry = useTelemetry();
 
-  useEffect(() => logger.log("changed noteitem", [props.noteItem.name]), [props.noteItem.id])
-  useEffect(() => logger.log("changed currentContent", [], {content: props.currentContent, item: props.noteItem.name}), [props.currentContent])
+  useEffect(() => {
+    telemetry.trackEvent(...TelemetryEvents.Notes.openNote);
+  }, []);
 
   const clearSaveHandler = () => {
     if (saveHandler.current) {
@@ -53,20 +57,26 @@ export const EditorContainer: React.FC<{
     props.onChangeSaveIndicatorState?.(SaveIndicatorState.Saving);
 
     if (!grabContentHandler.current && !contentToSave) {
+      telemetry.trackException('save_attempt_before_editor_is_registered');
       throw Error('Trying to save before editor has registered.');
     }
     const content = contentToSave || await grabContentHandler.current?.();
     if (!!content && Object.keys(content).length > 0) {
+      telemetry.trackEvent(...TelemetryEvents.Notes.saveChanges);
       logger.log("Saving editor contents for ", [currentNote.id, currentNote.name], {currentNote, content});
       props.onChangeContent(currentNote.id, content);
       await dataInterface.writeNoteItemContent(currentNote.id, content);
       props.onChangeSaveIndicatorState?.(SaveIndicatorState.Saved);
     } else {
+      telemetry.trackException('cannot_save_note_no_content_retrieved');
       logger.error("Not saving editor contents, no content retrieved", [], {currentNote, content});
     }
   };
 
-  useCloseEvent(save, [currentNote.id]);
+  useCloseEvent(async () => {
+    telemetry.trackEvent(...TelemetryEvents.Notes.saveChangesViaAppClose);
+    await save();
+  }, [currentNote.id]);
 
   if (!editor) {
     return <div>Error!</div>;
@@ -79,7 +89,10 @@ export const EditorContainer: React.FC<{
       key={currentNote.id} // cleanly remount component on changing item
       content={currentContent}
       item={currentNote}
-      onDismount={content => save(content)}
+      onDismount={content => {
+        save(content);
+        telemetry.trackEvent(...TelemetryEvents.Notes.saveChangesViaContextSwitch);
+      }}
       onRegister={grabContent => {
         logger.log("Registered")
         grabContentHandler.current = grabContent;
@@ -89,7 +102,10 @@ export const EditorContainer: React.FC<{
           logger.log("change detected, grabContentHandler registered");
           props.onChangeSaveIndicatorState?.(SaveIndicatorState.Unsaved);
           clearSaveHandler();
-          saveHandler.current = setTimeout(() => save(), settings.noteItemSaveDelay) as unknown as number;
+          saveHandler.current = setTimeout(() => {
+            save();
+            telemetry.trackEvent(...TelemetryEvents.Notes.saveChangesViaTimer);
+          }, settings.noteItemSaveDelay) as unknown as number;
         } else {
           logger.log("change detected, but no grabContentHandler registered");
         }

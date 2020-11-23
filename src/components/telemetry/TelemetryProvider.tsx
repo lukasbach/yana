@@ -48,6 +48,8 @@ export const install = (trackingId: string, userId: string) => {
   });
 };
 
+export let TelemetryService: TelemetryContextValue | undefined;
+
 export const TelemetryProvider: React.FC<{}> = props => {
   const settings = useSettings();
   const appData = useAppData();
@@ -68,7 +70,7 @@ export const TelemetryProvider: React.FC<{}> = props => {
         'event_category': TelemetryEvents.App.init[0],
       });
 
-      setCtxValue({
+      const telemetry: TelemetryContextValue = {
         trackScreenView: (screenName) => {
           gtag('event', 'page_view', {
             'page_title': screenName,
@@ -99,7 +101,10 @@ export const TelemetryProvider: React.FC<{}> = props => {
           });
           logger.log('trackException', [], {error, fatal});
         },
-      });
+      };
+
+      setCtxValue(telemetry);
+      TelemetryService = telemetry;
     }
   }, []);
 

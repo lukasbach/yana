@@ -6,6 +6,8 @@ import { AppDataExportService } from './AppDataExportService';
 import path from 'path';
 import { LogService } from '../common/LogService';
 import { DataSourceRegistry } from '../datasource/DataSourceRegistry';
+import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
+import { TelemetryService } from '../components/telemetry/TelemetryProvider';
 
 const logger = LogService.getLogger('AutoBackup');
 
@@ -48,6 +50,7 @@ export class AutoBackup {
     }
 
     logger.log("Performing automatic backup for workspace", [this.workspace.name], {workspace: this.workspace});
+    TelemetryService?.trackEvent(...TelemetryEvents.Backups.performBackup);
 
     const dataInterface = new DataInterface(DataSourceRegistry.getDataSource(this.workspace), null as any, 300);
     await dataInterface.load();

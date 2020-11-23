@@ -16,6 +16,8 @@ import { appDataFile, userDataFolder } from './paths';
 import { getNewWorkspaceName } from './getNewWorkspaceName';
 import { LogService } from '../common/LogService';
 import { v4 as uuid } from 'uuid';
+import { TelemetryService } from '../components/telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
 
 const fs = fsLib.promises;
 
@@ -82,9 +84,13 @@ export const AppDataProvider: React.FC = props => {
     ...appData,
     lastAutoBackup,
     currentWorkspace: currentWorkspace,
-    setWorkSpace: setCurrentWorkspace,
+    setWorkSpace: ws => {
+      setCurrentWorkspace(ws);
+      TelemetryService?.trackEvent(...TelemetryEvents.Workspaces.switch);
+    },
     openWorkspaceCreationWindow: () => setIsCreatingWorkspace(true),
     addWorkSpace: async (name, path) => {
+
       const workspace: WorkSpace = {
         name,
         dataSourceType: 'sqlite3', // TODO
@@ -105,6 +111,7 @@ export const AppDataProvider: React.FC = props => {
       setAppData(newAppData);
       autoBackup?.addWorkspace(workspace);
       setCurrentWorkspace(workspace);
+      TelemetryService?.trackEvent(...TelemetryEvents.Workspaces.addExisting);
     },
     createWorkSpace: async (name, path, dataSourceType, empty?: boolean) => {
       if (appData.workspaces.find(ws => ws.name === name)) {
@@ -124,6 +131,7 @@ export const AppDataProvider: React.FC = props => {
       await fs.writeFile(appDataFile, JSON.stringify(newAppData));
       setAppData(newAppData);
       autoBackup?.addWorkspace(workspace);
+      TelemetryService?.trackEvent(...TelemetryEvents.Workspaces.create);
       return workspace;
     },
     deleteWorkspace: async (workspace, deleteData) => {
@@ -146,7 +154,10 @@ export const AppDataProvider: React.FC = props => {
               res();
             }
           });
-        })
+        });
+        TelemetryService?.trackEvent(...TelemetryEvents.Workspaces.deleteFromDisk);
+      } else {
+        TelemetryService?.trackEvent(...TelemetryEvents.Workspaces.deleteFromYana);
       }
 
       const newAppData: AppData = {

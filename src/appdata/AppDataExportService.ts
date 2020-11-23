@@ -6,6 +6,8 @@ import rimraf from 'rimraf';
 import { getElectronPath, isMediaItem, isNoteItem } from '../utils';
 import archiver from 'archiver';
 import { DataSourceRegistry } from '../datasource/DataSourceRegistry';
+import { TelemetryService } from '../components/telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
 
 export class AppDataExportService {
   public static async exportTo(destination: string, workspace: WorkSpace, onUpdate: (message: string) => void) {
@@ -99,6 +101,7 @@ export class AppDataExportService {
       });
       archive.finalize();
       onUpdate('Storing zip file');
+      TelemetryService?.trackEvent(...TelemetryEvents.Workspaces.export);
     })
   }
 }

@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from 'react';
 import { SidebarScenario } from './scenarios/SidebarScenario';
 import { SpotlightScenario, SpotlightStepComponent } from './SpotlightScenario';
 import { useAppData } from '../../appdata/AppDataProvider';
+import { useTelemetry } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 export interface SpotlightContextValue {
   startScenario: (scenario: SpotlightScenarioId, force?: boolean) => void,
@@ -18,6 +20,7 @@ export const SpotlightContainer: React.FC<{}> = props => {
   const appData = useAppData();
   const [scenario, setScenario] = useState<SpotlightScenarioId | undefined>();
   const [step, setStep] = useState(0);
+  const telemetry = useTelemetry();
 
   useEffect(() => {
     if (!appData.settings.completedSpotlights.includes(SpotlightScenarioId.SidebarScenario)) {
@@ -33,6 +36,10 @@ export const SpotlightContainer: React.FC<{}> = props => {
           if (force || !appData.settings.completedSpotlights.includes(scenarioId)) {
             setStep(0);
             setScenario(scenarioId);
+          }
+
+          if (force) {
+            telemetry.trackEvent(...TelemetryEvents.Tutorial.restart);
           }
         }
       }}>
@@ -67,6 +74,7 @@ export const SpotlightContainer: React.FC<{}> = props => {
                       await completeScenario();
                       setScenario(undefined);
                       setStep(0);
+                      telemetry.trackEvent(...TelemetryEvents.Tutorial.complete);
                     }},
                     step < scenarioObj.steps.length - 1 && { text: 'Next', onClick: nextStep },
                     step > 0 && { text: 'Back', onClick: prevStep },
@@ -74,6 +82,7 @@ export const SpotlightContainer: React.FC<{}> = props => {
                       await completeScenario();
                       setScenario(undefined);
                       setStep(0);
+                      telemetry.trackEvent(...TelemetryEvents.Tutorial.skip);
                     }},
                   ].filter(x => !!x) as any}
                 />

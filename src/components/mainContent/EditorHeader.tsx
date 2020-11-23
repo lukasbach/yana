@@ -15,6 +15,8 @@ import { DataItemContextMenu } from '../menus/DataItemContextMenu';
 import { useMainContentContext } from './context';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
+import { TelemetryService } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 const styles = {
   container: cxs({
@@ -110,11 +112,19 @@ export const EditorHeader: React.FC<{
             <Button
               style={{ marginLeft: '12px' }}
               icon={isStarred ? 'star' : 'star-empty'}
-              onClick={() => props.onChange({
-                ...props.dataItem,
-                tags: isStarred ? props.dataItem.tags.filter(tag => tag !== InternalTag.Starred)
-                  : [...props.dataItem.tags, InternalTag.Starred]
-              })}
+              onClick={() => {
+                props.onChange({
+                  ...props.dataItem,
+                  tags: isStarred ? props.dataItem.tags.filter(tag => tag !== InternalTag.Starred)
+                    : [...props.dataItem.tags, InternalTag.Starred]
+                });
+
+                if (isStarred) {
+                  TelemetryService?.trackEvent(...TelemetryEvents.Items.unStarFromNoteContainer);
+                } else {
+                  TelemetryService?.trackEvent(...TelemetryEvents.Items.starFromNoteContainer);
+                }
+              }}
               minimal
               large
             />

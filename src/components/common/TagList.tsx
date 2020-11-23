@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { undup } from '../../utils';
 import cxs from 'cxs';
+import { useTelemetry } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 
 export const TagList: React.FC<{
@@ -17,6 +19,7 @@ export const TagList: React.FC<{
   // const [[dataItem]] = useDataItems([props.dataItem]); // TODO
   const dataItem = props.dataItem;
   const dataInterface = useDataInterface();
+  const telemetry = useTelemetry();
   const [query, setQuery] = useState('');
   const [tags, setTags] = useState(dataItem.tags);
   const [availableTags, setAvailableTags] = useState<string[]>([]);
@@ -62,6 +65,7 @@ export const TagList: React.FC<{
           rightElement: (
             <Button minimal icon={'tick'} onClick={() => {
               dataInterface.changeItem(dataItem.id, { tags }).then(props.onStopEditing);
+              telemetry.trackEvent(...TelemetryEvents.Items.changeTags);
             }} />
           )
         }}

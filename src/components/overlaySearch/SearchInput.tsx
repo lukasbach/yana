@@ -1,10 +1,12 @@
 import * as React from 'react';
 import cxs from 'cxs';
 import cx from 'classnames';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTheme } from '../../common/theming';
 import { Icon } from '@blueprintjs/core';
 import { useSearchBar } from '../searchbar/SearchBar';
+import { useTelemetry } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 const styles = {
   container: cxs({
@@ -38,6 +40,11 @@ export const SearchInput: React.FC<{
   const [focus, setFocus] = useState(false);
   const theme = useTheme();
   const search = useSearchBar();
+  const telemetry = useTelemetry();
+
+  useEffect(() => {
+    telemetry.trackEvent(...TelemetryEvents.Search.performSearch);
+  }, [search.searchValue]);
 
   return (
     <div

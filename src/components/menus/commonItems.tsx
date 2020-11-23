@@ -8,6 +8,8 @@ import { InternalTag } from '../../datasource/InternalTag';
 import { undup } from '../../utils';
 import { IconName } from '@blueprintjs/core';
 import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
+import { TelemetryService } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 export const createOpenItems = (mainContent: MainContentContextType, item: DataItem, icon: IconName): Array<MenuItemDefinition | 'divider'> => ([
   { text: 'Open', icon, onClick: () => mainContent.openInCurrentTab(item)  },
@@ -24,7 +26,12 @@ export const createRenameItems = (item: DataItem, dataInterface: DataInterface, 
         type: 'string',
         defaultValue: item.name,
         placeholder: item.name,
-        onConfirmText: name => !!name.length && dataInterface.changeItem(item.id, { name })
+        onConfirmText: name => {
+          if (!!name.length) {
+            dataInterface.changeItem(item.id, { name });
+            TelemetryService?.trackEvent(...TelemetryEvents.Items.renameFromAlert);
+          }
+        }
       },
       icon: 'edit',
       cancelButtonText: 'Cancel',
@@ -42,7 +49,8 @@ export const createNewChildsItems = (item: DataItem, dataInterface: DataInterfac
         lastChange: new Date().getTime(),
         created: new Date().getTime(),
         tags: []
-      } as any, item.id).then(onCreatedItem)
+      } as any, item.id).then(onCreatedItem);
+      TelemetryService?.trackEvent(...TelemetryEvents.Items.createCollection);
     }},
   { text: 'Create new Note Item', icon: 'add', onClick: () => {
       dataInterface.createDataItemUnderParent({
@@ -53,7 +61,8 @@ export const createNewChildsItems = (item: DataItem, dataInterface: DataInterfac
         created: new Date().getTime(),
         tags: [],
         noteType: 'atlaskit-editor-note'
-      } as any, item.id).then(onCreatedItem)
+      } as any, item.id).then(onCreatedItem);
+      TelemetryService?.trackEvent(...TelemetryEvents.Items.createAtlaskitNote);
     }},
   { text: 'Create new Code Snippet', icon: 'add', onClick: () => {
       dataInterface.createDataItemUnderParent({
@@ -64,15 +73,18 @@ export const createNewChildsItems = (item: DataItem, dataInterface: DataInterfac
         created: new Date().getTime(),
         tags: [],
         noteType: 'monaco-editor-note'
-      } as any, item.id).then(onCreatedItem)
+      } as any, item.id).then(onCreatedItem);
+      TelemetryService?.trackEvent(...TelemetryEvents.Items.createCodeSnippet);
     }},
 ]);
 
 export const createDeletionItems = (dataInterface: DataInterface, item: DataItem): Array<MenuItemDefinition | 'divider'> => (
   item.tags.includes(InternalTag.Trash) ? [
     { text: 'Restore', icon: 'history',
-      onClick: async () => await dataInterface.changeItem(item.id, old =>
-        ({ tags: old.tags.filter(tag => tag !== InternalTag.Trash) }))
+      onClick: async () => {
+        await dataInterface.changeItem(item.id, old => ({ tags: old.tags.filter(tag => tag !== InternalTag.Trash) }));
+        TelemetryService?.trackEvent(...TelemetryEvents.Items.restoreFromTrash);
+      }
     },
     'divider',
     { text: 'Delete forever', icon: 'trash', intent: 'danger', onClick: () => Alerter.Instance.alert({
@@ -87,6 +99,7 @@ export const createDeletionItems = (dataInterface: DataInterface, item: DataItem
           defaultValue: true,
           onConfirmBoolean: (recursive) => {
             dataInterface.removeItem(item.id, recursive);
+            TelemetryService?.trackEvent(...TelemetryEvents.Items.removeFromTrash);
           }
         }
       })
@@ -94,8 +107,10 @@ export const createDeletionItems = (dataInterface: DataInterface, item: DataItem
   ] : [
     {
       text: 'Move to trash', icon: 'trash', intent: 'danger',
-      onClick: async () => await dataInterface.changeItem(item.id, old =>
-        ({ tags: undup([...old.tags, InternalTag.Trash]) }))
+      onClick: async () => {
+        await dataInterface.changeItem(item.id, old => ({ tags: undup([...old.tags, InternalTag.Trash]) }));
+        TelemetryService?.trackEvent(...TelemetryEvents.Items.moveToTrash);
+      }
     }
   ]
 );
@@ -110,8 +125,10 @@ export const createMetaItems = (dataInterface: DataInterface, item: DataItem): A
       onClick: (e) => {
         if (isStarred) {
           dataInterface.changeItem(item.id, i => ({ tags: i.tags.filter(tag => tag !== InternalTag.Starred) }));
+          TelemetryService?.trackEvent(...TelemetryEvents.Items.unStarFromContextMenu);
         } else {
           dataInterface.changeItem(item.id, i => ({ tags: [...i.tags, InternalTag.Starred] }));
+          TelemetryService?.trackEvent(...TelemetryEvents.Items.starFromContextMenu);
         }
       }
     }
@@ -134,9 +151,11 @@ export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch:
         if (parent) {
           if (target) {
             await dataInterface.moveItem(item.id, parent.id, target[0].id, 0);
+            TelemetryService?.trackEvent(...TelemetryEvents.Items.move);
           }
         } else if (target) {
           await dataInterface.changeItem(target[0].id, old => ({ childIds: [...old.childIds, item.id] }));
+          TelemetryService?.trackEvent(...TelemetryEvents.Items.move);
         }
       }
     },
@@ -152,6 +171,7 @@ export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch:
           const content = await dataInterface.getNoteItemContent(item.id);
           const { id } = await dataInterface.createDataItemUnderParent({ ...item, id: undefined } as any, target[0].id);
           await dataInterface.writeNoteItemContent(id, content);
+          TelemetryService?.trackEvent(...TelemetryEvents.Items.copy);
         }
       }
     },

@@ -25,6 +25,8 @@ import { PageIndex } from '../../PageIndex';
 // @ts-ignore
 import brand from '../../icons/icon-white-x1.png';
 import { SpotlightTarget } from '@atlaskit/onboarding';
+import { TelemetryService } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 const style = {
   popoverContainer: cxs({
@@ -166,6 +168,7 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
                         created: new Date().getTime(),
                         noteType: 'atlaskit-editor-note'
                       } as any).then(item => mainContent.newTab(item));
+                      TelemetryService?.trackEvent(...TelemetryEvents.Items.createDraftItem);
                     }}
                   >
                     <Icon icon="add" />

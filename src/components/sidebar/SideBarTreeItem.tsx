@@ -10,6 +10,8 @@ import { SettingsObject, SideBarItemAction } from '../../settings/types';
 import { IconName, Spinner } from '@blueprintjs/core';
 import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
 import { useState } from 'react';
+import { useTelemetry } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 enum ActionKind { BackgroundClick, MiddleClick, TitleClick }
 
@@ -60,8 +62,9 @@ export const SideBarTreeItem: React.FC<{
   const dataInterface = useDataInterface();
   const mainContent = useMainContentContext();
   const overlaySearch = useOverlaySearch();
-  const { item, hasChildren, isExpanded, onExpand, onCollapse } = props;
   const settings = useSettings();
+  const telemetry = useTelemetry();
+  const { item, hasChildren, isExpanded, onExpand, onCollapse } = props;
   const [waiting, setWaiting] = useState(false);
 
   const createOnAction = (action: SideBarItemAction) => () => {
@@ -121,6 +124,7 @@ export const SideBarTreeItem: React.FC<{
       onRename={name => {
         dataInterface.changeItem(item.id, { ...item, name });
         props.onStartRenameItem(undefined);
+        telemetry.trackEvent(...TelemetryEvents.Items.renameFromSidebar);
       }}
       onClick={createOnAction(getActionPropertyFromSettings(ActionKind.BackgroundClick, item.kind, settings))}
       onMiddleClick={createOnAction(getActionPropertyFromSettings(ActionKind.MiddleClick, item.kind, settings))}
