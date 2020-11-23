@@ -16,7 +16,10 @@ const styles = {
     textAlign: 'right',
     '> div': {
       marginBottom: '4px',
-    }
+    },
+    ' button': {
+      marginBottom: '2px'
+    },
   }),
   title: cxs({
     position: 'relative',

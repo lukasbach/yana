@@ -49,6 +49,15 @@ export const SideBarTree: React.FC<{
     }
   });
 
+  useEffect(() => {
+    if (renamingItemId) {
+      const parent = items.find(item => item.childIds.includes(renamingItemId));
+      if (parent && parent.childIds.length > untruncatedItemsCount && !untruncatedItems.includes(parent.id)) {
+        setUntruncatedItems(i => [...i, parent.id]);
+      }
+    }
+  }, [renamingItemId, items]);
+
   useEffect(() => { // TODO should be moved into its own hook
     const itemIds = items.map(item => item.id);
     const newTree: TreeData = {

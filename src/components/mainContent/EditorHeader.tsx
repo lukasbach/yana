@@ -26,12 +26,6 @@ const styles = {
   leftContainer: cxs({
     flexGrow: 1
   }),
-  rightContainer: cxs({
-    textAlign: 'right',
-    '> div': {
-      marginBottom: '4px',
-    }
-  }),
   title: cxs({
     fontWeight: 400,
     fontSize: '32px',
