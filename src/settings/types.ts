@@ -54,6 +54,7 @@ export interface SettingsObject {
   themeSidebarHoverColor: string,
   themeSidebarTextColor: string,
   themeTopbarColor: string,
+  telemetry: boolean,
   zoomFactor: number,
   completedSpotlights: string[],
 }

@@ -86,4 +86,5 @@ export interface WorkSpace {
 export interface AppData {
   workspaces: WorkSpace[];
   settings: SettingsObject;
+  telemetryId: string;
 }

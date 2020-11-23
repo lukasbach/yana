@@ -15,6 +15,7 @@ import { CreateWorkspaceWindow } from '../components/appdata/CreateWorkspaceWind
 import { appDataFile, userDataFolder } from './paths';
 import { getNewWorkspaceName } from './getNewWorkspaceName';
 import { LogService } from '../common/LogService';
+import { v4 as uuid } from 'uuid';
 
 const fs = fsLib.promises;
 
@@ -27,17 +28,17 @@ export interface AppDataContextValue extends AppData {
   saveSettings(settings: SettingsObject): Promise<void>;
   lastAutoBackup: number;
   openWorkspaceCreationWindow: () => void;
+  telemetryId: string;
 }
 
 export const AppDataContext = React.createContext<AppDataContextValue>(null as any);
-
 export const useAppData = () => useContext(AppDataContext);
 export const useSettings = () => useAppData().settings;
 
 // TODO redo AppDataService and encapsulate load/save calls in there, really redundant in this file!
 export const AppDataProvider: React.FC = props => {
   const [isCreatingWorkspace, setIsCreatingWorkspace] = useState(false);
-  const [appData, setAppData] = useState<AppData>({ workspaces: [], settings: defaultSettings });
+  const [appData, setAppData] = useState<AppData>({ workspaces: [], settings: defaultSettings, telemetryId: '_' });
   const [currentWorkspace, setCurrentWorkspace] = useState<WorkSpace>(appData.workspaces[0]);
   const [autoBackup, setAutoBackup] = useState<undefined | AutoBackupService>();
   const [lastAutoBackup, setLastAutoBackup] = useState(0);
@@ -51,13 +52,17 @@ export const AppDataProvider: React.FC = props => {
 
     let appData: AppData = {
       workspaces: [],
-      settings: defaultSettings
+      settings: defaultSettings,
+      telemetryId: uuid(),
     };
 
     if (!fsLib.existsSync(appDataFile)) {
       await fs.writeFile(appDataFile, JSON.stringify(appData));
     } else {
-      appData = JSON.parse(await fs.readFile(appDataFile, { encoding: 'utf8' }));
+      appData = {
+        ...appData,
+        ...JSON.parse(await fs.readFile(appDataFile, { encoding: 'utf8' }))
+      };
     }
 
     appData.settings = { ...defaultSettings, ...appData.settings };

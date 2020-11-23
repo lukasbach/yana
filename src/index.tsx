@@ -20,6 +20,7 @@ import { OverlaySearch } from './components/overlaySearch/OverlaySearch';
 import { OverlaySearchProvider } from './components/overlaySearch/OverlaySearchProvider';
 import { registerCommonContextMenu } from './components/commonContextMenu/registerCommonContextMenu';
 import { SpotlightContainer } from './components/spotlight/SpotlightContainer';
+import { TelemetryProvider } from './components/telemetry/TelemetryProvider';
 
 (window as any).ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
@@ -31,21 +32,23 @@ registerCommonContextMenu();
 ReactDOM.render(
   <IntlProvider locale='en'>
     <AppDataProvider>
-      <SpotlightContainer>
-        <ThemeProvider>
-          <DevToolsContextProvider>
-            <DataInterfaceProvider>
-              <MainContentContextProvider>
-                <OverlaySearchProvider>
-                  <LayoutContainer />
-                  <Alerter.Instance.Container />
-                  <DropZoneContainer />
-                </OverlaySearchProvider>
-              </MainContentContextProvider>
-            </DataInterfaceProvider>
-          </DevToolsContextProvider>
-        </ThemeProvider>
-      </SpotlightContainer>
+      <TelemetryProvider>
+        <SpotlightContainer>
+          <ThemeProvider>
+            <DevToolsContextProvider>
+              <DataInterfaceProvider>
+                <MainContentContextProvider>
+                  <OverlaySearchProvider>
+                    <LayoutContainer />
+                    <Alerter.Instance.Container />
+                    <DropZoneContainer />
+                  </OverlaySearchProvider>
+                </MainContentContextProvider>
+              </DataInterfaceProvider>
+            </DevToolsContextProvider>
+          </ThemeProvider>
+        </SpotlightContainer>
+      </TelemetryProvider>
     </AppDataProvider>
   </IntlProvider>,
   document.getElementById('root')
