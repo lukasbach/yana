@@ -149,6 +149,7 @@ export const CreateWorkspaceWindow: React.FC<{
   onCreate: (name: string, path: string) => void,
   onImported: () => void,
   defaultWorkspaceName?: string,
+  isInitialCreationScreen?: boolean,
 }> = props => {
   const appData = useAppData();
   const [createWorkspaceName, setCreateWorkspaceName] = useState(props.defaultWorkspaceName ?? 'My thoughts');
@@ -217,6 +218,14 @@ export const CreateWorkspaceWindow: React.FC<{
                 />
               </FormGroup>
 
+              { props.isInitialCreationScreen && (
+                <p className={Classes.TEXT_MUTED + ' ' + Classes.RUNNING_TEXT + ' ' + Classes.TEXT_SMALL}>
+                  By using Yana, you accept{' '}
+                  <a href="#" onClick={() => remote.shell.openExternal('https://yana.js.org/privacy-policy/app')}>Yana's privacy policy.</a>{' '}
+                  No personally identifiable data or contents of your notebooks will be sent to external servers.
+                </p>
+              ) }
+
               <div className={styles.justifyRight}>
                 <Button
                   large outlined
@@ -230,7 +239,7 @@ export const CreateWorkspaceWindow: React.FC<{
                 </Button>
               </div>
 
-              <p>
+              <p style={{ marginTop: '4px' }}>
                 You can also&nbsp;
                 <a href="#" onClick={async () => {
                   await runImportWizard(appData);

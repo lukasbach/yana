@@ -187,6 +187,7 @@ export const AppDataProvider: React.FC = props => {
       <div key={currentWorkspace?.dataSourceOptions?.sourcePath || '__'} style={{ height: '100%' }}>
         { isCreatingWorkspace || isInInitialCreationScreen ? (
           <CreateWorkspaceWindow
+            isInitialCreationScreen={isInInitialCreationScreen}
             defaultWorkspaceName={getNewWorkspaceName(ctx)}
             onClose={() => isInInitialCreationScreen ? remote.getCurrentWindow().close() : setIsCreatingWorkspace(false)}
             onCreate={async (name, wsPath) => {
