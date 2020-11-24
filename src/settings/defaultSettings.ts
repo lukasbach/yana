@@ -1,9 +1,7 @@
 import { SettingsObject, SideBarItemAction, SidebarPadding } from './types';
 import path from "path";
-import { remote } from "electron";
 import { getElectronPath } from '../utils';
 import { defaultTheme } from '../common/theming';
-import book from '@atlaskit/icon/glyph/book';
 
 export const defaultSettings: SettingsObject = {
   editorAtlassianAdvancedTables: true,

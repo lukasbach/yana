@@ -33,21 +33,21 @@ ReactDOM.render(
   <IntlProvider locale='en'>
     <AppDataProvider>
       <TelemetryProvider>
-        <SpotlightContainer>
-          <ThemeProvider>
-            <DevToolsContextProvider>
-              <DataInterfaceProvider>
-                <MainContentContextProvider>
+        <ThemeProvider>
+          <DevToolsContextProvider>
+            <DataInterfaceProvider>
+              <MainContentContextProvider>
+                <SpotlightContainer>
                   <OverlaySearchProvider>
                     <LayoutContainer />
                     <Alerter.Instance.Container />
                     <DropZoneContainer />
                   </OverlaySearchProvider>
-                </MainContentContextProvider>
-              </DataInterfaceProvider>
-            </DevToolsContextProvider>
-          </ThemeProvider>
-        </SpotlightContainer>
+                </SpotlightContainer>
+              </MainContentContextProvider>
+            </DataInterfaceProvider>
+          </DevToolsContextProvider>
+        </ThemeProvider>
       </TelemetryProvider>
     </AppDataProvider>
   </IntlProvider>,

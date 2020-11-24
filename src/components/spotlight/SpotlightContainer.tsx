@@ -7,6 +7,9 @@ import { SpotlightScenario, SpotlightStepComponent } from './SpotlightScenario';
 import { useAppData } from '../../appdata/AppDataProvider';
 import { useTelemetry } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
+import { useMainContentContext } from '../mainContent/context';
+import { PageIndex } from '../../PageIndex';
+import { undup } from '../../utils';
 
 export interface SpotlightContextValue {
   startScenario: (scenario: SpotlightScenarioId, force?: boolean) => void,
@@ -18,6 +21,7 @@ export const useSpotlight = () => useContext(SpotlightContext);
 
 export const SpotlightContainer: React.FC<{}> = props => {
   const appData = useAppData();
+  const mainContent = useMainContentContext();
   const [scenario, setScenario] = useState<SpotlightScenarioId | undefined>();
   const [step, setStep] = useState(0);
   const telemetry = useTelemetry();
@@ -26,6 +30,10 @@ export const SpotlightContainer: React.FC<{}> = props => {
     if (!appData.settings.completedSpotlights.includes(SpotlightScenarioId.SidebarScenario)) {
       setStep(0);
       setScenario(SpotlightScenarioId.SidebarScenario);
+
+      if (mainContent.tabs.length === 0) {
+        mainContent.newTab(PageIndex.Home);
+      }
     }
   }, [])
 
@@ -62,8 +70,14 @@ export const SpotlightContainer: React.FC<{}> = props => {
               const nextStep = () => setStep(s => Math.min(scenarioObj.steps.length - 1, s + 1));
               const prevStep = () => setStep(s => Math.max(0, s - 1));
               const completeScenario = async () => {
-                await appData.saveSettings({ ...appData.settings, completedSpotlights: [...appData.settings.completedSpotlights, scenario] });
-              }
+                await appData.saveSettings({
+                  ...appData.settings,
+                  completedSpotlights: undup([
+                    ...appData.settings.completedSpotlights,
+                    scenario
+                  ])
+                });
+              };
 
               return (
                 <Comp
