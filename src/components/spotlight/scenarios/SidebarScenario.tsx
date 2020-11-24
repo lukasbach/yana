@@ -3,6 +3,7 @@ import { SpotlightScenarioId } from '../SpotlightScenarioId';
 import { Spotlight } from '@atlaskit/onboarding';
 import React from 'react';
 import { PageIndex } from '../../../PageIndex';
+import { defaultTheme } from '../../../common/theming';
 
 export const SidebarScenario: SpotlightScenario = {
   id: SpotlightScenarioId.SidebarScenario,
@@ -14,6 +15,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Welcome to Yana!"
         target="sidebar-workplace-selection"
         key="sidebar-workplace-selection"
+        targetBgColor={defaultTheme.sidebarColor}
       >
         This quick introduction shows you the basics of using
         Yana. You can skip it if you are already familiar
@@ -28,6 +30,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Workspaces"
         target="sidebar-workplace-selection"
         key="sidebar-workplace-selection"
+        targetBgColor={defaultTheme.sidebarColor}
       >
         <p>
           In Yana you can have more than one workspace. Each workspace is stored on a location
@@ -45,6 +48,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Settings"
         target="sidebar-settings"
         key="sidebar-settings"
+        targetBgColor={defaultTheme.sidebarColor}
       >
         Click the cog icon to open Yana's settings...
       </Spotlight>
@@ -56,6 +60,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Draft items"
         target="sidebar-new-draft"
         key="sidebar-new-draft"
+        targetBgColor={defaultTheme.sidebarColor}
       >
         or the plus icon to create a new draft item.
       </Spotlight>
@@ -67,6 +72,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Draft items"
         target={`sidebar-navigationtree-${PageIndex.DraftItems}`}
         key={`sidebar-navigationtree-${PageIndex.DraftItems}`}
+        targetBgColor={defaultTheme.sidebarColor}
       >
         Each draft you create is available from this view. Click to open
         a list of all your draft items. You can always right click any
@@ -80,6 +86,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Trash"
         target={`sidebar-navigationtree-${PageIndex.Trash}`}
         key={`sidebar-navigationtree-${PageIndex.Trash}`}
+        targetBgColor={defaultTheme.sidebarColor}
       >
         Items you've removed can be restored or deleted for ever from the trash can.
       </Spotlight>
@@ -91,6 +98,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Your notes"
         target="sidebar-items"
         key="sidebar-items"
+        targetBgColor={defaultTheme.sidebarColor}
       >
         <p>
           You can structure your notes in a nested tree. Click on folders to toggle them, or
@@ -100,8 +108,19 @@ export const SidebarScenario: SpotlightScenario = {
         <p>
           Right click an item to bring up more options for that item.
         </p>
+      </Spotlight>
+    ),
+    ({ defaultActions }) => (
+      <Spotlight
+        actions={defaultActions}
+        dialogPlacement="right middle"
+        heading="Create new notes"
+        target="sidebar-new-note"
+        key="sidebar-new-note"
+        targetBgColor={defaultTheme.sidebarColor}
+      >
         <p>
-          <b>To create a new note or folder</b>, click on the plus icon that appears when hovering over{' '}
+          <b>To create a new note or folder</b>, click on the plus icon next to{' '}
           <i>My Collections</i>, or right-click any folder to create new child items.
         </p>
         <p>
@@ -116,6 +135,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Sidebar"
         target="sidebar"
         key="sidebar"
+        targetBgColor={defaultTheme.sidebarColor}
       >
         You can change the width of the sidebar by dragging its right border, or minimize
         it by clicking on the arrow on the bottom.
@@ -128,6 +148,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="Tabs"
         target="topbar"
         key="topbar"
+        targetBgColor={defaultTheme.topBarColor}
       >
         <p>
           Notes that you open are listed in individual tabs. You can reorder tabs by dragging them.
@@ -141,6 +162,7 @@ export const SidebarScenario: SpotlightScenario = {
         heading="That's all for now!"
         target="topbar"
         key="topbar"
+        targetBgColor={defaultTheme.topBarColor}
       >
         <p>
           Have fun with Yana!

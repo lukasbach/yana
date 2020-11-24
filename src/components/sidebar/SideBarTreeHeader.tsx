@@ -10,17 +10,13 @@ import { useState } from 'react';
 import { useMainContentContext } from '../mainContent/context';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
+import { SpotlightTarget } from '@atlaskit/onboarding';
 
 const styles = {
   container: cxs({
     display: 'flex',
     padding: '12px 8px 2px 8px',
     color: '#fff',
-    ':hover': {
-      ' .add-container': {
-        opacity: '1 !important'
-      }
-    }
   }),
   clickableContainer: cxs({
     display: 'flex',
@@ -41,7 +37,6 @@ const styles = {
     padding: '2px',
   }),
   addContainer: cxs({
-    opacity: 0,
     transition: '.3s all ease',
     cursor: 'pointer',
     ':hover': {
@@ -82,28 +77,25 @@ export const SideBarTreeHeader: React.FC<{
         </div>
       </div>
       { props.masterItem && (
-        <Popover
-          content={(
-            <TreeAddIconContextMenu
-              item={props.masterItem}
-              mainContent={mainContent}
-              dataInterface={dataInterface}
-              renderer={Bp3MenuRenderer}
-              onCreatedItem={props.onCreatedItem}
-            />
-          )}
-          position={'bottom-right'}
-          minimal
-        >
-          <div
-            className={cx(
-              styles.addContainer,
-              'add-container'
+        <SpotlightTarget name="sidebar-new-note">
+          <Popover
+            content={(
+              <TreeAddIconContextMenu
+                item={props.masterItem}
+                mainContent={mainContent}
+                dataInterface={dataInterface}
+                renderer={Bp3MenuRenderer}
+                onCreatedItem={props.onCreatedItem}
+              />
             )}
+            position={'bottom-right'}
+            minimal
           >
-            <Icon icon={'plus'} />
-          </div>
-        </Popover>
+              <div className={styles.addContainer}>
+                <Icon icon={'plus'} />
+              </div>
+          </Popover>
+        </SpotlightTarget>
       )}
     </div>
   );
