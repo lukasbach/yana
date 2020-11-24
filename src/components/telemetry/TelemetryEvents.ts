@@ -40,7 +40,7 @@ export const TelemetryEvents = {
     performBackup: ['backup', 'backup_perform'],
   },
   Updates: {
-    performUpdate: ['update', 'update_perform']
+    // performUpdate: ['update', 'update_perform']
   },
   Settings: {
     saveSettings: ['settings', 'settings_save']
@@ -50,7 +50,7 @@ export const TelemetryEvents = {
     switch: ['workspaces', 'workspaces_switch'],
     deleteFromDisk: ['workspaces', 'workspaces_delete_from_disk'],
     deleteFromYana: ['workspaces', 'workspaces_delete_from_yana'],
-    export: ['workspaces', 'workspaces_export'],
+    // export: ['workspaces', 'workspaces_export'],
     import: ['workspaces', 'workspaces_import'],
     addExisting: ['workspaces', 'workspaces_add_existing'],
   }

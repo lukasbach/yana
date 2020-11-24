@@ -5,8 +5,6 @@ import { AppDataExportService } from './AppDataExportService';
 import { LogService } from '../common/LogService';
 import path from 'path';
 import { autoUpdater } from "electron-updater"
-import { TelemetryService } from '../components/telemetry/TelemetryProvider';
-import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
 
 const logger = LogService.getLogger('AutoUpdate');
 
@@ -39,7 +37,6 @@ export class AutoUpdate {
   async prepareDownloadUpdate() {
     autoUpdater.once('update-available', async () => {
       logger.log('Update is available. Initiate update.');
-      TelemetryService?.trackEvent(...TelemetryEvents.Updates.performUpdate);
 
       if (this.shouldBackupBefore) {
         for (const ws of this.appData.workspaces) {
