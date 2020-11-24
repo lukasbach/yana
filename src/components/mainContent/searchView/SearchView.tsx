@@ -15,12 +15,14 @@ import { LoadingSearchViewCard } from './LoadingSearchViewCard';
 import { SearchBar } from '../../searchbar/SearchBar';
 
 export const SearchView: React.FC<{
-  title: string,
-  icon: IconName,
-  iconColor?: string,
-  hiddenSearch: SearchQuery,
-  defaultSearch: SearchQuery,
+  title: string;
+  titleSubtext?: string;
+  icon: IconName;
+  iconColor?: string;
+  hiddenSearch: SearchQuery;
+  defaultSearch: SearchQuery;
   onClickItem?: (item: DataItem) => void;
+  rightContent?: React.ReactNode;
 }> = props => {
   const [hiddenSearch, setHiddenSearch] = useState(props.hiddenSearch);
   const [userSearch, setUserSearch] = useState(props.defaultSearch);
@@ -42,6 +44,7 @@ export const SearchView: React.FC<{
     <PageContainer header={(
       <PageHeader
         title={props.title}
+        titleSubtext={props.titleSubtext}
         icon={props.icon}
         iconColor={props.iconColor}
         lowerContent={(
@@ -50,21 +53,25 @@ export const SearchView: React.FC<{
           </SearchBar>
         )}
         rightContent={(
-          <Popover
-            content={(
-              <SearchSortingMenu
-                searchQuery={hiddenSearch}
-                onChange={setHiddenSearch}
-              />
-            )}
-          >
-            <Button
-              icon={searchQuery.sortDirection === SearchQuerySortDirection.Ascending ? 'sort-asc' : 'sort-desc'}
-              outlined
+          <>
+            { props.rightContent }
+            {' '}
+            <Popover
+              content={(
+                <SearchSortingMenu
+                  searchQuery={hiddenSearch}
+                  onChange={setHiddenSearch}
+                />
+              )}
             >
-              Sort Items
-            </Button>
-          </Popover>
+              <Button
+                icon={searchQuery.sortDirection === SearchQuerySortDirection.Ascending ? 'sort-asc' : 'sort-desc'}
+                outlined
+              >
+                Sort Items
+              </Button>
+            </Popover>
+          </>
         )}
       />
     )}>

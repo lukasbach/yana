@@ -48,7 +48,10 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
             .reduce((a, b) => [...a, ...b], [])
             .filter(id => !itemIds.includes(id));
           for (const id of missingChildIds) {
-            added.push(await dataInterface.getDataItem(id)); // TODO verify
+            const item = await dataInterface.getDataItem(id);
+            if (item) {
+              added.push(item); // TODO verify
+            }
           }
         }
       } else if (reason === ItemChangeEventReason.Created) {
@@ -90,7 +93,7 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
         ];
 
         changedItemStructure = changedItemStructure.filter(item => {
-          const removedDueToNoParent = changedItemStructure.find(potentialParent => potentialParent.childIds.includes(item.id));
+          const removedDueToNoParent = changedItemStructure.find(potentialParent => potentialParent?.childIds.includes(item.id));
           return changedItemStructure.map(item => item.id).includes(item.id) || removedDueToNoParent;
         })
 
