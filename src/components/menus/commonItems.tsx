@@ -155,6 +155,13 @@ export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch:
           }
         } else if (target) {
           await dataInterface.changeItem(target[0].id, old => ({ childIds: [...old.childIds, item.id] }));
+
+          if (item.tags.includes(InternalTag.Trash) || item.tags.includes(InternalTag.Draft)) {
+            await dataInterface.changeItem(item.id, ({ tags }) => ({
+              tags: tags.filter(tag => tag !== InternalTag.Trash && tag !== InternalTag.Draft)
+            }));
+          }
+
           TelemetryService?.trackEvent(...TelemetryEvents.Items.move);
         }
       }
@@ -169,7 +176,11 @@ export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch:
         });
         if (target) {
           const content = await dataInterface.getNoteItemContent(item.id);
-          const { id } = await dataInterface.createDataItemUnderParent({ ...item, id: undefined } as any, target[0].id);
+          const { id } = await dataInterface.createDataItemUnderParent({
+            ...item,
+            id: undefined,
+            tags: item.tags.filter(t => t !== InternalTag.Draft && t !== InternalTag.Trash)
+          } as any, target[0].id);
           await dataInterface.writeNoteItemContent(id, content);
           TelemetryService?.trackEvent(...TelemetryEvents.Items.copy);
         }

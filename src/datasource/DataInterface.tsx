@@ -6,6 +6,7 @@ import type { EditorRegistry } from '../editors/EditorRegistry';
 import { isMediaItem, isNoteItem } from '../utils';
 import { LogService } from '../common/LogService';
 import { DevtoolsContextType } from '../components/devtools/DevToolsContextProvider';
+import { InternalTag } from './InternalTag';
 
 const logger = LogService.getLogger('DataInterface');
 
@@ -218,6 +219,14 @@ export class DataInterface implements AbstractDataSource {
         ...targetParent.childIds.filter((childId, index) => index >= targetIndex),
       ]
     });
+
+    const item = await this.getDataItem(id);
+
+    if (item.tags.includes(InternalTag.Draft)) {
+      await this.changeItem(id, {
+        tags: item.tags.filter(t => t !== InternalTag.Draft && t !== InternalTag.Trash)
+      });
+    }
   }
 
   public async changeItem<K extends DataItemKind>(
