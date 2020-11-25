@@ -31,7 +31,8 @@ export const SideBarContent: React.FC<{}> = props => {
           search={{
             sortColumn: SearchQuerySortColumn.LastChange,
             sortDirection: SearchQuerySortDirection.Descending,
-            limit: settings.sidebarShowRecentItemsCount
+            limit: settings.sidebarShowRecentItemsCount,
+            notTags: [InternalTag.Internal]
           }}
           title="Recent Items"
         />
@@ -43,7 +44,8 @@ export const SideBarContent: React.FC<{}> = props => {
             sortColumn: SearchQuerySortColumn.LastChange,
             sortDirection: SearchQuerySortDirection.Descending,
             tags: [InternalTag.Starred],
-            limit: settings.sidebarShowStarredItemsCount
+            limit: settings.sidebarShowStarredItemsCount,
+            notTags: [InternalTag.Internal]
           }}
           title="Starred Items"
         />

@@ -66,21 +66,6 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
       }
     }
 
-    // Make sure newly added childs are present in the tree
-    // const requiredIds = [
-    //   ...updated.map(updatedItem => updatedItem.childIds).reduce((a, b) => [...a, ...b], []),
-    //   ...added.map(updatedItem => updatedItem.childIds).reduce((a, b) => [...a, ...b], []),
-    // ];
-    // const missingIds =
-
-    // console.groupCollapsed("Tree update summary:")
-    // console.log("  Previously contained ids: ", itemIds)
-    // console.log("  Changes processed: ", changes)
-    // console.log("  Updated items: ", updated)
-    // console.log("  Removed items: ", removed)
-    // console.log("  Added items: ", added)
-    // console.log("  Total items before: ", items.length)
-
     let changedItemStructure: DataItem[] = [];
 
     if (removed.length || updated.length || added.length) {
@@ -115,7 +100,6 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
       "Old item structure": items,
       "Expanded Ids": expandedIds,
     });
-    // console.groupEnd();
   }, [rootItems, items, dataInterface]);
 
   const expand = useCallback(async (id: string) => {
@@ -129,17 +113,15 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
     setExpandedIds(ids => ids.filter(id2 => id2 !== id));
   }, []);
 
-  const trashItems = items.filter(item => item.tags.includes(InternalTag.Trash)).map(item => item.id);
+  const hiddenItems = items
+    .filter(item => item.tags.includes(InternalTag.Trash) || item.tags.includes(InternalTag.Internal))
+    .map(item => item.id);
+
   return {
-    // items: items
-    //   .filter(item => !trashItemIds.includes(item.id))
-    //   .map(item => ({ ...item, childIds: item.childIds.filter(id => !trashItemIds.includes(id)) })),
-    // expandedIds: expandedIds.filter(id => !trashItemIds.includes(id)),
-    // items,
     expandedIds,
     items: items
-      .filter(item => !trashItems.includes(item.id))
-      .map(item => ({ ...item, childIds: item.childIds.filter(id => !trashItems.includes(id)) })),
+      .filter(item => !hiddenItems.includes(item.id))
+      .map(item => ({ ...item, childIds: item.childIds.filter(id => !hiddenItems.includes(id)) })),
     expand,
     collapse
   };

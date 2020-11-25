@@ -3,4 +3,5 @@ export enum InternalTag {
   Draft = '__draft',
   Trash = '__trash',
   WorkspaceRoot = '__root',
+  Internal = '__internal',
 }

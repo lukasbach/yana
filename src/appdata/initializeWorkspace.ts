@@ -1,4 +1,4 @@
-import { DataItemKind, DataSourceType, NoteDataItem, WorkSpace } from '../types';
+import { DataItemKind, DataSourceType, WorkSpace } from '../types';
 import { InternalTag } from '../datasource/InternalTag';
 import * as fs from 'fs';
 import * as pathLib from 'path';
@@ -44,7 +44,7 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
       name: 'My Collections',
       created: new Date().getTime(),
       lastChange: new Date().getTime(),
-      tags: [],
+      tags: [InternalTag.Internal],
       kind: DataItemKind.Collection,
       childIds: [collection1.id]
     });
@@ -53,7 +53,7 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
       name: 'workspace-root',
       created: new Date().getTime(),
       lastChange: new Date().getTime(),
-      tags: [InternalTag.WorkspaceRoot],
+      tags: [InternalTag.WorkspaceRoot, InternalTag.Internal],
       kind: DataItemKind.Collection,
       childIds: [myCollections.id]
     });
