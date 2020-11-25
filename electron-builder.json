@@ -18,6 +18,8 @@
   },
   "mac": {
     "target": ["dmg", "zip"],
-    "publish": ["github"]
+    "publish": ["github"],
+    "icon": "./resources/icon.icns",
+    "category": "public.app-category.utilities"
   }
 }
