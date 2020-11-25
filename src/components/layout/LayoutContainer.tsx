@@ -9,10 +9,11 @@ import { TopBar } from './TopBar';
 // @ts-ignore
 import ResizePanel from "react-resize-panel";
 import { Button, Icon, ResizeSensor } from '@blueprintjs/core';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { DevToolsSidebar } from '../devtools/DevToolsSidebar';
 import { SpotlightTarget } from '@atlaskit/onboarding';
+import { remote } from 'electron';
 
 const styles = {
   mainContainer: cxs({
@@ -77,12 +78,15 @@ const styles = {
 };
 
 const SIZE_TO_COLLAPSE = 160;
+const WINDOW_WIDTH_TO_FORCE_COLLAPSE_SIDEBAR = 750;
+const currentWindow = remote.getCurrentWindow();
 
 export const LayoutContainer: React.FC<{}> = props => {
   const theme = useTheme();
   const settings = useSettings();
   const lastSizeRef = useRef(0);
   const [collapsed, setCollapsed] = useState(false);
+  const [forceCollapsed, setForceCollapsed] = useState(false);
 
   const collapseButtonContainer = (
     <div className={cx([
@@ -91,11 +95,41 @@ export const LayoutContainer: React.FC<{}> = props => {
     ])}>
       <Button
         icon={<Icon icon={collapsed ? 'chevron-right' : 'chevron-left'} iconSize={24} />}
-        onClick={() => setCollapsed(x => !x)}
+        onClick={() => {
+          setForceCollapsed(forced => {
+            setCollapsed(x => !x);
+            if (forced) {
+              currentWindow.setSize(
+                WINDOW_WIDTH_TO_FORCE_COLLAPSE_SIDEBAR + 1,
+                currentWindow.getSize()[1]
+              );
+              return false;
+            }
+            return forced;
+          });
+        }}
         minimal
       />
     </div>
   );
+
+  useEffect(() => {
+    const listener = () => {
+      const width = currentWindow.getSize()[0];
+      if (width < WINDOW_WIDTH_TO_FORCE_COLLAPSE_SIDEBAR) {
+        setForceCollapsed(true)
+        setCollapsed(true);
+      } else {
+        setForceCollapsed(false);
+      }
+    };
+
+    currentWindow.on('resize', listener);
+
+    return () => {
+      currentWindow.removeListener('resize', listener);
+    };
+  }, []);
 
   return (
     <div className={styles.mainContainer}>
