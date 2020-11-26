@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { Button, ButtonGroup, Icon } from '@blueprintjs/core';
+import { defaultTheme } from '../../../common/theming';
 
 const COLORS = [
-  '#3498db',
+  defaultTheme.primaryColor,
   '#2ecc71',
   '#9b59b6',
   '#e67e22',
@@ -19,18 +20,12 @@ export const ColorSelection: React.FC<{
 
   return (
     <ButtonGroup>
-      <Button
-        icon={<Icon icon={'circle'} />}
-        minimal
-        active={!props.selectedColor}
-        onClick={() => props.onSelectColor(undefined)}
-      />
       { COLORS.map(col => (
         <Button
           key={col}
           icon={<Icon icon={'full-circle'} color={col} />}
           minimal
-          active={col === props.selectedColor}
+          active={col === props.selectedColor || (!props.selectedColor && col === defaultTheme.primaryColor)}
           onClick={() => props.onSelectColor(col)}
         />
       )) }

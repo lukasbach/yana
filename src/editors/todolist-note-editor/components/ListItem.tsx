@@ -6,6 +6,7 @@ import { TodoListItem } from '../TodolistNoteEditor';
 import { ListItemUi } from './ListItemUi';
 import { Button, ButtonGroup, EditableText, Icon } from '@blueprintjs/core';
 import { ColorSelection } from './ColorSelection';
+import { defaultTheme } from '../../../common/theming';
 
 const styles = {
   descriptionContainer: cxs({
@@ -23,7 +24,7 @@ export const ListItem: React.FC<{
     <Draggable key={item.id} draggableId={item.id} index={index}>
       {(provided, snapshot) => (
         <ListItemUi
-          categoryColor={item.color}
+          categoryColor={item.color || defaultTheme.primaryColor}
           innerRef={provided.innerRef}
           draggableProps={provided.draggableProps}
           dragHandleProps={provided.dragHandleProps}
