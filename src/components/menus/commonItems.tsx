@@ -41,18 +41,20 @@ export const createRenameItems = (item: DataItem, dataInterface: DataInterface, 
 ]);
 
 export const createNewChildsItems = (item: DataItem, dataInterface: DataInterface, onCreatedItem?: (item: DataItem) => void): Array<MenuItemDefinition | 'divider'> => ([
-  { text: 'Create new Collection', icon: 'add', onClick: () => {
-      dataInterface.createDataItemUnderParent({
-        name: 'New Collection',
-        childIds: [],
-        kind: DataItemKind.Collection,
-        lastChange: new Date().getTime(),
-        created: new Date().getTime(),
-        tags: []
-      } as any, item.id).then(onCreatedItem);
-      TelemetryService?.trackEvent(...TelemetryEvents.Items.createCollection);
-    }},
-  { text: 'Create new Note Item', icon: 'add', onClick: () => {
+  { text: 'New Note Item', icon: 'add', onClick: () => {
+    dataInterface.createDataItemUnderParent({
+      name: 'New Note Item',
+      childIds: [],
+      kind: DataItemKind.NoteItem,
+      lastChange: new Date().getTime(),
+      created: new Date().getTime(),
+      tags: [],
+      noteType: 'atlaskit-editor-note'
+    } as any, item.id).then(onCreatedItem);
+    TelemetryService?.trackEvent(...TelemetryEvents.Items.createAtlaskitNote);
+  }},
+  { text: 'New...', icon: 'add', childs: [
+    { text: 'Create new Note Item', icon: 'document', onClick: () => {
       dataInterface.createDataItemUnderParent({
         name: 'New Note Item',
         childIds: [],
@@ -64,7 +66,18 @@ export const createNewChildsItems = (item: DataItem, dataInterface: DataInterfac
       } as any, item.id).then(onCreatedItem);
       TelemetryService?.trackEvent(...TelemetryEvents.Items.createAtlaskitNote);
     }},
-  { text: 'Create new Code Snippet', icon: 'add', onClick: () => {
+    { text: 'Create new Collection', icon: 'folder-open', onClick: () => {
+      dataInterface.createDataItemUnderParent({
+        name: 'New Collection',
+        childIds: [],
+        kind: DataItemKind.Collection,
+        lastChange: new Date().getTime(),
+        created: new Date().getTime(),
+        tags: []
+      } as any, item.id).then(onCreatedItem);
+      TelemetryService?.trackEvent(...TelemetryEvents.Items.createCollection);
+    }},
+    { text: 'Create new Code Snippet', icon: 'code', onClick: () => {
       dataInterface.createDataItemUnderParent({
         name: 'New Code Item',
         childIds: [],
@@ -76,6 +89,19 @@ export const createNewChildsItems = (item: DataItem, dataInterface: DataInterfac
       } as any, item.id).then(onCreatedItem);
       TelemetryService?.trackEvent(...TelemetryEvents.Items.createCodeSnippet);
     }},
+    { text: 'Create new Todo List', icon: 'tick-circle', onClick: () => {
+      dataInterface.createDataItemUnderParent({
+        name: 'New Todo List',
+        childIds: [],
+        kind: DataItemKind.NoteItem,
+        lastChange: new Date().getTime(),
+        created: new Date().getTime(),
+        tags: [],
+        noteType: 'todolist-editor-note'
+      } as any, item.id).then(onCreatedItem);
+      TelemetryService?.trackEvent(...TelemetryEvents.Items.createTodoList);
+    }},
+  ]},
 ]);
 
 export const createDeletionItems = (dataInterface: DataInterface, item: DataItem): Array<MenuItemDefinition | 'divider'> => (

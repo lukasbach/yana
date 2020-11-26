@@ -22,6 +22,7 @@ export const TelemetryEvents = {
     createCollection: ['items', 'items_create_collection'],
     createAtlaskitNote: ['items', 'items_create_atlaskit_note'],
     createCodeSnippet: ['items', 'items_create_code_snippet'],
+    createTodoList: ['items', 'items_create_todolist'],
     createDraftItem: ['items', 'items_create_draft'],
     starFromNoteContainer: ['items', 'items_star_from_notecontainer'],
     starFromContextMenu: ['items', 'items_star_from_contextmenu'],

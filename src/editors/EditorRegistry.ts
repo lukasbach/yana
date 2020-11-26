@@ -1,6 +1,7 @@
 import { EditorDefinition } from './EditorDefinition';
 import { AtlaskitNoteEditor } from './atlassian-note-editor/AtlaskitNoteEditor';
 import { MonacoNoteEditor } from './monaco-note-editor/MonacoNoteEditor';
+import { TodolistNoteEditor } from './todolist-note-editor/TodolistNoteEditor';
 
 export class EditorRegistry {
   private editors: EditorDefinition<any, any>[] = [];
@@ -16,6 +17,7 @@ export class EditorRegistry {
   constructor() {
     this.registerEditor(new AtlaskitNoteEditor());
     this.registerEditor(new MonacoNoteEditor());
+    this.registerEditor(new TodolistNoteEditor());
   }
 
   public registerEditor(editor: EditorDefinition<any, any>) {
