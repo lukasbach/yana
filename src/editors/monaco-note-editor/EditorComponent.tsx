@@ -95,7 +95,7 @@ export const EditorComponent: React.FC<EditorComponentProps<MonacoNoteEditorCont
       <div className={styles.editorContainer}>
         <ResizeSensor onResize={entries => editorRef.current?.layout()}>
           <MonacoEditor
-            language={language}
+            language={language || 'text'}
             theme={settings.editorMonacoTheme}
             value={content}
             options={{
@@ -104,7 +104,7 @@ export const EditorComponent: React.FC<EditorComponentProps<MonacoNoteEditorCont
               renderWhitespace: settings.editorMonacoRenderWhitespace as any,
               rulers: (!!settings.editorMonacoRuler && settings.editorMonacoRuler !== 0 && [settings.editorMonacoRuler]) || undefined,
               tabSize: settings.editorMonacoTabSize,
-              wordWrap: settings.editorMonacoWordWrap as any
+              wordWrap: settings.editorMonacoWordWrap as any,
             }}
             editorDidMount={(editor, monaco) => {
               editorRef.current = editor;
