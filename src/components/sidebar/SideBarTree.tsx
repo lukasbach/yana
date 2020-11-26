@@ -52,6 +52,9 @@ export const SideBarTree: React.FC<{
   useEffect(() => {
     if (renamingItemId) {
       const parent = items.find(item => item.childIds.includes(renamingItemId));
+      if (parent && !expandedIds.includes(parent.id)) {
+        expand(parent.id);
+      }
       if (parent && parent.childIds.length > untruncatedItemsCount && !untruncatedItems.includes(parent.id)) {
         setUntruncatedItems(i => [...i, parent.id]);
       }
