@@ -18,29 +18,6 @@ import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
 import { TelemetryService } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
-const styles = {
-  container: cxs({
-    margin: '56px 32px 16px 32px',
-    display: 'flex'
-  }),
-  leftContainer: cxs({
-    flexGrow: 1
-  }),
-  title: cxs({
-    fontWeight: 400,
-    fontSize: '32px',
-    margin: 0,
-    '> span': {
-      margin: '2px 14px 0 0px'
-    }
-  }),
-  titleSubtext: cxs({
-    color: Color('#fff').darken(.35).toString(),
-    fontSize: '12px',
-    margin: '12px 0 0 0'
-  })
-}
-
 export const EditorHeader: React.FC<{
   dataItem: NoteDataItem<any>,
   onChange: (changed: NoteDataItem<any>) => Promise<void>,

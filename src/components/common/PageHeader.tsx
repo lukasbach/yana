@@ -2,12 +2,22 @@ import * as React from 'react';
 import cxs from 'cxs';
 import cx from 'classnames';
 import Color from 'color';
-import { Icon, IconName } from '@blueprintjs/core';
+import { Button, Icon, IconName, Tooltip } from '@blueprintjs/core';
+import { useAppData } from '../../appdata/AppDataProvider';
 
 const styles = {
   container: cxs({
-    margin: '56px 32px 16px 32px',
-    display: 'flex'
+    padding: '56px 32px 16px 32px',
+    display: 'flex',
+    position: 'relative'
+  }),
+  containerCollapsed: cxs({
+    padding: '12px 32px 12px 32px',
+  }),
+  collapseContainer: cxs({
+    position: 'absolute',
+    top: '12px',
+    right: '12px',
   }),
   leftContainer: cxs({
     flexGrow: 1
@@ -62,10 +72,15 @@ export const PageHeader: React.FC<{
   lowerContent?: React.ReactNode;
   lowerContentFlush?: boolean;
 }> = props => {
+  const appData = useAppData();
+  const pageHeaderCollapsed = appData.settings.pageHeaderCollapsed;
 
   return (
     <>
-      <div className={styles.container}>
+      <div className={cx(
+        styles.container,
+        pageHeaderCollapsed && styles.containerCollapsed
+      )}>
         <div className={styles.leftContainer}>
           <h1 className={styles.title}>
             <div className={styles.titleInner}>
@@ -73,15 +88,38 @@ export const PageHeader: React.FC<{
               { props.title }
             </div>
           </h1>
-          <p className={styles.titleSubtext}>
-            { props.titleSubtext }
-          </p>
+          { !pageHeaderCollapsed && (
+            <p className={styles.titleSubtext}>
+              { props.titleSubtext }
+            </p>
+          )}
         </div>
-        <div className={styles.rightContainer}>
-          { props.rightContent }
+        { !pageHeaderCollapsed && (
+          <div className={styles.rightContainer}>
+            { props.rightContent }
+          </div>
+        ) }
+        <div className={styles.collapseContainer}>
+          <Tooltip
+            content={!pageHeaderCollapsed ? 'Collapse header' : undefined}
+            position={'bottom'}
+            hoverOpenDelay={500}
+          >
+            <Button
+              minimal
+              icon={pageHeaderCollapsed ? 'chevron-down' : 'chevron-up'}
+              onClick={() => {
+                appData.saveSettings({
+                  ...appData.settings,
+                  pageHeaderCollapsed: !pageHeaderCollapsed
+                })
+              }}
+              children={pageHeaderCollapsed ? 'Show header' : undefined}
+            />
+          </Tooltip>
         </div>
       </div>
-      { props.lowerContent && (
+      { props.lowerContent && !pageHeaderCollapsed && (
         <div className={cx(styles.lowerContent, props.lowerContentFlush && styles.lowerContentFlush)}>
           { props.lowerContent }
         </div>

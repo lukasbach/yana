@@ -57,4 +57,5 @@ export interface SettingsObject {
   telemetry: boolean,
   zoomFactor: number,
   completedSpotlights: string[],
+  pageHeaderCollapsed: boolean,
 }

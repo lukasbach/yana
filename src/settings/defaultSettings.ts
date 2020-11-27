@@ -49,4 +49,5 @@ export const defaultSettings: SettingsObject = {
   telemetry: true,
   zoomFactor: 1,
   completedSpotlights: [],
+  pageHeaderCollapsed: false,
 }
