@@ -25,8 +25,9 @@ export const AdvancedSettings: React.FC<{}> = props => {
         />
         <SettingsClickable
           title="View Yana's privacy policy"
+          subtitle="https://yana.js.org/privacy"
           icon={'help'}
-          onClick={() => remote.shell.openExternal('https://yana.js.org/privacy-policy/app')}
+          onClick={() => remote.shell.openExternal('https://yana.js.org/privacy')}
         />
       </SettingsSection>
 
