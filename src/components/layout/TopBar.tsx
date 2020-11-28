@@ -4,10 +4,9 @@ import Color from 'color';
 import cx from 'classnames';
 import { remote } from "electron";
 import { useTheme } from '../../common/theming';
-import { useMainContentContext } from '../mainContent/context';
 import { TabContainer } from './TabContainer';
 import { useEffect, useState } from 'react';
-import { platform } from 'os';
+import * as os from 'os';
 import { Icon } from '@blueprintjs/core';
 
 const styles = {
@@ -39,7 +38,7 @@ const styles = {
 };
 
 const initialMaximizedState = remote.getCurrentWindow().isMaximized();
-const isWindows = platform() === 'win32';
+const isWindows = os.platform() === 'win32' && os.release().startsWith('10');
 
 export const TopBar: React.FC<{}> = props => {
   const theme = useTheme();
