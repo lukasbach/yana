@@ -35,7 +35,7 @@ export const SideBarTree: React.FC<{
   } = useSettings();
   const [renamingItemId, setRenamingItemId] = useState<undefined | string>();
   const [isExpanded, setIsExpanded] = useState(true);
-  const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems);
+  const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems, props.masterItem?.id ?? props.title.toLowerCase().replace(/\s/g, '_'));
   const [untruncatedItems, setUntruncatedItems] = useState<string[]>([]); // TODO could be moved into its own hook
 
   const [treeData, setTreeData] = useState<TreeData>({

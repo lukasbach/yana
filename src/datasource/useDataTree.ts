@@ -6,13 +6,14 @@ import { ItemChangeEventReason} from './DataInterface';
 import { useDataInterface } from './DataInterfaceContext';
 import { LogService } from '../common/LogService';
 import { InternalTag } from './InternalTag';
+import { usePersistedExpandedSidebarItems } from './usePersistedExpandedSidebarItems';
 
 const logger = LogService.getLogger('useDataTree');
 
-export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpanded: string[] = []) => {
+export const useDataTree = (rootItems: Array<string | DataItem>, treeId: string) => {
   const dataInterface = useDataInterface();
   const [items, setItems] = useState<DataItem[]>([]);
-  const [expandedIds, setExpandedIds] = useState<string[]>(initiallyExpanded);
+  const [expandedIds, setExpandedIds] = useState<string[]>([]);
   const [oldRootItemIds, setOldRootItemIds] = useState<string[]>([]);
   const rootItemIds = rootItems.map(item => typeof item === 'string' ? item : item.id); // TODO maybe not neccessary or better implemented otherwise more efficiently?
 
@@ -116,6 +117,8 @@ export const useDataTree = (rootItems: Array<string | DataItem>, initiallyExpand
   const hiddenItems = items
     .filter(item => item.tags.includes(InternalTag.Trash) || item.tags.includes(InternalTag.Internal))
     .map(item => item.id);
+
+  usePersistedExpandedSidebarItems(treeId, expand, expandedIds);
 
   return {
     expandedIds,
