@@ -6,10 +6,11 @@ import rimraf from 'rimraf';
 import { getElectronPath, isMediaItem, isNoteItem } from '../utils';
 import archiver from 'archiver';
 import { DataSourceRegistry } from '../datasource/DataSourceRegistry';
+import { v4 as uuid } from 'uuid';
 
 export class AppDataExportService {
   public static async exportTo(destination: string, workspace: WorkSpace, onUpdate: (message: string) => void) {
-    const folder = path.resolve(getElectronPath('temp'), 'yana-export', Math.random().toString(36).substring(14));
+    const folder = path.resolve(getElectronPath('temp'), 'yana-export', uuid());
     onUpdate(`Temporary folder: ${folder}`);
 
     const mediaItems: { [key: string]: string } = {};

@@ -29,12 +29,12 @@ export class AutoBackup {
   }
 
   public async load() {
-    logger.log('Loading AutoBackups for ', [this.workspace.name]);
     const dataInterface = new DataInterface(DataSourceRegistry.getDataSource(this.workspace), null as any, 300);
     await dataInterface.load();
     this.lastBackup = (await dataInterface.getStructure('backup'))?.lastBackup || 0;
     await dataInterface.unload();
     this.nextBackup = this.lastBackup + this.settings.autoBackupInterval;
+    logger.log(`Loaded AutoBackups for ${this.workspace.name}. Last backup was ${new Date(this.lastBackup).toLocaleString()}, next one is ${new Date(this.nextBackup).toLocaleString()}`);
     this.scheduleNextBackup();
   }
 
@@ -62,13 +62,18 @@ export class AutoBackup {
       path.join(this.settings.autoBackupLocation, `${this.backupIdentifier}_${dateIdentifier}.zip`),
       this.workspace,
       console.log
-    )
+    );
+
+    logger.log(`Finished backup ${this.backupIdentifier}. Now cleaning up...`);
 
     const numberOfExistingBackups = await this.countExistingBackups();
     const numberOfBackupsToKeep = this.settings.autoBackupCount;
 
+    logger.log(`${this.backupIdentifier}: Currently, ${numberOfExistingBackups} backups exist, ${numberOfBackupsToKeep} should be kept.`);
+
     if (numberOfExistingBackups > numberOfBackupsToKeep) {
-      await this.removeOldestBackups(numberOfBackupsToKeep - numberOfExistingBackups);
+      logger.log(`${this.backupIdentifier}: Removing ${numberOfExistingBackups - numberOfBackupsToKeep} old backups.`);
+      await this.removeOldestBackups(numberOfExistingBackups - numberOfBackupsToKeep);
     }
 
     this.lastBackup = Date.now();
