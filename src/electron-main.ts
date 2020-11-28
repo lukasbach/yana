@@ -1,8 +1,11 @@
 import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
 import * as path from 'path';
-import * as url from 'url';
 import { IpcChannel } from './IpcChannel';
 import { AutoUpdate } from './appdata/AutoUpdate';
+import serveStatic from 'serve-static';
+import http from 'http';
+import getPort from 'get-port';
+import finalhandler from 'finalhandler';
 
 console.log('process.env.NODE_ENV=', process.env.NODE_ENV);
 
@@ -25,7 +28,7 @@ app.whenReady().then(() => {
   });
 });
 
-app.on('ready', () => {
+app.on('ready', async () => {
   let mainWindow: Electron.BrowserWindow | null = new BrowserWindow({
     width: 1370,
     height: 780,
@@ -47,13 +50,15 @@ app.on('ready', () => {
     mainWindow.loadURL(`http://localhost:4000`);
     // mainWindow.webContents.openDevTools();
   } else {
-    mainWindow.loadURL(
-      url.format({
-        pathname: path.join(app.getAppPath(), '/app/index.html'),
-        protocol: 'file:',
-        slashes: true,
-      })
-    );
+    const serve = serveStatic(path.join(app.getAppPath(), '/app/'), { 'index': ['index.html', 'index.htm'] })
+
+    const server = http.createServer((req, res) => {
+      serve(req as any, res as any, finalhandler as any);
+    });
+
+    const port = await getPort({ port: 9990 });
+    server.listen(port);
+    mainWindow.loadURL(`http://localhost:${port}`);
   }
 
   mainWindow.on('close', e => {
