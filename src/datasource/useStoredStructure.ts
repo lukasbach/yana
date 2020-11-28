@@ -9,16 +9,31 @@ export const useStoredStucture = <T = any>(
   defaultValue: T,
   persistDelay = 10000,
 ) => {
+  const [currentStructureId, setCurrentStructureId] = useState(structureId);
   const [value, setValue] = useState(defaultValue);
+  const currentValue = useRef(defaultValue);
   const [hasLoaded, setHasLoaded] = useState(false);
   const persistTimer = useRef<any>(null);
   const dataInterface = useDataInterface();
 
+  useEffect(() => {
+    currentValue.current = value;
+  }, [value]);
+
   const persist = useCallback(async () => {
-    await dataInterface.storeStructure(structureId, value);
-  }, [structureId, value, hasLoaded]);
+    await dataInterface.storeStructure(currentStructureId, currentValue.current);
+  }, [currentStructureId, value, hasLoaded]);
 
   useAsyncEffect(async () => {
+    if (hasLoaded) {
+      if (persistTimer.current) {
+        clearTimeout(persistTimer.current);
+      }
+      await persist();
+      setHasLoaded(false);
+      setCurrentStructureId(structureId);
+    }
+
     const currentValue = await dataInterface.getStructure<T>(structureId);
     onLoad(currentValue ?? defaultValue);
     setValue(currentValue);
@@ -40,7 +55,7 @@ export const useStoredStucture = <T = any>(
       }
       persist();
     }
-  }, [structureId]);
+  }, []);
 
   useCloseEvent(persist, [structureId, value]);
 
