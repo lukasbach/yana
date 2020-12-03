@@ -6,11 +6,12 @@ import cx from 'classnames';
 import { useTheme } from '../../common/theming';
 import Color from 'color';
 import { TreeAddIconContextMenu } from '../menus/TreeAddIconContextMenu';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useMainContentContext } from '../mainContent/context';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
 import { SpotlightTarget } from '@atlaskit/onboarding';
+import { useStoredStucture } from '../../datasource/useStoredStructure';
 
 const styles = {
   container: cxs({
@@ -47,14 +48,20 @@ const styles = {
 
 export const SideBarTreeHeader: React.FC<{
   title: string;
-  isExpanded: boolean;
-  onChangeIsExpanded: (isExpanded: boolean) => void;
   onCreatedItem?: (item: DataItem) => void;
+  onChangeIsExpanded?: (isExpanded: boolean) => void;
   masterItem?: DataItem;
 }> = props => {
   const theme = useTheme();
   const mainContent = useMainContentContext();
   const dataInterface = useDataInterface();
+  const [isExpanded, setIsExpanded] = useStoredStucture(
+    'sessionSidebarHeader_' + props.title.toLocaleLowerCase().replace(/\s/g, ''),
+    () => {},
+    true,
+    10000
+  );
+  useEffect(() => props.onChangeIsExpanded?.(isExpanded), [isExpanded]);
 
   return (
     <div className={cx(
@@ -65,11 +72,11 @@ export const SideBarTreeHeader: React.FC<{
     )}>
       <div
         className={styles.clickableContainer}
-        onClick={() => props.onChangeIsExpanded(!props.isExpanded)}
+        onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className={styles.chevronContainer}>
           <Icon
-            icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
+            icon={isExpanded ? 'chevron-down' : 'chevron-right'}
           />
         </div>
         <div className={styles.titleContainer}>

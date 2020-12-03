@@ -35,8 +35,8 @@ export const useStoredStucture = <T = any>(
     }
 
     const currentValue = await dataInterface.getStructure<T>(structureId);
-    onLoad(currentValue ?? defaultValue);
-    setValue(currentValue);
+    onLoad(currentValue !== undefined ? currentValue : defaultValue);
+    setValue(currentValue !== undefined ? currentValue : defaultValue);
     setHasLoaded(true);
   }, [structureId]);
 

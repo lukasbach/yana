@@ -110,7 +110,6 @@ export const SideBarTree: React.FC<{
     <div>
       <SideBarTreeHeader
         title={props.title}
-        isExpanded={isExpanded}
         onChangeIsExpanded={setIsExpanded}
         masterItem={props.masterItem}
         onCreatedItem={item => setRenamingItemId(item.id)}

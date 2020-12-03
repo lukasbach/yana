@@ -27,7 +27,6 @@ export const NavigationTree: React.FC<{}> = props => {
     <div>
       <SideBarTreeHeader
         title="Yana"
-        isExpanded={isExpanded}
         onChangeIsExpanded={setIsExpanded}
       />
 
