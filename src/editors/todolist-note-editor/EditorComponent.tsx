@@ -28,6 +28,12 @@ const styles = {
     padding: '0 40px',
     boxShadow: '0px 3px 4px -2px rgba(0,0,0,.2) inset',
     backgroundColor: 'rgb(240,240,240)',
+    overflow: 'auto',
+    position: 'absolute',
+    top: '0px',
+    left: '0px',
+    right: '0px',
+    bottom: '0px',
   }),
 };
 

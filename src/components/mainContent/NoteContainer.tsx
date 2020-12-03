@@ -14,7 +14,8 @@ const styles = {
     flexDirection: 'column'
   }),
   editorContainer: cxs({
-    flexGrow: 1
+    flexGrow: 1,
+    position: 'relative',
   })
 }
 

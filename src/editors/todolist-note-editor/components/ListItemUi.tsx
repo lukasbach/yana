@@ -14,6 +14,7 @@ const styles = {
     overflow: 'hidden',
     backgroundColor: '#fff',
     height: HEIGHT,
+    minHeight: HEIGHT,
     boxShadow: '0px 2px 3px 1px #bbb',
     display: 'flex',
     alignItems: 'center',
