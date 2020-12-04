@@ -10,15 +10,6 @@ cache:
 
 jobs:
   include:
-    - stage: Build Windows
-      os: windows
-      if: NOT tag IS present
-      env:
-        - YARN_GPG=no
-      before_install:
-        - npm install -g yarn
-      script:
-        - yarn build:app
     - stage: Build & Deploy Windows
       os: windows
       if: tag IS present
