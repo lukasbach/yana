@@ -94,7 +94,7 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                           insertMenuItems={[]}
                           quickInsert={true}
                           allowTextColor={true}
-                          allowTextAlignment={true}
+                          allowTextAlignment={false} // TODO
                           defaultValue={JSON.stringify(props.content.adf)}
                           onChange={editorView => {
                             // if (!isChangingNote.current) props.onChange();
