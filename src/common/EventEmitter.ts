@@ -11,6 +11,10 @@ export class EventEmitter<EventPayload extends object> {
     }
   }
 
+  public get numberOfHandlers() {
+    return this.handlers.filter(h => !!h).length;
+  }
+
   public async emit(payload: EventPayload): Promise<void> {
     const promises: Array<Promise<void>> = [];
 

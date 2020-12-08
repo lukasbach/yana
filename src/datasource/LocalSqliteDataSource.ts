@@ -20,6 +20,7 @@ import { arrayDiff, isMediaItem, isNoteItem } from '../utils';
 import Jimp from 'jimp/dist';
 import type { TelemetryContextValue } from '../components/telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
+import { runWithoutClose } from '../common/runWithoutClose';
 
 const fs = fsLib.promises;
 
@@ -112,38 +113,40 @@ export class LocalSqliteDataSource implements AbstractDataSource {
   }
 
   public static async init(options: LocalFileSystemDataSourceOptions) {
-    const sourcePath = options.sourcePath;
-    const mediaDataPath = path.join(sourcePath, MEDIA_DIR);
+    await runWithoutClose(async () => {
+      const sourcePath = options.sourcePath;
+      const mediaDataPath = path.join(sourcePath, MEDIA_DIR);
 
-    if (!fsLib.existsSync(sourcePath)) {
-      await fs.mkdir(sourcePath, { recursive: true });
-    }
+      if (!fsLib.existsSync(sourcePath)) {
+        await fs.mkdir(sourcePath, { recursive: true });
+      }
 
-    if (!fsLib.existsSync(mediaDataPath)) {
-      await fs.mkdir(mediaDataPath, { recursive: true });
-    }
+      if (!fsLib.existsSync(mediaDataPath)) {
+        await fs.mkdir(mediaDataPath, { recursive: true });
+      }
 
-    await new Promise(res => {
-      new sqlite3.Database(
-        path.join(sourcePath, DB_FILE),
-        sqlite3.OPEN_CREATE,
-        () => res()
+      await new Promise(res => {
+        new sqlite3.Database(
+          path.join(sourcePath, DB_FILE),
+          sqlite3.OPEN_CREATE,
+          () => res()
+        );
+      });
+
+      const db = LocalSqliteDataSource.getDb(sourcePath);
+      await LocalSqliteDataSource.createSchemas(db);
+      await db.destroy();
+
+      await fs.writeFile(
+        path.join(options.sourcePath, NOTEBOOK_FILE),
+        JSON.stringify({ structures: {} }),
+      );
+
+      await fs.writeFile(
+        path.join(options.sourcePath, NOTEBOOK_FILE_BACKUP),
+        JSON.stringify({ structures: {} }),
       );
     });
-
-    const db = LocalSqliteDataSource.getDb(sourcePath);
-    await LocalSqliteDataSource.createSchemas(db);
-    await db.destroy();
-
-    await fs.writeFile(
-      path.join(options.sourcePath, NOTEBOOK_FILE),
-      JSON.stringify({ structures: {} }),
-    );
-
-    await fs.writeFile(
-      path.join(options.sourcePath, NOTEBOOK_FILE_BACKUP),
-      JSON.stringify({ structures: {} }),
-    );
   }
 
   public async load(): Promise<DataSourceActionResult> {
@@ -535,26 +538,28 @@ export class LocalSqliteDataSource implements AbstractDataSource {
   }
 
   public async persist(): Promise<DataSourceActionResult> {
-    const notebookPath = this.resolvePath(NOTEBOOK_FILE);
-    const backupPath = this.resolvePath(NOTEBOOK_FILE_BACKUP);
+    await runWithoutClose(async () => {
+      const notebookPath = this.resolvePath(NOTEBOOK_FILE);
+      const backupPath = this.resolvePath(NOTEBOOK_FILE_BACKUP);
 
-    for (let attempt = 0; attempt < 5; attempt++) {
-      await fs.writeFile(notebookPath, JSON.stringify({ structures: this.structures }));
+      for (let attempt = 0; attempt < 5; attempt++) {
+        await fs.writeFile(notebookPath, JSON.stringify({ structures: this.structures }));
 
-      try {
-        JSON.parse(await fs.readFile(notebookPath, { encoding: UTF8 })); // parsing worked, save backup...
-        await fs.writeFile(backupPath, JSON.stringify({ structures: this.structures }));
-        JSON.parse(await fs.readFile(backupPath, { encoding: UTF8 }));
-        this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.persist);
-        return;
-      } catch (e) {
-        this.telemetry?.trackException(`Persistence failed for the ${attempt} time`)
-        this.telemetry?.trackEvent('dsqlite', 'persist_failed_' + attempt);
-        this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.persistFailed);
-        console.error(`Persisting failed`)
-        logger.log(`Persistence failed for the ${attempt} time`);
+        try {
+          JSON.parse(await fs.readFile(notebookPath, { encoding: UTF8 })); // parsing worked, save backup...
+          await fs.writeFile(backupPath, JSON.stringify({ structures: this.structures }));
+          JSON.parse(await fs.readFile(backupPath, { encoding: UTF8 }));
+          this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.persist);
+          return;
+        } catch (e) {
+          this.telemetry?.trackException(`Persistence failed for the ${attempt} time`)
+          this.telemetry?.trackEvent('dsqlite', 'persist_failed_' + attempt);
+          this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.persistFailed);
+          console.error(`Persisting failed`)
+          logger.log(`Persistence failed for the ${attempt} time`);
+        }
       }
-    }
+    });
   }
 
   public async getStructure(id: string): Promise<any> {
