@@ -17,6 +17,7 @@ import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
 import { TelemetryService } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
+import { promptMoveItem } from '../../datasource/promptMoveItem';
 
 export const EditorHeader: React.FC<{
   dataItem: NoteDataItem<any>,
@@ -115,6 +116,16 @@ export const EditorHeader: React.FC<{
         rightContent={(
           <>
             <div>
+              {
+                props.dataItem.tags.includes(InternalTag.Draft) && (
+                  <Button outlined icon="arrow-right" onClick={() => {
+                    promptMoveItem(dataInterface, overlaySearch, props.dataItem)
+                  }}>
+                    Mount draft to folder
+                  </Button>
+                )
+              }
+              {' '}
               <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>Edit Tags</Button>{' '}
               <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>Configure document</Button>{' '}
               <Popover

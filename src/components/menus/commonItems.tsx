@@ -10,6 +10,7 @@ import { IconName } from '@blueprintjs/core';
 import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
 import { TelemetryService } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
+import { promptMoveItem } from '../../datasource/promptMoveItem';
 
 export const createOpenItems = (mainContent: MainContentContextType, item: DataItem, icon: IconName): Array<MenuItemDefinition | 'divider'> => ([
   { text: 'Open', icon, onClick: () => mainContent.openInCurrentTab(item)  },
@@ -167,29 +168,7 @@ export const createOrganizeItems = (dataInterface: DataInterface, overlaySearch:
       text: 'Move to...',
       icon: 'exchange',
       onClick: async () => {
-        const parent = (await dataInterface.getParentsOf(item.id))[0];
-
-        const target = await overlaySearch.performSearch({
-          selectMultiple: false,
-          hiddenSearch: { kind: DataItemKind.Collection }
-        });
-
-        if (parent) {
-          if (target) {
-            await dataInterface.moveItem(item.id, parent.id, target[0].id, 0);
-            TelemetryService?.trackEvent(...TelemetryEvents.Items.move);
-          }
-        } else if (target) {
-          await dataInterface.changeItem(target[0].id, old => ({ childIds: [...old.childIds, item.id] }));
-
-          if (item.tags.includes(InternalTag.Trash) || item.tags.includes(InternalTag.Draft)) {
-            await dataInterface.changeItem(item.id, ({ tags }) => ({
-              tags: tags.filter(tag => tag !== InternalTag.Trash && tag !== InternalTag.Draft)
-            }));
-          }
-
-          TelemetryService?.trackEvent(...TelemetryEvents.Items.move);
-        }
+        await promptMoveItem(dataInterface, overlaySearch, item)
       }
     },
     {
