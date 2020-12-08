@@ -99,6 +99,9 @@ export const TelemetryProvider: React.FC<{}> = props => {
             'description': error,
             'fatal': fatal
           });
+          gtag('event', `error_${error.toLocaleLowerCase().replace(/\s/g, '-')}`, {
+            'event_category': 'error',
+          });
           logger.log('trackException', [], {error, fatal});
         },
       };

@@ -1,9 +1,10 @@
 import { WorkSpace } from '../types';
 import { LocalFileSystemDataSource } from './LocalFileSystemDataSource';
 import { LocalSqliteDataSource } from './LocalSqliteDataSource';
+import type { TelemetryContextValue } from '../components/telemetry/TelemetryProvider';
 
 export class DataSourceRegistry {
-  public static getDataSource(workspace: WorkSpace) {
+  public static getDataSource(workspace: WorkSpace, telemetry?: TelemetryContextValue) {
     switch (workspace.dataSourceType) {
       case 'fs':
         return new LocalFileSystemDataSource(workspace.dataSourceOptions);

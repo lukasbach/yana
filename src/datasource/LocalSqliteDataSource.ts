@@ -18,12 +18,14 @@ import sqlite3 from 'sqlite3';
 import { v4 as uuid } from 'uuid';
 import { arrayDiff, isMediaItem, isNoteItem } from '../utils';
 import Jimp from 'jimp/dist';
+import type { TelemetryContextValue } from '../components/telemetry/TelemetryProvider';
 
 const fs = fsLib.promises;
 
 const logger = LogService.getLogger('LocalSqliteDataSource');
 
 const NOTEBOOK_FILE = 'notebook.json';
+const NOTEBOOK_FILE_BACKUP = 'notebook-backup.json';
 const DB_FILE = 'notebook.sqlite'
 const MEDIA_DIR = 'media';
 const UTF8 = 'utf8';
@@ -104,7 +106,7 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       });
   }
 
-  constructor(private options: LocalSqliteDataSourceOptions) {
+  constructor(private options: LocalSqliteDataSourceOptions, private telemetry?: TelemetryContextValue) {
     this.db = LocalSqliteDataSource.getDb(options.sourcePath);
   }
 
@@ -136,10 +138,25 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       path.join(options.sourcePath, NOTEBOOK_FILE),
       JSON.stringify({ structures: {} }),
     );
+
+    await fs.writeFile(
+      path.join(options.sourcePath, NOTEBOOK_FILE_BACKUP),
+      JSON.stringify({ structures: {} }),
+    );
   }
 
   public async load(): Promise<DataSourceActionResult> {
-    this.structures = JSON.parse(await fs.readFile(this.resolvePath(NOTEBOOK_FILE), { encoding: 'utf8' })).structures;
+    try {
+      this.structures = JSON.parse(await fs.readFile(this.resolvePath(NOTEBOOK_FILE), { encoding: 'utf8' })).structures;
+    } catch(e) {
+      try {
+        this.structures = JSON.parse(await fs.readFile(this.resolvePath(NOTEBOOK_FILE_BACKUP), { encoding: 'utf8' })).structures;
+        this.telemetry?.trackException('Notebook malformed, backup was fine.');
+      } catch(e) {
+        this.telemetry?.trackException('Loading workspace failed, notebook and backup malformed.');
+        throw Error('Both notebook file and backup file are malformed.');
+      }
+    }
 
     // Create items_childs ordering column if not existing already
     // as this column was added in v1.0.1
@@ -504,7 +521,23 @@ export class LocalSqliteDataSource implements AbstractDataSource {
   }
 
   public async persist(): Promise<DataSourceActionResult> {
-    await fs.writeFile(this.resolvePath(NOTEBOOK_FILE), JSON.stringify({ structures: this.structures }, null, 2));
+    const notebookPath = this.resolvePath(NOTEBOOK_FILE);
+    const backupPath = this.resolvePath(NOTEBOOK_FILE_BACKUP);
+
+    for (let attempt = 0; attempt < 5; attempt++) {
+      await fs.writeFile(notebookPath, JSON.stringify({ structures: this.structures }));
+
+      try {
+        JSON.parse(await fs.readFile(notebookPath, { encoding: UTF8 })); // parsing worked, save backup...
+        await fs.writeFile(backupPath, JSON.stringify({ structures: this.structures }));
+        JSON.parse(await fs.readFile(backupPath, { encoding: UTF8 }));
+        return;
+      } catch (e) {
+        this.telemetry?.trackException(`Persistence failed for the ${attempt} time`)
+        console.error(`Persisting failed`)
+        logger.log(`Persistence failed for the ${attempt} time`);
+      }
+    }
   }
 
   public async getStructure(id: string): Promise<any> {
