@@ -54,5 +54,17 @@ export const TelemetryEvents = {
     // export: ['workspaces', 'workspaces_export'],
     import: ['workspaces', 'workspaces_import'],
     addExisting: ['workspaces', 'workspaces_add_existing'],
+  },
+  SqliteDatasource: {
+    persist: ['dssqlite', 'ds_persist'],
+    persistFailed: ['dssqlite', 'ds_persist_failed'],
+    storeMediaContent: ['dssqlite', 'ds_store_media_content'],
+    performSearch: ['dssqlite', 'ds_search_perform'],
+    changeItem: ['dssqlite', 'ds_change_item'],
+    removeItem: ['dssqlite', 'ds_remove_item'],
+    createItem: ['dssqlite', 'ds_create_item'],
+    loadFailedBackupFine: ['dssqlite', 'ds_loading_failed_backup_fine'],
+    loadFailedBackupBroken: ['dssqlite', 'ds_loading_failed_backup_failed'],
+    loadSuccess: ['dssqlite', 'ds_loading_success']
   }
 } as const;

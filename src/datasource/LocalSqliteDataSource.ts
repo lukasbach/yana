@@ -19,6 +19,7 @@ import { v4 as uuid } from 'uuid';
 import { arrayDiff, isMediaItem, isNoteItem } from '../utils';
 import Jimp from 'jimp/dist';
 import type { TelemetryContextValue } from '../components/telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
 
 const fs = fsLib.promises;
 
@@ -148,12 +149,15 @@ export class LocalSqliteDataSource implements AbstractDataSource {
   public async load(): Promise<DataSourceActionResult> {
     try {
       this.structures = JSON.parse(await fs.readFile(this.resolvePath(NOTEBOOK_FILE), { encoding: 'utf8' })).structures;
+      this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.loadSuccess);
     } catch(e) {
       try {
         this.structures = JSON.parse(await fs.readFile(this.resolvePath(NOTEBOOK_FILE_BACKUP), { encoding: 'utf8' })).structures;
         this.telemetry?.trackException('Notebook malformed, backup was fine.');
+        this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.loadFailedBackupFine);
       } catch(e) {
         this.telemetry?.trackException('Loading workspace failed, notebook and backup malformed.');
+        this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.loadFailedBackupBroken);
         throw Error('Both notebook file and backup file are malformed.');
       }
     }
@@ -267,6 +271,8 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       // TODO
     }
 
+    this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.createItem);
+
     return { ...item, id };
   }
 
@@ -288,6 +294,8 @@ export class LocalSqliteDataSource implements AbstractDataSource {
     await this.db('items')
       .where('id', id)
       .del();
+
+    this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.removeItem);
   }
 
   public async changeItem<K extends DataItemKind>(id: string, overwriteItem: DataItem<K>): Promise<DataSourceActionResult> {
@@ -344,6 +352,8 @@ export class LocalSqliteDataSource implements AbstractDataSource {
         icon: overwriteItem.icon ?? item.icon,
         color: overwriteItem.color ?? item.color
       });
+
+    this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.changeItem);
   }
 
   public async getParentsOf<K extends DataItemKind>(childId: string): Promise<DataItem<K>[]> {
@@ -458,6 +468,8 @@ export class LocalSqliteDataSource implements AbstractDataSource {
 
     logger.log("Search yielded items: ", [], {items, itemIds, search});
 
+    this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.performSearch);
+
     return {
       results: items,
       nextPagingValue: items[items.length - 1]?.[search.sortColumn ?? SearchQuerySortColumn.Name],
@@ -507,6 +519,8 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       // .writeAsync(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension));
       logger.log("Resized image and stored thumbnail", [], {});
     }
+
+    this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.storeMediaContent);
   }
 
   public async removeMediaItemContent(item: MediaItem): Promise<DataSourceActionResult> {
@@ -531,9 +545,12 @@ export class LocalSqliteDataSource implements AbstractDataSource {
         JSON.parse(await fs.readFile(notebookPath, { encoding: UTF8 })); // parsing worked, save backup...
         await fs.writeFile(backupPath, JSON.stringify({ structures: this.structures }));
         JSON.parse(await fs.readFile(backupPath, { encoding: UTF8 }));
+        this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.persist);
         return;
       } catch (e) {
         this.telemetry?.trackException(`Persistence failed for the ${attempt} time`)
+        this.telemetry?.trackEvent('dsqlite', 'persist_failed_' + attempt);
+        this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.persistFailed);
         console.error(`Persisting failed`)
         logger.log(`Persistence failed for the ${attempt} time`);
       }
