@@ -60,6 +60,12 @@ export const SideBarTreeHeader: React.FC<{
   );
   useEffect(() => props.onChangeIsExpanded?.(isExpanded), [isExpanded]);
 
+  const hoverEffectClass = cxs({
+    ':hover': {
+      color: Color(theme.sidebarColor).isDark() ? '#fff' : '#000'
+    },
+  });
+
   return (
     <div className={cx(
       styles.container,
@@ -70,11 +76,7 @@ export const SideBarTreeHeader: React.FC<{
       <div
         className={cx(
           styles.clickableContainer,
-          cxs({
-            ':hover': {
-              color: Color(theme.sidebarColor).isDark() ? '#fff' : '#000'
-            },
-          })
+          hoverEffectClass
         )}
         onClick={() => setIsExpanded(!isExpanded)}
       >
@@ -102,7 +104,7 @@ export const SideBarTreeHeader: React.FC<{
             position={'bottom-right'}
             minimal
           >
-              <div className={styles.addContainer}>
+              <div className={cx(styles.addContainer, hoverEffectClass)}>
                 <Icon icon={'plus'} />
               </div>
           </Popover>

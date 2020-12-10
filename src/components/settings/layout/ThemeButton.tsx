@@ -125,6 +125,9 @@ export const ThemeButton: React.FC<{
           <div className={cx(
             styles.previewTopbarHighlight
           )} />
+          <div className={cx(
+            styles.previewTopbarHighlight
+          )} />
         </div>
         <div className={cx(
           styles.previewMainContainer

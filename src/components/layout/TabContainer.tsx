@@ -76,7 +76,7 @@ export const TabContainer: React.FC<{}> = props => {
                           styles.tab,
                           snapshot.isDragging && styles.draggingTab,
                           cxs({
-                            color: mainContent.openTabId === idx ? 'white' : Color(theme.topBarColor).mix(Color('#fff'), .7).toString(),
+                            color: mainContent.openTabId === idx ? 'white' : Color(theme.topBarColor).mix(Color('#ffffff'), .5).toString(),
                             borderBottom: mainContent.openTabId === idx ? `4px solid ${theme.primaryColor}` : undefined,
                             fontWeight: mainContent.openTabId === idx ? 'bold' : 'normal',
                             backgroundColor: theme.topBarColor,
