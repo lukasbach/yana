@@ -6,6 +6,7 @@ import { Classes, Icon, IconName, MaybeElement, Popover, Spinner } from '@bluepr
 import { useEffect, useRef, useState } from 'react';
 import { useContextMenu } from '../useContextMenu';
 import { useSettings } from '../../appdata/AppDataProvider';
+import Color from 'color';
 
 const styles = {
   itemContainer: cxs({
@@ -24,7 +25,6 @@ const styles = {
   }),
   itemContainerActive: cxs({
     backgroundColor: 'white',
-    color: '#333',
     '> .more': {
       opacity: 1
     },
@@ -114,11 +114,13 @@ export const SideBarTreeItemUi: React.FC<{
     }
   }, [props.isRenaming]);
 
+  // const backgroundColorHover = !props.isActive ? theme.sidebarHoverColor : undefined;
+  // const colorHover = backgroundColorHover ? Color(theme.sidebarTextColor).mix(Color(backgroundColorHover).negate(), .7).toString() : undefined;
+
   return (
     <div
       className={cx(
         styles.itemContainer,
-        isActive && styles.itemContainerActive,
         cxs({
           color: theme.sidebarTextColor,
           padding: settings.sidebarItemPadding,
@@ -126,6 +128,10 @@ export const SideBarTreeItemUi: React.FC<{
             backgroundColor: !props.isActive ? theme.sidebarHoverColor : undefined,
           }
         }),
+        isActive && styles.itemContainerActive,
+        isActive && cxs({
+          color: (Color(theme.sidebarColor).isDark() ? theme.sidebarColor : Color(theme.sidebarColor).darken(.5)) + ' !important'
+        })
       )}
       onClick={(e) => {
         props.onClick?.();

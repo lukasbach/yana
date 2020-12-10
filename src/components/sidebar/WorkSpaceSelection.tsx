@@ -24,6 +24,8 @@ import { DataItemKind, NoteDataItem } from '../../types';
 import { PageIndex } from '../../PageIndex';
 // @ts-ignore
 import brand from '../../icons/icon-white-x1.png';
+// @ts-ignore
+import brandDark from '../../icons/icon-black-x1.png';
 import { SpotlightTarget } from '@atlaskit/onboarding';
 import { TelemetryService } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
@@ -127,7 +129,7 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
             })
           )}>
             <div className={style.iconContainer}>
-              <img src={brand} />
+              <img src={Color(theme.sidebarColor).isDark() ? brand : brandDark} />
             </div>
             <div
               className={cx(

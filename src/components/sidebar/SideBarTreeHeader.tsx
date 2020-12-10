@@ -23,9 +23,6 @@ const styles = {
     display: 'flex',
     flexGrow: 1,
     cursor: 'pointer',
-    ':hover': {
-      color: '#fff'
-    },
   }),
   chevronContainer: cxs({
     paddingRight: '6px',
@@ -71,7 +68,14 @@ export const SideBarTreeHeader: React.FC<{
       })
     )}>
       <div
-        className={styles.clickableContainer}
+        className={cx(
+          styles.clickableContainer,
+          cxs({
+            ':hover': {
+              color: Color(theme.sidebarColor).isDark() ? '#fff' : '#000'
+            },
+          })
+        )}
         onClick={() => setIsExpanded(!isExpanded)}
       >
         <div className={styles.chevronContainer}>
