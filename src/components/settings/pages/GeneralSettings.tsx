@@ -14,6 +14,9 @@ import { useSettingsPageContext } from '../SettingsContext';
 import { defaultTheme } from '../../../common/theming';
 import { useSpotlight } from '../../spotlight/SpotlightContainer';
 import { SpotlightScenarioId } from '../../spotlight/SpotlightScenarioId';
+import { ThemeButton } from '../layout/ThemeButton';
+import { themes } from '../../../themes';
+import { SettingsThemeSelection } from '../layout/SettingsThemeSelection';
 
 export const GeneralSettings: React.FC<{}> = props => {
   const mainContent = useMainContentContext();
@@ -39,6 +42,48 @@ export const GeneralSettings: React.FC<{}> = props => {
           onClick={() => {
             spotlight.startScenario(SpotlightScenarioId.SidebarScenario, true);
           }}
+        />
+      </SettingsSection>
+
+      <SettingsSection title="Personalization">
+        <SettingsThemeSelection
+          currentTheme={{
+            primaryColor: settings.settings.themePrimaryColor,
+            sidebarColor: settings.settings.themeSidebarColor,
+            sidebarTextColor: settings.settings.themeSidebarTextColor,
+            sidebarHoverColor: settings.settings.themeSidebarHoverColor,
+            topBarColor: settings.settings.themeTopbarColor,
+          }}
+          onChangeTheme={theme => {
+            settings.changeSettings({
+              themePrimaryColor: theme.primaryColor,
+              themeSidebarColor: theme.sidebarColor,
+              themeSidebarTextColor: theme.sidebarTextColor,
+              themeSidebarHoverColor: theme.sidebarHoverColor,
+              themeTopbarColor: theme.topBarColor,
+            })
+          }}
+        />
+
+        <SettingsColorInput
+          settingsKey={'themePrimaryColor'}
+          label={"Primary Color"}
+        />
+        <SettingsColorInput
+          settingsKey={'themeSidebarColor'}
+          label={"Sidebar Background Color"}
+        />
+        <SettingsColorInput
+          settingsKey={'themeSidebarTextColor'}
+          label={"Sidebar Text Color"}
+        />
+        <SettingsColorInput
+          settingsKey={'themeSidebarHoverColor'}
+          label={"Sidebar Hovering Color"}
+        />
+        <SettingsColorInput
+          settingsKey={'themeTopbarColor'}
+          label={"Application Bar Color"}
         />
       </SettingsSection>
 
@@ -96,42 +141,6 @@ export const GeneralSettings: React.FC<{}> = props => {
         <SettingsSwitchInput
           settingsKey={'autoUpdateAppBackupActive'}
           label={"Automatically backup workspaces before updating"}
-        />
-      </SettingsSection>
-
-      <SettingsSection title="Personalization">
-        <SettingsColorInput
-          settingsKey={'themePrimaryColor'}
-          label={"Primary Color"}
-        />
-        <SettingsColorInput
-          settingsKey={'themeSidebarColor'}
-          label={"Sidebar Background Color"}
-        />
-        <SettingsColorInput
-          settingsKey={'themeSidebarTextColor'}
-          label={"Sidebar Text Color"}
-        />
-        <SettingsColorInput
-          settingsKey={'themeSidebarHoverColor'}
-          label={"Sidebar Hovering Color"}
-        />
-        <SettingsColorInput
-          settingsKey={'themeTopbarColor'}
-          label={"Application Bar Color"}
-        />
-        <SettingsClickable
-          title="Reset to default Theme"
-          icon={'reset'}
-          onClick={() => {
-            settings.changeSettings({
-              themePrimaryColor: defaultTheme.primaryColor,
-              themeSidebarColor: defaultTheme.sidebarColor,
-              themeSidebarTextColor: defaultTheme.sidebarTextColor,
-              themeSidebarHoverColor: defaultTheme.sidebarHoverColor,
-              themeTopbarColor: defaultTheme.topBarColor,
-            })
-          }}
         />
       </SettingsSection>
 

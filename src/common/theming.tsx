@@ -8,6 +8,7 @@ export interface Theme {
   sidebarHoverColor: string;
   sidebarTextColor: string;
   topBarColor: string;
+  title?: string;
 }
 
 const defaultPrimaryColor = '#2c3e50';

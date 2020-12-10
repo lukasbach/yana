@@ -3,6 +3,7 @@ import { SettingsObject } from '../../../settings/types';
 import { FormGroup } from '@blueprintjs/core';
 import { useSettingsPageContext } from '../SettingsContext';
 import { ColorPickerInput } from '../../common/ColorPickerInput';
+import Color from 'color';
 
 export const SettingsColorInput: React.FC<{
   settingsKey: keyof SettingsObject,
@@ -23,7 +24,9 @@ export const SettingsColorInput: React.FC<{
       <ColorPickerInput
         inputProps={{ id }}
         color={settings.settings[props.settingsKey] as string}
-        onChange={color => settings.changeSettings({ [props.settingsKey]: color })}
+        onChange={color => {
+          settings.changeSettings({ [props.settingsKey]: Color(color).hex() });
+        }}
       />
     </FormGroup>
   );
