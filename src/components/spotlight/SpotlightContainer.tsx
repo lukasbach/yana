@@ -10,6 +10,7 @@ import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 import { useMainContentContext } from '../mainContent/context';
 import { PageIndex } from '../../PageIndex';
 import { undup } from '../../utils';
+import { useTheme } from '../../common/theming';
 
 export interface SpotlightContextValue {
   startScenario: (scenario: SpotlightScenarioId, force?: boolean) => void,
@@ -22,6 +23,7 @@ export const useSpotlight = () => useContext(SpotlightContext);
 export const SpotlightContainer: React.FC<{}> = props => {
   const appData = useAppData();
   const mainContent = useMainContentContext();
+  const theme = useTheme();
   const [scenario, setScenario] = useState<SpotlightScenarioId | undefined>();
   const [step, setStep] = useState(0);
   const telemetry = useTelemetry();
@@ -99,6 +101,7 @@ export const SpotlightContainer: React.FC<{}> = props => {
                       telemetry.trackEvent(...TelemetryEvents.Tutorial.skip);
                     }},
                   ].filter(x => !!x) as any}
+                  theme={theme}
                 />
               );
             })() }
