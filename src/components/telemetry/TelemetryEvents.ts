@@ -44,7 +44,8 @@ export const TelemetryEvents = {
     // performUpdate: ['update', 'update_perform']
   },
   Settings: {
-    saveSettings: ['settings', 'settings_save']
+    saveSettings: ['settings', 'settings_save'],
+    chooseTheme: ['settings', 'settings_choose_theme']
   },
   Workspaces: {
     create: ['workspaces', 'workspaces_create'],

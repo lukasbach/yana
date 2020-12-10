@@ -65,6 +65,8 @@ export const GeneralSettings: React.FC<{}> = props => {
           }}
         />
 
+        <p>After choosing a theme, you have to save the settings to see it applied.</p>
+
         <SettingsColorInput
           settingsKey={'themePrimaryColor'}
           label={"Primary Color"}
