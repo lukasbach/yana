@@ -24,6 +24,10 @@ const styles = {
       border: 'none',
       ' hr': {
         borderBottom: '1px solid #000 !important'
+      },
+      ' [data-editor-popup="true"]': {
+        left: '20px',
+        width: 'max-content !important'
       }
     }
   })
@@ -94,12 +98,20 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                           legacyImageUploadProvider={new Promise(res => res((e: Event | undefined, insertImageFn: (props: InsertedImageProperties) => void) => {
                             setInsertImageFn({ fn: insertImageFn });
                           }))}
+                          allowTasksAndDecisions={true}
                           allowExpand={true}
+                          allowFindReplace={{
+                            allowMatchCase: true
+                          }}
                           insertMenuItems={[]}
                           quickInsert={true}
                           allowTextColor={true}
                           allowTextAlignment={false} // TODO
                           defaultValue={JSON.stringify(props.content.adf)}
+                          allowLayouts={{
+                            allowBreakout: true,
+                            UNSAFE_addSidebarLayouts: true
+                          }}
                           onChange={editorView => {
                             // if (!isChangingNote.current) props.onChange();
                             props.onChange();

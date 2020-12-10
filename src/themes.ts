@@ -51,7 +51,7 @@ export const themes: Theme[] = [
     topBarColor: '#294828',
   },
   {
-    title: 'Oriental',
+    title: 'Oriental Basar',
     primaryColor: '#9E49E7',
     sidebarColor: '#412C50',
     sidebarTextColor: '#A985BD',
