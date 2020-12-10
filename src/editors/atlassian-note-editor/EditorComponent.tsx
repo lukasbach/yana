@@ -21,7 +21,10 @@ const styles = {
   container: cxs({
     height: '100%',
     ' .akEditor': {
-      border: 'none'
+      border: 'none',
+      ' hr': {
+        borderBottom: '1px solid #000 !important'
+      }
     }
   })
 }
@@ -87,6 +90,7 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                           media={{
                             allowMediaSingle: true,
                           }}
+                          allowRule={true}
                           legacyImageUploadProvider={new Promise(res => res((e: Event | undefined, insertImageFn: (props: InsertedImageProperties) => void) => {
                             setInsertImageFn({ fn: insertImageFn });
                           }))}
