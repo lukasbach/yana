@@ -19,6 +19,14 @@ export const themes: Theme[] = [
     topBarColor: '#B95D23'
   },
   {
+    title: 'Luxurious Apartment',
+    primaryColor: '#E2C37A',
+    sidebarColor: '#E7E7EB',
+    sidebarTextColor: '#1A1D20',
+    sidebarHoverColor: '#DDD9C9',
+    topBarColor: '#01080E',
+  },
+  {
     title: 'Spooky Halloween',
     primaryColor: '#F3850C',
     sidebarColor: '#523C26',
@@ -59,4 +67,3 @@ export const themes: Theme[] = [
     topBarColor: '#482928',
   },
 ];
-
