@@ -50,4 +50,6 @@ export const defaultSettings: SettingsObject = {
   zoomFactor: 1,
   completedSpotlights: [],
   pageHeaderCollapsed: false,
-}
+  spellingActive: true,
+  spellingLanguages: ['en-US'],
+};

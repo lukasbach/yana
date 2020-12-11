@@ -4,26 +4,33 @@ import { remote } from 'electron';
 import { useState } from 'react';
 import { useAsyncEffect } from '../../../utils';
 import { Menu, MenuItem, Popover, Tag } from '@blueprintjs/core';
+import { SettingsSwitchInput } from '../layout/SettingsSwitchInput';
+import { useSettingsPageContext } from '../SettingsContext';
 
 const availableLanguages = remote.getCurrentWebContents().session.availableSpellCheckerLanguages;
 
 export const SpellingSettings: React.FC<{}> = props => {
-  const [specifiedLanguages, setSpecifiedLanguages] = useState<string[]>([]);
+  const settings = useSettingsPageContext();
+  const [specifiedLanguages, setSpecifiedLanguages] = useState<string[]>(settings.settings.spellingLanguages);
   const [words, setWords] = useState<string[]>([]);
 
   useAsyncEffect(async () => {
     const session = remote.getCurrentWebContents().session;
-    setSpecifiedLanguages(session.getSpellCheckerLanguages());
     setWords(await session.listWordsInSpellCheckerDictionary())
   }, []);
 
   useAsyncEffect(async () => {
     const session = remote.getCurrentWebContents().session;
     session.setSpellCheckerLanguages(specifiedLanguages);
+    settings.changeSettings({ spellingLanguages: specifiedLanguages });
   }, [specifiedLanguages]);
 
   return (
     <div>
+      <SettingsSection title="Spell Checking">
+        <SettingsSwitchInput settingsKey={'spellingActive'} label="Spell Checking active" />
+      </SettingsSection>
+
       <SettingsSection title="Spell Checker Languages">
         { specifiedLanguages.map(lang => (
           <Tag

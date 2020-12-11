@@ -15,6 +15,7 @@ import { LogService } from '../../common/LogService';
 import { SpellingSettings } from './pages/SpellingSettings';
 import { useTelemetry } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
+import { remote } from 'electron';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();
@@ -32,6 +33,10 @@ export const Settings: React.FC<{}> = props => {
     setDirty(false);
     LogService.applySettings(settings);
     await appData.saveSettings(settings);
+
+    remote.getCurrentWebContents().session
+      .setSpellCheckerLanguages(settings.spellingActive ? settings.spellingLanguages : []);
+
     telemetry.trackEvent(...TelemetryEvents.Settings.saveSettings);
   }
 

@@ -58,4 +58,6 @@ export interface SettingsObject {
   zoomFactor: number,
   completedSpotlights: string[],
   pageHeaderCollapsed: boolean,
+  spellingActive: boolean,
+  spellingLanguages: string[],
 }
