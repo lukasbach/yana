@@ -49,7 +49,8 @@ export const SidebarScenario: SpotlightScenario = {
         key="sidebar-settings"
         targetBgColor={theme.sidebarColor}
       >
-        Click the cog icon to open Yana's settings...
+        Click the cog icon to open Yana's settings. Here you can configure your workflow,
+        use a custom theme, configure automatic backups and more.
       </Spotlight>
     ),
     ({ defaultActions, theme }) => (
@@ -61,7 +62,7 @@ export const SidebarScenario: SpotlightScenario = {
         key="sidebar-new-draft"
         targetBgColor={theme.sidebarColor}
       >
-        or the plus icon to create a new draft item.
+        Click the plus icon to create a new draft item.
       </Spotlight>
     ),
     ({ defaultActions, theme }) => (
