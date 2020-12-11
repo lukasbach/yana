@@ -66,6 +66,7 @@ export const GeneralSettings: React.FC<{}> = props => {
         />
 
         <p>After choosing a theme, you have to save the settings to see it applied.</p>
+        <p>Nord theme is inspired by <a href="https://nordtheme.com" target="_blank">nordtheme.com</a></p>
 
         <SettingsColorInput
           settingsKey={'themePrimaryColor'}

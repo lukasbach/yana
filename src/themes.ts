@@ -27,6 +27,22 @@ export const themes: Theme[] = [
     topBarColor: '#01080E',
   },
   {
+    title: 'Banana Tree',
+    primaryColor: '#FD8504',
+    sidebarColor: '#FFEB84',
+    sidebarTextColor: '#745B28',
+    sidebarHoverColor: '#F1CB42',
+    topBarColor: '#FFC806',
+  },
+  {
+    title: 'Sweet Tooth',
+    primaryColor: '#F8D1D0',
+    sidebarColor: '#FFD6EF',
+    sidebarTextColor: '#6D304C',
+    sidebarHoverColor: '#FFBDDB',
+    topBarColor: '#EEA4C6',
+  },
+  {
     title: 'Spooky Halloween',
     primaryColor: '#F3850C',
     sidebarColor: '#523C26',
@@ -65,5 +81,13 @@ export const themes: Theme[] = [
     sidebarTextColor: '#B98B8B',
     sidebarHoverColor: '#613636',
     topBarColor: '#482928',
+  },
+  {
+    title: 'Nord Theme',
+    primaryColor: '#88C0D0',
+    sidebarColor: '#E5E9F0',
+    sidebarTextColor: '#4C566A',
+    sidebarHoverColor: '#D8DEE9',
+    topBarColor: '#2E3440',
   },
 ];
