@@ -83,11 +83,19 @@ export const themes: Theme[] = [
     topBarColor: '#482928',
   },
   {
-    title: 'Nord Theme',
+    title: 'Nord Light',
     primaryColor: '#88C0D0',
     sidebarColor: '#E5E9F0',
     sidebarTextColor: '#4C566A',
     sidebarHoverColor: '#D8DEE9',
+    topBarColor: '#2E3440',
+  },
+  {
+    title: 'Nord Dark',
+    primaryColor: '#88C0D0',
+    sidebarColor: '#3B4252',
+    sidebarTextColor: '#B2BACA',
+    sidebarHoverColor: '#5E81AC',
     topBarColor: '#2E3440',
   },
 ];
