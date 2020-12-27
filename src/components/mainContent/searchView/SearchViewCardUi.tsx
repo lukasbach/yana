@@ -84,7 +84,7 @@ export const SearchViewCardUi: React.FC<SearchViewCardUiProps> = props => {
           { props.isCollection && !props.preview && (
             <NonIdealState icon={'folder-open'} />
           ) }
-          { !props.isCollection && !props.preview && (
+          { !props.isCollection && !props.preview && !props.thumbnail && (
             <NonIdealState icon={'document'} />
           ) }
           { props.preview }
