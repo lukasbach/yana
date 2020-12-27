@@ -1,4 +1,4 @@
-# Yana
+# Yana [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Checkout%20Yana,%20a%20free%20and%20powerful%20notebook%20app&url=https://yana.js.org&hashtags=notetaking,organizing,yana)
 
 > Yet another notebook app
 
