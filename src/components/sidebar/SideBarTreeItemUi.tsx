@@ -113,6 +113,7 @@ export const SideBarTreeItemUi: React.FC<{
       renameInputRef.current?.select();
     }
   }, [props.isRenaming]);
+  const isDark = Color(theme.sidebarColor).isDark();
 
   // const backgroundColorHover = !props.isActive ? theme.sidebarHoverColor : undefined;
   // const colorHover = backgroundColorHover ? Color(theme.sidebarTextColor).mix(Color(backgroundColorHover).negate(), .7).toString() : undefined;
@@ -130,7 +131,7 @@ export const SideBarTreeItemUi: React.FC<{
         }),
         isActive && styles.itemContainerActive,
         isActive && cxs({
-          color: (Color(theme.sidebarColor).isDark() ? theme.sidebarColor : Color(theme.sidebarColor).darken(.5)) + ' !important'
+          color: (isDark ? theme.sidebarColor : Color(theme.sidebarColor).darken(.5)) + ' !important'
         })
       )}
       onClick={(e) => {
@@ -180,6 +181,9 @@ export const SideBarTreeItemUi: React.FC<{
                 ref={renameInputRef}
                 value={name}
                 onChange={(e: any) => setName(e.target.value)}
+                style={{
+                  color: isDark ? 'white' : 'black'
+                }}
               />
               <button type="submit">
                 <Icon icon="tick" />
