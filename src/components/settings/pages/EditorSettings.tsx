@@ -9,6 +9,17 @@ import { remote } from 'electron';
 export const EditorSettings: React.FC<{}> = props => {
   return (
     <div>
+      <SettingsSection title="General">
+        <SettingsSwitchInput
+          settingsKey={'editorShowSaveIndicator'}
+          label={"Show save indicator"}
+          helperText={(
+            'When you change the content of a note, the indicator shows if the changes were changed or are still pending. ' +
+            'Saves are always automatic, so this feature is mostly for debugging.'
+          )}
+        />
+      </SettingsSection>
+
       <SettingsSection title="Notes Editor">
         <SettingsSwitchInput
           settingsKey={'editorAtlassianAdvancedTables'}

@@ -18,6 +18,7 @@ import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
 import { TelemetryService } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 import { promptMoveItem } from '../../datasource/promptMoveItem';
+import { SaveIndicator } from './SaveIndicator';
 
 export const EditorHeader: React.FC<{
   dataItem: NoteDataItem<any>,
@@ -31,43 +32,7 @@ export const EditorHeader: React.FC<{
   const [titleValue, setTitleValue] = useState(props.dataItem.name);
   const [isEditingTags, setIsEditingTags] = useState(false);
   const { EditItemDrawer, onOpenEditItemDrawer } = useEditItemDrawer(props.dataItem.id);
-  const [saveIndicator, setSaveIndicator] = useState<SaveIndicatorState>(SaveIndicatorState.Saved);
   useEffect(() => setTitleValue(props.dataItem.name), [props.dataItem.id]);
-
-  useEffect(() => {
-    if (props.saveIndicator === SaveIndicatorState.Saved && saveIndicator !== SaveIndicatorState.Saved) {
-      setSaveIndicator(SaveIndicatorState.RecentlySaved);
-      const timeout = setTimeout(() => setSaveIndicator(SaveIndicatorState.Saved), 1000);
-      return () => clearTimeout(timeout);
-    } else if (props.saveIndicator) {
-      setSaveIndicator(props.saveIndicator);
-    }
-  }, [props.saveIndicator]);
-
-  let saveIndicatorText: string = 'Unknown save state';
-  let saveIndicatorIcon: IconName | undefined;
-  let saveIndicatorIntent: Intent = 'none';
-
-  switch (saveIndicator) {
-    case SaveIndicatorState.Saved:
-      saveIndicatorText = 'Unchanged';
-      break;
-    case SaveIndicatorState.Unsaved:
-      saveIndicatorText = 'Changed';
-      saveIndicatorIcon = 'edit';
-      break;
-    case SaveIndicatorState.Saving:
-      saveIndicatorText = 'Saving...';
-      saveIndicatorIcon = 'floppy-disk';
-      saveIndicatorIntent = 'primary';
-      break;
-    case SaveIndicatorState.RecentlySaved:
-      saveIndicatorText = 'Saved';
-      saveIndicatorIcon = 'tick-circle';
-      saveIndicatorIntent = 'success';
-      break;
-
-  }
 
   const isStarred = props.dataItem.tags.includes(InternalTag.Starred);
 
@@ -110,7 +75,7 @@ export const EditorHeader: React.FC<{
             <Tooltip content={new Date(lastChange).toLocaleString()} position={'bottom'}>{ ago(new Date(lastChange)) }</Tooltip>,{' '}
             created{' '}
             <Tooltip content={new Date(created).toLocaleString()} position={'bottom'}>{ ago(new Date(created)) }</Tooltip>.{' '}
-            <Tag children={saveIndicatorText} intent={saveIndicatorIntent} icon={<Icon icon={saveIndicatorIcon} iconSize={10} />} minimal />
+            <SaveIndicator saveIndicator={props.saveIndicator} />
           </>
         )}
         rightContent={(
