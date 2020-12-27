@@ -14,8 +14,10 @@ export const useDataItems = (
   const [refreshedItems, setRefreshedItems] = useState(items);
 
   useEffect(() => {
-    logger.log("initial items changed", [], {items})
-    setRefreshedItems(items);
+    if (items.length > 0) {
+      logger.log("initial items changed", [], {items})
+      setRefreshedItems(items);
+    }
   }, [items]);
 
   useEventChangeHandler(dataInterface.onChangeItems, async changes => {

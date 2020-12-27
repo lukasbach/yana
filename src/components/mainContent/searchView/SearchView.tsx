@@ -13,6 +13,12 @@ import { SearchSortingMenu } from './SearchSortingMenu';
 import { useDataItemPreviews } from '../../../datasource/useDataItemPreviews';
 import { LoadingSearchViewCard } from './LoadingSearchViewCard';
 import { SearchBar } from '../../searchbar/SearchBar';
+import { DataItemContextMenu } from '../../menus/DataItemContextMenu';
+import { Bp3MenuRenderer } from '../../menus/Bp3MenuRenderer';
+import { useDataItem } from '../../../datasource/useDataItem';
+import { useMainContentContext } from '../context';
+import { useDataInterface } from '../../../datasource/DataInterfaceContext';
+import { useOverlaySearch } from '../../overlaySearch/OverlaySearchProvider';
 
 export const SearchView: React.FC<{
   title: string;
@@ -24,6 +30,9 @@ export const SearchView: React.FC<{
   onClickItem?: (item: DataItem) => void;
   rightContent?: React.ReactNode;
 }> = props => {
+  const mainContent = useMainContentContext();
+  const dataInterface = useDataInterface();
+  const overlaySearch = useOverlaySearch();
   const [hiddenSearch, setHiddenSearch] = useState(props.hiddenSearch);
   const [userSearch, setUserSearch] = useState(props.defaultSearch);
   // const [searchQuery, setSearchQuery] = useState<SearchQuery>({ ...props.hiddenSearch, ...props.defaultSearch });
@@ -34,6 +43,7 @@ export const SearchView: React.FC<{
     fetchNextPage,
     isFetching
   } = useDataSearch(Object.keys(searchQuery).length === 0 ? { all: true } : searchQuery, 200);
+  const parent = useDataItem(hiddenSearch.parents?.[0])
   const previews = useDataItemPreviews(items);
   // TODO currently, all previews are loaded at once. Use Grid.onSectionRendered() to only load previews when they enter the viewport
 
@@ -71,6 +81,27 @@ export const SearchView: React.FC<{
                 Sort Items
               </Button>
             </Popover>
+            {(parent && (
+              <>
+                {' '}
+                <Popover
+                  interactionKind={'click'}
+                  position={'bottom'}
+                  captureDismiss={true}
+                  content={(
+                    <DataItemContextMenu
+                      item={parent}
+                      renderer={Bp3MenuRenderer}
+                      mainContent={mainContent}
+                      dataInterface={dataInterface}
+                      overlaySearch={overlaySearch}
+                    />
+                  )}
+                >
+                  <Button outlined rightIcon={'chevron-down'}>More</Button>
+                </Popover>
+              </>
+            ))}
           </>
         )}
       />
