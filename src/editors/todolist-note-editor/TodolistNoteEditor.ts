@@ -1,6 +1,5 @@
 import { EditorDefinition } from '../EditorDefinition';
 import { EditorComponent } from './EditorComponent';
-import { SmallPreviewComponent } from './SmallPreviewComponent';
 
 export interface TodoListItem {
   id: string;
@@ -24,7 +23,6 @@ export class TodolistNoteEditor implements EditorDefinition<'todolist-editor-not
   public id = "todolist-editor-note" as const;
   public name = "Todo List";
   public editorComponent = EditorComponent;
-  public smallPreviewComponent = SmallPreviewComponent;
   public canInsertFiles = false;
 
   public initializeContent(): TodoListNoteEditorContent {

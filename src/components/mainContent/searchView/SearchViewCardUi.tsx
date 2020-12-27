@@ -1,13 +1,9 @@
 import * as React from 'react';
-import { Classes, Icon, IconName } from '@blueprintjs/core';
-import { isNoteItem } from '../../../utils';
-import { DataItemSmallPreviewContainer } from './DataItemSmallPreviewContainer';
-import ago from 's-ago';
+import { Classes, Icon, IconName, NonIdealState } from '@blueprintjs/core';
 import cxs from 'cxs';
 import { searchViewCellDimensions } from './searchViewCellDimensions';
-import { useMainContentContext } from '../context';
-import { useDataInterface } from '../../../datasource/DataInterfaceContext';
 import { CSSProperties, DOMAttributes } from 'react';
+
 const styles = {
   itemCard: cxs({
     display: 'flex',
@@ -62,6 +58,7 @@ export interface SearchViewCardUiProps {
   iconColor?: string,
   thumbnail?: string,
   preview?: JSX.Element,
+  isCollection?: boolean,
   footerText?: string,
 }
 
@@ -84,6 +81,12 @@ export const SearchViewCardUi: React.FC<SearchViewCardUiProps> = props => {
           </h4>
         </div>
         <div className={styles.cardMiddle} style={{ backgroundImage: props.thumbnail && `url("file:///${props.thumbnail.replace(/\\/g, '/')}")` }}>
+          { props.isCollection && !props.preview && (
+            <NonIdealState icon={'folder-open'} />
+          ) }
+          { !props.isCollection && !props.preview && (
+            <NonIdealState icon={'document'} />
+          ) }
           { props.preview }
         </div>
         <div className={styles.cardFooter}>

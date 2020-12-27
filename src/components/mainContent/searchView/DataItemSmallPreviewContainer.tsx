@@ -22,7 +22,7 @@ export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<an
   const editor = EditorRegistry.Instance.getEditorWithId(props.noteItem.noteType);
 
   if (!editor || !editor.smallPreviewComponent) {
-    return null;
+    return <NonIdealState icon={'document'} />;
   }
 
   const PreviewComponent = editor.smallPreviewComponent;

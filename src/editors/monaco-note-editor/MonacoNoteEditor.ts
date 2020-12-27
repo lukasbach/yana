@@ -1,6 +1,5 @@
 import { EditorDefinition } from '../EditorDefinition';
 import { EditorComponent } from './EditorComponent';
-import { SmallPreviewComponent } from './SmallPreviewComponent';
 
 export interface MonacoNoteEditorContent {
   content: string;
@@ -11,7 +10,6 @@ export class MonacoNoteEditor implements EditorDefinition<'monaco-editor-note', 
   public id = "monaco-editor-note" as const;
   public name = "Code Snippet";
   public editorComponent = EditorComponent;
-  public smallPreviewComponent = SmallPreviewComponent;
   public canInsertFiles = false;
 
   public initializeContent(): MonacoNoteEditorContent {

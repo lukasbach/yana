@@ -2,17 +2,15 @@ import * as React from 'react';
 import { GridCellProps } from 'react-virtualized/dist/es/Grid';
 import cxs from 'cxs';
 import { searchViewCellDimensions } from './searchViewCellDimensions';
-import { DataItem } from '../../../types';
+import { DataItem, DataItemKind } from '../../../types';
 import ago from 's-ago';
-import { Icon } from '@blueprintjs/core';
-import { isCollectionItem, isMediaItem, isNoteItem, useAsyncEffect } from '../../../utils';
+import { isCollectionItem, isNoteItem } from '../../../utils';
 import { DataItemSmallPreviewContainer } from './DataItemSmallPreviewContainer';
 import { useMainContentContext } from '../context';
 import { useContextMenu } from '../../useContextMenu';
 import { DataItemContextMenu } from '../../menus/DataItemContextMenu';
 import { Bp3MenuRenderer } from '../../menus/Bp3MenuRenderer';
 import { useDataInterface } from '../../../datasource/DataInterfaceContext';
-import { useEffect, useState } from 'react';
 import { SearchViewCardUi } from './SearchViewCardUi';
 import { useOverlaySearch } from '../../overlaySearch/OverlaySearchProvider';
 
@@ -93,6 +91,7 @@ export const SearchViewCard: React.FC<{
       icon={dataItem.icon || (isNoteItem(dataItem) ? 'document' : isCollectionItem(dataItem) ? 'folder-open' : 'media') as any}
       iconColor={dataItem.color}
       thumbnail={thumbnail}
+      isCollection={dataItem.kind === DataItemKind.Collection}
       preview={isNoteItem(dataItem) ? <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} /> : undefined}
       footerText={ago(new Date(dataItem.lastChange))}
     />
