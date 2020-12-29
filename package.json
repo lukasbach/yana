@@ -27,7 +27,7 @@
     "url": "https://lukasbach.com",
     "email": "lbach@outlook.de"
   },
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "archiver": "^5.0.2",
     "electron-updater": "^4.3.5",
