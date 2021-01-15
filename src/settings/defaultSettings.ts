@@ -12,6 +12,8 @@ export const defaultSettings: SettingsObject = {
   editorMonacoTabSize: 4,
   editorMonacoTheme: 'vs',
   editorMonacoWordWrap: 'off',
+  editorMonacoSemanticChecking: true,
+  editorMonacoSyntacticChecking: true,
   editorShowSaveIndicator: false,
   autoBackupLocation: path.join(getElectronPath('appData'), 'yana', 'backup'),
   autoBackupActive: true,

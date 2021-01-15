@@ -46,6 +46,14 @@ export const EditorSettings: React.FC<{}> = props => {
           ]}
         />
         <SettingsSwitchInput
+          settingsKey={'editorMonacoSemanticChecking'}
+          label="Enable Semantic Code Checking"
+        />
+        <SettingsSwitchInput
+          settingsKey={'editorMonacoSyntacticChecking'}
+          label="Enable Syntactic Code Checking"
+        />
+        <SettingsSwitchInput
           settingsKey={'editorMonacoMinimap'}
           label={"Minimap"}
         />

@@ -66,18 +66,28 @@ export const EditorComponent: React.FC<EditorComponentProps<MonacoNoteEditorCont
   useEffect(() => {
     if (monacoRef.current) {
       monacoRef.current.languages.typescript.typescriptDefaults.setCompilerOptions({
+        ...monacoRef.current?.languages.typescript.typescriptDefaults.getCompilerOptions(),
+         jsx: 2,
+         jsxFactory: 'React.createElement',
+         reactNamespace: 'React',
+      });
+      monacoRef.current.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
+        noSemanticValidation: !settings.editorMonacoSemanticChecking,
+        noSyntaxValidation: !settings.editorMonacoSyntacticChecking,
+      });
+
+      monacoRef.current.languages.typescript.javascriptDefaults.setCompilerOptions({
+        ...monacoRef.current?.languages.typescript.javascriptDefaults.getCompilerOptions(),
         jsx: 2,
         jsxFactory: 'React.createElement',
         reactNamespace: 'React',
-        allowNonTsExtensions: true,
-        allowJs: true,
       });
-      monacoRef.current.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-        noSemanticValidation: true,
-        noSyntaxValidation: true
+      monacoRef.current.languages.typescript.javascriptDefaults.setDiagnosticsOptions({
+        noSemanticValidation: !settings.editorMonacoSemanticChecking,
+        noSyntaxValidation: !settings.editorMonacoSyntacticChecking,
       });
     }
-  }, [monacoRef.current])
+  }, [monacoRef.current, settings]);
 
   return (
     <div className={styles.container}>

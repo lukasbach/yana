@@ -44,6 +44,8 @@ export interface SettingsObject {
   editorMonacoRuler: number | undefined,
   editorMonacoTabSize: number,
   editorMonacoWordWrap: string,
+  editorMonacoSemanticChecking: boolean,
+  editorMonacoSyntacticChecking: boolean,
   editorAtlassianAdvancedTables: boolean,
   editorShowSaveIndicator: boolean,
   devToolsOpen: boolean,
