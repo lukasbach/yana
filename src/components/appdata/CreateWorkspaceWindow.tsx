@@ -11,6 +11,7 @@ import { remote } from "electron";
 import { runImportWizard } from '../../appdata/runImportWizard';
 import { Alerter } from '../Alerter';
 import { OverlayCloseButton } from '../common/OverlayCloseButton';
+import { runAddWorkspaceWizard } from '../../appdata/runAddWorkspaceWizard';
 
 const styles = {
   container: cxs({
@@ -221,7 +222,7 @@ export const CreateWorkspaceWindow: React.FC<{
               { props.isInitialCreationScreen && (
                 <p className={Classes.TEXT_MUTED + ' ' + Classes.RUNNING_TEXT + ' ' + Classes.TEXT_SMALL}>
                   By using Yana, you accept{' '}
-                  <a href="#" onClick={() => remote.shell.openExternal('https://yana.js.org/privacy-policy/app')}>Yana's privacy policy.</a>{' '}
+                  <a href="#" onClick={() => remote.shell.openExternal('https://yana.js.org/privacy')}>Yana's privacy policy.</a>{' '}
                   No personally identifiable data or contents of your notebooks will be sent to external servers.
                 </p>
               ) }
@@ -239,14 +240,21 @@ export const CreateWorkspaceWindow: React.FC<{
                 </Button>
               </div>
 
-              <p style={{ marginTop: '4px' }}>
+              <p style={{ marginTop: '10px' }}>
                 You can also&nbsp;
                 <a href="#" onClick={async () => {
                   await runImportWizard(appData);
                   props.onImported();
                 }}>
-                  import an existing workspace
-                </a>.
+                  import a workspace from a zip file
+                </a>
+                {' '}or{' '}
+                <a href="#" onClick={async () => {
+                  await runAddWorkspaceWizard(appData);
+                  props.onImported();
+                }}>
+                  add one from a local folder.
+                </a>
               </p>
             </div>
           </div>
@@ -271,7 +279,7 @@ export const CreateWorkspaceWindow: React.FC<{
               </Button>
               <Button
                 icon={'help'}
-                onClick={() => remote.shell.openExternal('https://github.com/lukasbach/yana')}
+                onClick={() => remote.shell.openExternal('https://yana.js.org')}
               >
                 Project Page
               </Button>
