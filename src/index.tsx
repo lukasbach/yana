@@ -7,8 +7,6 @@ import { defaultTheme, ThemeContext, ThemeProvider } from './common/theming';
 import { MainContentContextProvider } from './components/mainContent/context';
 import { Alerter } from './components/Alerter';
 import { DropZoneContainer } from './components/dropZone/DropZoneContainer';
-import { remote } from 'electron';
-import { ContextMenu, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import { DevToolsContextProvider } from './components/devtools/DevToolsContextProvider';
 // @ts-ignore
 import {IntlProvider} from 'react-intl';
@@ -21,6 +19,7 @@ import { OverlaySearchProvider } from './components/overlaySearch/OverlaySearchP
 import { registerCommonContextMenu } from './components/commonContextMenu/registerCommonContextMenu';
 import { SpotlightContainer } from './components/spotlight/SpotlightContainer';
 import { TelemetryProvider } from './components/telemetry/TelemetryProvider';
+import { AppNotifications } from './components/notifications/AppNotifications';
 
 (window as any).ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
@@ -33,6 +32,7 @@ ReactDOM.render(
   <IntlProvider locale='en'>
     <AppDataProvider>
       <TelemetryProvider>
+        <AppNotifications />
         <ThemeProvider>
           <DevToolsContextProvider>
             <DataInterfaceProvider>

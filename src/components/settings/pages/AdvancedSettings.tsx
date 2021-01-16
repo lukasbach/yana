@@ -41,6 +41,10 @@ export const AdvancedSettings: React.FC<{}> = props => {
           subtitle="This will create a new workspace with *very* many items. This might take a very long time or crash the app."
           onClick={() => createPerformanceTestingWorkspace(appData)}
         />
+        <SettingsClickable
+          title="Reset app notifications view state"
+          onClick={() => appData.saveSettings({ ...appData.settings, notifications: [] })}
+        />
       </SettingsSection>
 
       <SettingsSection title="Logging">

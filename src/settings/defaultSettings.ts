@@ -55,4 +55,5 @@ export const defaultSettings: SettingsObject = {
   pageHeaderCollapsed: false,
   spellingActive: true,
   spellingLanguages: ['en-US'],
+  notifications: [],
 };

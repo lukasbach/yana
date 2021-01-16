@@ -67,5 +67,10 @@ export const TelemetryEvents = {
     loadFailedBackupFine: ['dssqlite', 'ds_loading_failed_backup_fine'],
     loadFailedBackupBroken: ['dssqlite', 'ds_loading_failed_backup_failed'],
     loadSuccess: ['dssqlite', 'ds_loading_success']
+  },
+  AppNotifications: {
+    timedOut: ['appnot', 'appnot_timeout'],
+    dismissed: ['appnot', 'appnot_dismiss'],
+    viewed: ['app_not', 'appnot_viewed'],
   }
 } as const;
