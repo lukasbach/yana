@@ -80,7 +80,10 @@ export const SearchViewCardUi: React.FC<SearchViewCardUiProps> = props => {
             { props.header }
           </h4>
         </div>
-        <div className={styles.cardMiddle} style={{ backgroundImage: props.thumbnail && `url("file:///${props.thumbnail.replace(/\\/g, '/')}")` }}>
+        <div
+          className={styles.cardMiddle}
+          style={{ backgroundImage: props.thumbnail && `url("file:///${props.thumbnail.replace(/\\/g, '/')}")` }}
+        >
           { props.isCollection && !props.preview && (
             <NonIdealState icon={'folder-open'} />
           ) }

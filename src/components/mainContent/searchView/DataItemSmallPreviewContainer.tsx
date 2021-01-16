@@ -7,6 +7,7 @@ import { NonIdealState, Spinner } from '@blueprintjs/core';
 
 const containerStyle = cxs({
   height: '100%',
+  position: 'relative',
   maxHeight: '100%',
   overflow: 'hidden',
   ' *': {
@@ -16,7 +17,15 @@ const containerStyle = cxs({
   ' p': {
     margin: '0 !important',
   }
-})
+});
+
+const dontClickThroughContainer = cxs({
+  position: 'absolute',
+  top: '0px',
+  right: '0px',
+  bottom: '0px',
+  left: '0px'
+});
 
 export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<any>, noteItemContent?: object }> = props => {
   const editor = EditorRegistry.Instance.getEditorWithId(props.noteItem.noteType);
@@ -34,6 +43,7 @@ export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<an
       ) : (
         <NonIdealState icon={<Spinner />} />
       ) }
+      <div className={dontClickThroughContainer} />
     </div>
   );
 };
