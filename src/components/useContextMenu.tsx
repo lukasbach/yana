@@ -5,6 +5,8 @@ export const useContextMenu = (menu?: JSX.Element) => {
   const elementProps: DOMAttributes<any> = {
     onContextMenu: e => {
       if (menu) {
+        e.stopPropagation();
+        e.preventDefault();
         ContextMenu.show(menu, { left: e.clientX, top: e.clientY });
       }
     }

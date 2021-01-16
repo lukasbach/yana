@@ -58,6 +58,7 @@ export const SearchResults: React.FC<{
                   title={item.name}
                   meta={ago(new Date(item.lastChange))}
                   onClick={() => props.onClickItem?.(item)}
+                  dataItem={item}
                 />
               )
             }}

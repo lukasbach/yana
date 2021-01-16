@@ -25,6 +25,7 @@ export const SelectedItems: React.FC<{
             meta={ago(new Date(item.lastChange))}
             onClick={() => props.onClickItem(item)}
             selected={true}
+            dataItem={item}
           />
         ))
       }

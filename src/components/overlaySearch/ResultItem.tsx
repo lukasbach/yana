@@ -4,6 +4,13 @@ import cx from 'classnames';
 import { Checkbox, Classes, Icon, IconName, MaybeElement } from '@blueprintjs/core';
 import { useTheme } from '../../common/theming';
 import { CSSProperties, useState } from 'react';
+import { DataItem } from '../../types';
+import { useContextMenu } from '../useContextMenu';
+import { DataItemContextMenu } from '../menus/DataItemContextMenu';
+import { Bp3MenuRenderer } from '../menus/Bp3MenuRenderer';
+import { useMainContentContext } from '../mainContent/context';
+import { useOverlaySearch } from './OverlaySearchProvider';
+import { useDataInterface } from '../../datasource/DataInterfaceContext';
 
 const META_CONTAINER_CLASS = '__meta_container';
 export const OVERLAY_SEARCH_ITEM_HEIGHT = 42;
@@ -55,10 +62,23 @@ export const ResultItem: React.FC<{
   meta: string,
   onClick?: () => void,
   key: string,
-  containerStyle?: CSSProperties
+  containerStyle?: CSSProperties,
+  dataItem?: DataItem,
 }> = props => {
-  const theme = useTheme();
   const [hover, setHover] = useState(false);
+  const theme = useTheme();
+  const mainContent = useMainContentContext();
+  const dataInterface = useDataInterface();
+  const overlaySearch = useOverlaySearch();
+  const contextMenuProps = useContextMenu(props.dataItem && (
+    <DataItemContextMenu
+      item={props.dataItem}
+      renderer={Bp3MenuRenderer}
+      mainContent={mainContent}
+      dataInterface={dataInterface}
+      overlaySearch={overlaySearch}
+    />
+  ));
 
   return (
     <div
@@ -68,6 +88,7 @@ export const ResultItem: React.FC<{
       onClick={props.onClick}
       key={props.key}
       style={props.containerStyle}
+      {...contextMenuProps}
     >
       { props.selected && (
         <div className={styles.selectedContainer}>

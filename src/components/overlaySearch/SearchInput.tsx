@@ -1,7 +1,7 @@
 import * as React from 'react';
 import cxs from 'cxs';
 import cx from 'classnames';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '../../common/theming';
 import { Icon } from '@blueprintjs/core';
 import { useSearchBar } from '../searchbar/SearchBar';
@@ -41,6 +41,11 @@ export const SearchInput: React.FC<{
   const theme = useTheme();
   const search = useSearchBar();
   const telemetry = useTelemetry();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, [inputRef.current]);
 
   useEffect(() => {
     telemetry.trackEvent(...TelemetryEvents.Search.performSearch);
@@ -64,7 +69,7 @@ export const SearchInput: React.FC<{
         onBlur={() => setFocus(false)}
         value={search.searchValue}
         onChange={(e: any) => search.setSearchValue(e.target.value)}
-        ref={r => r?.focus()}
+        ref={inputRef}
       />
     </div>
   );
