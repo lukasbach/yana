@@ -14,6 +14,12 @@ export interface EditorSmallPreviewProps<C extends object> {
   item: NoteDataItem<any>;
 }
 
+export interface FileExportOption<C extends object> {
+  name: string;
+  fileExtension: string;
+  export: (content: C, targetPath: string) => Promise<void>;
+}
+
 export interface EditorDefinition<T extends string, C extends object> {
   id: T;
   name: string;
@@ -21,4 +27,5 @@ export interface EditorDefinition<T extends string, C extends object> {
   initializeContent: () => C;
   editorComponent: React.FC<EditorComponentProps<C>>;
   smallPreviewComponent?: React.FC<EditorSmallPreviewProps<C>>;
+  exportOptions?: FileExportOption<C>[];
 }

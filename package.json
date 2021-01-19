@@ -29,6 +29,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@atlaskit/editor-markdown-transformer": "^4.1.6",
     "archiver": "^5.0.2",
     "electron-updater": "^4.3.5",
     "sqlite3": "^5.0.0",

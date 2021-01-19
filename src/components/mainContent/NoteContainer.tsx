@@ -33,6 +33,7 @@ export const NoteContainer: React.FC<{
         dataItem={dataItem}
         onChange={changed => dataInterface.changeItem(changed.id, changed)}
         saveIndicator={saveIndicator}
+        currentContent={currentContent}
       />
       <div className={styles.editorContainer}>
         <EditorContainer

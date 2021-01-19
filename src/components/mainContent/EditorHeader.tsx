@@ -19,11 +19,13 @@ import { TelemetryService } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 import { promptMoveItem } from '../../datasource/promptMoveItem';
 import { SaveIndicator } from './SaveIndicator';
+import { EditorExportButton } from './EditorExportButton';
 
 export const EditorHeader: React.FC<{
   dataItem: NoteDataItem<any>,
   onChange: (changed: NoteDataItem<any>) => Promise<void>,
   saveIndicator?: SaveIndicatorState,
+  currentContent: any
 }> = props => {
   const mainContent = useMainContentContext();
   const dataInterface = useDataInterface();
@@ -91,6 +93,7 @@ export const EditorHeader: React.FC<{
                 )
               }
               {' '}
+              <EditorExportButton dataItem={props.dataItem} content={props.currentContent} />{' '}
               <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>Edit Tags</Button>{' '}
               <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>Configure document</Button>{' '}
               <Popover
