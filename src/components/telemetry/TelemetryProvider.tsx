@@ -4,6 +4,7 @@ import pkg from '../../../package.json';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { TelemetryEvents } from './TelemetryEvents';
 import { LogService } from '../../common/LogService';
+import * as Sentry from "@sentry/react";
 
 const logger = LogService.getLogger('Telemetry');
 
@@ -56,11 +57,20 @@ export const TelemetryProvider: React.FC<{}> = props => {
   const [ctxValue, setCtxValue] = useState<TelemetryContextValue>({
     trackEvent: () => { logger.log('Telemetry event not sent'); },
     trackEventWithValue: () => { logger.log('Telemetry event not sent'); },
-    trackException: () => { logger.log('Telemetry event not sent'); },
+    trackException: (error) => {
+      logger.log('Telemetry event not sent');
+      Sentry.captureException(error);
+    },
     trackScreenView: () => { logger.log('Telemetry event not sent'); },
   });
   const telemetryId = appData.telemetryId;
   const useTelemetry = settings.telemetry;
+
+  useEffect(() => {
+    Sentry.setUser({
+      id: telemetryId,
+    });
+  })
 
   useEffect(() => {
     if (useTelemetry) {
@@ -103,6 +113,7 @@ export const TelemetryProvider: React.FC<{}> = props => {
             'event_category': 'error',
           });
           logger.log('trackException', [], {error, fatal});
+          Sentry.captureException(error);
         },
       };
 

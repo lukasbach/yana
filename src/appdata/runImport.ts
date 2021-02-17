@@ -11,6 +11,7 @@ import { Alerter } from '../components/Alerter';
 import { LocalSqliteDataSource } from '../datasource/LocalSqliteDataSource';
 import { TelemetryService } from '../components/telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
+import * as Sentry from '@sentry/react';
 
 export const runImport = async (
   sourcePath: string,
@@ -68,6 +69,7 @@ export const runImport = async (
     TelemetryService?.trackEvent(...TelemetryEvents.Workspaces.import);
   } catch(e) {
     TelemetryService?.trackException('import_workspace_error', true);
+    Sentry.captureException(e);
     Alerter.Instance.alert({
       content: `Error: ${e.message}`,
       intent: 'danger',

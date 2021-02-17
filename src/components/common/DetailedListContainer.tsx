@@ -7,6 +7,14 @@ const styles = {
     backgroundColor: '#fff',
     borderRadius: '8px',
     boxShadow: '0px 2px 3px 1px #bbb',
+    ' > :first-child': {
+      borderTopLeftRadius: '8px',
+      borderTopRightRadius: '8px',
+    },
+    ' > :last-child': {
+      borderBottomLeftRadius: '8px',
+      borderBottomRightRadius: '8px',
+    }
   })
 };
 

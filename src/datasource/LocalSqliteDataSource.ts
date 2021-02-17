@@ -21,6 +21,7 @@ import Jimp from 'jimp/dist';
 import type { TelemetryContextValue } from '../components/telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
 import { runWithoutClose } from '../common/runWithoutClose';
+import * as Sentry from '@sentry/react';
 
 const fs = fsLib.promises;
 
@@ -154,11 +155,13 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       this.structures = JSON.parse(await fs.readFile(this.resolvePath(NOTEBOOK_FILE), { encoding: 'utf8' })).structures;
       this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.loadSuccess);
     } catch(e) {
+      Sentry.captureException(e);
       try {
         this.structures = JSON.parse(await fs.readFile(this.resolvePath(NOTEBOOK_FILE_BACKUP), { encoding: 'utf8' })).structures;
         this.telemetry?.trackException('Notebook malformed, backup was fine.');
         this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.loadFailedBackupFine);
       } catch(e) {
+        Sentry.captureException(e);
         this.telemetry?.trackException('Loading workspace failed, notebook and backup malformed.');
         this.telemetry?.trackEvent(...TelemetryEvents.SqliteDatasource.loadFailedBackupBroken);
         throw Error('Both notebook file and backup file are malformed.');

@@ -29,6 +29,8 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@sentry/react": "^6.0.1",
+    "@sentry/tracing": "^6.0.1",
     "archiver": "^5.0.2",
     "electron-updater": "^4.3.5",
     "sqlite3": "^5.0.0",

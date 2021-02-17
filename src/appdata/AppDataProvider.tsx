@@ -2,7 +2,6 @@ import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { AppData, DataSourceType, WorkSpace } from '../types';
 import { remote, webFrame } from 'electron';
-import path from 'path';
 import { getElectronPath, useAsyncEffect } from '../utils';
 import * as fsLib from 'fs';
 import { initializeWorkspace } from './initializeWorkspace';
@@ -18,6 +17,7 @@ import { LogService } from '../common/LogService';
 import { v4 as uuid } from 'uuid';
 import { TelemetryService } from '../components/telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../components/telemetry/TelemetryEvents';
+import * as Sentry from '@sentry/react';
 
 const fs = fsLib.promises;
 
@@ -196,6 +196,7 @@ export const AppDataProvider: React.FC = props => {
                 setCurrentWorkspace(workspace);
                 setIsCreatingWorkspace(false);
               } catch(e) {
+                Sentry.captureException(e);
                 Alerter.Instance.alert({
                   content: `Error: ${e.message}`,
                   intent: 'danger',

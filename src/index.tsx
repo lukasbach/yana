@@ -8,22 +8,36 @@ import { MainContentContextProvider } from './components/mainContent/context';
 import { Alerter } from './components/Alerter';
 import { DropZoneContainer } from './components/dropZone/DropZoneContainer';
 import { DevToolsContextProvider } from './components/devtools/DevToolsContextProvider';
-// @ts-ignore
-import {IntlProvider} from 'react-intl';
-
-import '@blueprintjs/core/lib/css/blueprint.css';
-import '@blueprintjs/icons/lib/css/blueprint-icons.css';
-import 'animate.css/animate.min.css';
-import { OverlaySearch } from './components/overlaySearch/OverlaySearch';
+import * as Sentry from "@sentry/react";
+import { Integrations } from "@sentry/tracing";
 import { OverlaySearchProvider } from './components/overlaySearch/OverlaySearchProvider';
 import { registerCommonContextMenu } from './components/commonContextMenu/registerCommonContextMenu';
 import { SpotlightContainer } from './components/spotlight/SpotlightContainer';
 import { TelemetryProvider } from './components/telemetry/TelemetryProvider';
 import { AppNotifications } from './components/notifications/AppNotifications';
+// @ts-ignore
+import {IntlProvider} from 'react-intl';
+import pkg from '../package.json';
+
+import '@blueprintjs/core/lib/css/blueprint.css';
+import '@blueprintjs/icons/lib/css/blueprint-icons.css';
+import 'animate.css/animate.min.css';
 
 (window as any).ELECTRON_DISABLE_SECURITY_WARNINGS = true;
 
 console.log('process.env.NODE_ENV=', process.env.NODE_ENV);
+
+// if (process.env.NODE_ENV === 'production') {
+  Sentry.init({
+    dsn: "https://013c5132a6d340ef97c62dd74d5afa02@o227507.ingest.sentry.io/5604989",
+    release: `yana@${pkg.version}`,
+    autoSessionTracking: true,
+    integrations: [
+      new Integrations.BrowserTracing(),
+    ],
+    tracesSampleRate: .4,
+  });
+// }
 
 registerCommonContextMenu();
 
