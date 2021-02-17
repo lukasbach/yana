@@ -5,14 +5,14 @@ export const useEventChangeHandler = <T extends object>(eventEmitter: EventEmitt
   const eventHandler = useRef<undefined | number>();
 
   useEffect(() => {
-    if (eventHandler.current) {
+    if (eventHandler.current !== undefined) {
       eventEmitter.delete(eventHandler.current);
     }
 
     eventHandler.current = eventEmitter.on(handler);
 
     return () => {
-      if (eventHandler.current) {
+      if (eventHandler.current !== undefined) {
         eventEmitter.delete(eventHandler.current);
       }
     }
