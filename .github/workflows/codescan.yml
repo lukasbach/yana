@@ -1,6 +1,6 @@
 # https://github.com/marketplace/actions/electronegativity
 name: Security analysis
-on: [push]
+on: [push, pull_request]
 
 jobs:
   analyze:
