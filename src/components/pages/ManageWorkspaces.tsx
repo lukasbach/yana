@@ -11,6 +11,7 @@ import { runRemoveWorkspaceWizard } from '../../appdata/runRemoveWorkspaceWizard
 import { runImportWizard } from '../../appdata/runImportWizard';
 import { runAddWorkspaceWizard } from '../../appdata/runAddWorkspaceWizard';
 import { useScreenView } from '../telemetry/useScreenView';
+import { Alerter } from '../Alerter';
 
 export const ManageWorkspaces: React.FC<{}> = props => {
   useScreenView('manage-workspaces');
@@ -33,6 +34,51 @@ export const ManageWorkspaces: React.FC<{}> = props => {
               icon={'database'}
               actionButtons={(
                 <>
+                  <Tooltip content="Move workspace up" position={'bottom'}>
+                    <Button
+                      outlined
+                      icon={'chevron-up'}
+                      onClick={() => appData.moveWorkspace(workspace, 'up')}
+                    />
+                  </Tooltip>
+                  <Tooltip content="Move workspace down" position={'bottom'}>
+                    <Button
+                      outlined
+                      icon={'chevron-down'}
+                      onClick={() => appData.moveWorkspace(workspace, 'down')}
+                    />
+                  </Tooltip>
+                  <Tooltip content="Rename workspace" position={'bottom'}>
+                    <Button
+                      outlined
+                      icon={'edit'}
+                      onClick={() => {
+                        Alerter.Instance.alert({
+                          confirmButtonText: 'Okay',
+                          content: 'Choose a new name for the workspace:',
+                          canOutsideClickCancel: true,
+                          canEscapeKeyCancel: true,
+                          prompt: {
+                            type: 'string',
+                            defaultValue: workspace.name,
+                            placeholder: 'Workspace name',
+                            onConfirmText: async newName => {
+                              try {
+                                await appData.renameWorkspace(workspace, newName)
+                              } catch (e) {
+                                Alerter.Instance.alert({
+                                  confirmButtonText: 'Okay',
+                                  content: 'Error: ' + e.message,
+                                  canOutsideClickCancel: true,
+                                  canEscapeKeyCancel: true,
+                                });
+                              }
+                            }
+                          }
+                        });
+                      }}
+                    />
+                  </Tooltip>
                   <Tooltip content="Switch to workspace" position={'bottom'}>
                     <Button
                       outlined

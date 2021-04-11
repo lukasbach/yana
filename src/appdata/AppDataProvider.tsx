@@ -31,11 +31,21 @@ export interface AppDataContextValue extends AppData {
   lastAutoBackup: number;
   openWorkspaceCreationWindow: () => void;
   telemetryId: string;
+  moveWorkspace: (workspace: WorkSpace, direction: 'up' | 'down') => Promise<void>;
+  renameWorkspace: (workspace: WorkSpace, newName: string) => Promise<void>;
 }
 
 export const AppDataContext = React.createContext<AppDataContextValue>(null as any);
 export const useAppData = () => useContext(AppDataContext);
 export const useSettings = () => useAppData().settings;
+
+function moveItem<T>(array: T[], from: number, to: number) {
+  const arrayClone = [...array];
+  const f = arrayClone.splice(from, 1)[0];
+  arrayClone.splice(to, 0, f);
+  console.log(array, arrayClone)
+  return arrayClone;
+}
 
 // TODO redo AppDataService and encapsulate load/save calls in there, really redundant in this file!
 export const AppDataProvider: React.FC = props => {
@@ -90,7 +100,6 @@ export const AppDataProvider: React.FC = props => {
     },
     openWorkspaceCreationWindow: () => setIsCreatingWorkspace(true),
     addWorkSpace: async (name, path) => {
-
       const workspace: WorkSpace = {
         name,
         dataSourceType: 'sqlite3', // TODO
@@ -173,6 +182,48 @@ export const AppDataProvider: React.FC = props => {
       setAppData(newAppData);
       autoBackup?.removeWorkspace(workspace);
       setCurrentWorkspace(newAppData.workspaces[0]);
+    },
+    moveWorkspace: async (workspace, direction) => {
+      const oldIndex = appData.workspaces.findIndex(w => w.name === workspace.name);
+
+      if ((oldIndex === 0 && direction === 'up') || (oldIndex === appData.workspaces.length - 1 && direction === 'down')) {
+        return;
+      }
+
+      const newAppData: AppData = {
+        ...appData,
+        workspaces: moveItem(appData.workspaces, oldIndex, direction === 'up' ? oldIndex - 1 : oldIndex + 1),
+      };
+      await fs.writeFile(appDataFile, JSON.stringify(newAppData));
+      setAppData(newAppData);
+    },
+    renameWorkspace: async (workspace, newName) => {
+      if (appData.workspaces.find(ws => ws.name === newName)) {
+        throw Error('A workspace with that name already exists.');
+      }
+
+      const oldWorkspace = appData.workspaces.find(ws => ws.name === workspace.name);
+
+      if (!oldWorkspace) {
+        throw Error(`The old workspace ${workspace.name} was not found.`);
+      }
+
+      const newWorkspace = {
+        ...oldWorkspace,
+        name: newName,
+      }
+
+      const newAppData: AppData = {
+        ...appData,
+        workspaces: appData.workspaces.map(ws => ws.name === workspace.name ? newWorkspace : ws),
+      };
+      await fs.writeFile(appDataFile, JSON.stringify(newAppData));
+      setAppData(newAppData);
+
+      if (currentWorkspace.name === workspace.name) {
+        ctx.setWorkSpace
+        setCurrentWorkspace(newWorkspace)
+      }
     },
     saveSettings: async (settings: Partial<SettingsObject>) => {
       const newAppData: AppData = {
