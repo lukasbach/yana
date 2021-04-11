@@ -9,7 +9,7 @@ import { IgnoreErrorBoundary } from '../../common/IgnoreErrorBoundary';
 import { useDataInterface } from '../../datasource/DataInterfaceContext';
 import { FindItemsDrawer } from '../../components/drawers/findItemsDrawer/FindItemsDrawer';
 import { DataItemKind, MediaItem } from '../../types';
-import { InsertedImageProperties } from '@atlaskit/editor-common/dist/cjs/provider-factory/image-upload-provider';
+import { InsertedImageProperties } from '@atlaskit/editor-common/dist/types/provider-factory/image-upload-provider';
 import { isMediaItem } from '../../utils';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { AutoSizer } from 'react-virtualized';
@@ -17,6 +17,10 @@ import { useScreenView } from '../../components/telemetry/useScreenView';
 
 const logger = LogService.getLogger('AtlaskitEditorComponent');
 
+console.log(require("@atlaskit/editor-common"))
+console.log(require("@atlaskit/editor-common").breakoutConsts)
+console.log(require("@atlaskit/editor-common").breakoutConsts.mapBreakpointToLayoutMaxWidth)
+console.log(require("@atlaskit/editor-common").breakoutConsts.mapBreakpointToLayoutMaxWidth.toString())
 const styles = {
   container: cxs({
     height: '100%',
@@ -106,7 +110,8 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                           insertMenuItems={[]}
                           quickInsert={true}
                           allowTextColor={true}
-                          allowTextAlignment={false} // TODO
+                          allowBreakout={false}
+                          allowTextAlignment={true}
                           defaultValue={JSON.stringify(props.content.adf)}
                           allowLayouts={{
                             allowBreakout: true,
