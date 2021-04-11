@@ -19,6 +19,7 @@ import { TelemetryService } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 import { promptMoveItem } from '../../datasource/promptMoveItem';
 import { SaveIndicator } from './SaveIndicator';
+import { Campaign } from '../notifications/Campaign';
 
 export const EditorHeader: React.FC<{
   dataItem: NoteDataItem<any>,
@@ -112,11 +113,15 @@ export const EditorHeader: React.FC<{
             </div>
             {!isEditingTags && (
               <div>
-                <TagList
-                  dataItem={props.dataItem}
-                  isEditing={false}
-                  onStopEditing={() => setIsEditingTags(false)}
-                />
+                {props.dataItem.tags.length > 0 ? (
+                  <TagList
+                    dataItem={props.dataItem}
+                    isEditing={false}
+                    onStopEditing={() => setIsEditingTags(false)}
+                  />
+                ) : (
+                  <Campaign />
+                )}
               </div>
             )}
           </>

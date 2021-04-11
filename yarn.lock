@@ -2426,6 +2426,20 @@
     "@kenjiuno/decompressrtf" "^0.1.3"
     "@kenjiuno/iconvlite-wrapper-with-iso2022jp" "^0.1.0"
 
+"@lukasbach/campaigns-fetch@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@lukasbach/campaigns-fetch/-/campaigns-fetch-0.1.0.tgz#ee15636179c7a1a22ec959afb3c0fa55d2be16d9"
+  integrity sha512-V3kN4BD0KDMf22s39gzgCco71uHz6lvYH2tmmIfBWpxcXLnll722kaY2wRm4oD6z9NGWMf0SazDdbeb0X/p94Q==
+  dependencies:
+    typescript "^4.2.4"
+
+"@lukasbach/campaigns-react@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@lukasbach/campaigns-react/-/campaigns-react-0.1.0.tgz#e5e5115bfe3d3366b916f69d67fec3acef578fe5"
+  integrity sha512-rKHP44PKiDCj/kYBkiahUzLnaNaCn5ZDAONZwBPSP1MuYiLUfPW51AI5nvUQCKqM2TMKxINFNipGuT1F8uMWcw==
+  dependencies:
+    "@lukasbach/campaigns-fetch" "^0.1.0"
+
 "@malept/cross-spawn-promise@^1.1.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@malept/cross-spawn-promise/-/cross-spawn-promise-1.1.0.tgz#258fde4098f5004a56db67c35f33033af64810f6"
@@ -11332,6 +11346,11 @@ typescript@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.0.2.tgz#7ea7c88777c723c681e33bf7988be5d008d05ac2"
   integrity sha512-e4ERvRV2wb+rRZ/IQeb3jm2VxBsirQLpQhdxplZ2MEzGvDkkMmPglecnNDfSUBivMjP93vRbngYYDQqQ/78bcQ==
+
+typescript@^4.2.4:
+  version "4.2.4"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.2.4.tgz#8610b59747de028fda898a8aef0e103f156d0961"
+  integrity sha512-V+evlYHZnQkaz8TRBuxTA92yZBPotr5H+WhQ7bD3hZUndx5tGOa1fuCgeSjxAzM1RiN5IzvadIXTVefuuwZCRg==
 
 typestyle@^1.4.4:
   version "1.7.2"

@@ -56,4 +56,5 @@ export const defaultSettings: SettingsObject = {
   spellingActive: true,
   spellingLanguages: ['en-US'],
   notifications: [],
+  campaigns: true,
 };

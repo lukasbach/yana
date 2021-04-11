@@ -17,10 +17,6 @@ import { useScreenView } from '../../components/telemetry/useScreenView';
 
 const logger = LogService.getLogger('AtlaskitEditorComponent');
 
-console.log(require("@atlaskit/editor-common"))
-console.log(require("@atlaskit/editor-common").breakoutConsts)
-console.log(require("@atlaskit/editor-common").breakoutConsts.mapBreakpointToLayoutMaxWidth)
-console.log(require("@atlaskit/editor-common").breakoutConsts.mapBreakpointToLayoutMaxWidth.toString())
 const styles = {
   container: cxs({
     height: '100%',
@@ -110,7 +106,6 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                           insertMenuItems={[]}
                           quickInsert={true}
                           allowTextColor={true}
-                          allowBreakout={false}
                           allowTextAlignment={true}
                           defaultValue={JSON.stringify(props.content.adf)}
                           allowLayouts={{

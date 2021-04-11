@@ -8,9 +8,15 @@ import { SettingsTextAreaInput } from '../layout/SettingsTextAreaInput';
 import { remote } from 'electron';
 
 const telemetryHelperText = `
-If you enable this feature, anonymous usage data such as events and hardware informations
+If you enable this feature, anonymous usage data such as events and hardware information
 may be sent to Google Analytics. No information that can identify you or your notebook contents
 will be sent.
+`;
+
+const campaignsHelperText = `
+In the note editor view, a link to one of my other projects is shown in the location where usually
+tags are listed. The link is not shown when the note is tagged with at least one tag, in which
+case the tags are shown instead. The links are unpaid advertisements from which I do not monetarily profit.
 `;
 
 export const AdvancedSettings: React.FC<{}> = props => {
@@ -28,6 +34,14 @@ export const AdvancedSettings: React.FC<{}> = props => {
           subtitle="https://yana.js.org/privacy"
           icon={'help'}
           onClick={() => remote.shell.openExternal('https://yana.js.org/privacy')}
+        />
+      </SettingsSection>
+
+      <SettingsSection title="Project Campaigns">
+        <SettingsSwitchInput
+          settingsKey={'campaigns'}
+          label="Show links to my other projects"
+          helperText={campaignsHelperText}
         />
       </SettingsSection>
 
