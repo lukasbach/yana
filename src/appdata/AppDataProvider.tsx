@@ -99,6 +99,10 @@ export const AppDataProvider: React.FC = props => {
         }
       };
 
+      if (appData.workspaces.find(w => w.name === name)) {
+        throw Error(`A workspace with the name ${name} already exists.`);
+      }
+
       const newAppData: AppData = {
         ...appData,
         workspaces: [

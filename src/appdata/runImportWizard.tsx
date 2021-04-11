@@ -54,11 +54,20 @@ export const runImportWizard = async (appDataContext: AppDataContextValue) => {
 
   if (!confirmed) return;
 
-  await runImport(
-    zipResult.filePaths[0],
-    workspaceName,
-    destResult.filePaths[0],
-    appDataContext,
-    console.log
-  );
+  try {
+    await runImport(
+      zipResult.filePaths[0],
+      workspaceName,
+      destResult.filePaths[0],
+      appDataContext,
+      console.log
+    );
+  } catch(e) {
+    Alerter.Instance.alert({
+      confirmButtonText: 'Okay',
+      content: 'Error: ' + e.message,
+      canOutsideClickCancel: true,
+      canEscapeKeyCancel: true,
+    });
+  }
 }

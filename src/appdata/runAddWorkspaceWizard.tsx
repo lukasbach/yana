@@ -41,5 +41,14 @@ export const runAddWorkspaceWizard = async (appDataContext: AppDataContextValue)
     });
   });
 
-  await appDataContext.addWorkSpace(workspaceName, folder);
+  try {
+    await appDataContext.addWorkSpace(workspaceName, folder);
+  } catch(e) {
+    Alerter.Instance.alert({
+      confirmButtonText: 'Okay',
+      content: 'Error: ' + e.message,
+      canOutsideClickCancel: true,
+      canEscapeKeyCancel: true,
+    });
+  }
 }
