@@ -63,5 +63,5 @@ export interface SettingsObject {
   pageHeaderCollapsed: boolean,
   spellingActive: boolean,
   spellingLanguages: string[],
-  notifications: Array<{ id: string, seenDate: number, dismissed: boolean }>;
+  notifications: Array<{ id: string, seenDate: number, dismissed: boolean, seenCount?: number }>;
 }

@@ -9,6 +9,7 @@ import { useTelemetry } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 const minTimeBetweenReshow = 1000 * 60 * 60 * 24 * 3; // 3 days
+const maxShowCount = 3;
 
 const logger = LogService.getLogger("AppNotifications");
 
@@ -22,6 +23,7 @@ interface AppNotification {
   summary: string;
   date: string;
   chance?: number;
+  showCount?: number;
   author: {
     name: string;
     url: string;
@@ -37,11 +39,17 @@ export const AppNotifications: React.FC<{}> = props => {
   const telemetry = useTelemetry();
 
   const sawNotification = async (id: string, dismissed: boolean) => {
+    const oldNotificationSeenCount = settings.notifications.find(n => n.id === id)?.seenCount ?? 0;
     await saveSettings({
       ...settings,
       notifications: [
         ...settings.notifications.filter(n => n.id !== id),
-        { id: id, dismissed, seenDate: Date.now() }
+        {
+          id,
+          dismissed,
+          seenDate: Date.now(),
+          seenCount: oldNotificationSeenCount + 1,
+        }
       ]
     });
   };
@@ -53,6 +61,11 @@ export const AppNotifications: React.FC<{}> = props => {
     for (const notification of notifications) {
       const registeredNotification = settings.notifications.find(not => not.id === notification.id);
       if (!registeredNotification || (!registeredNotification.dismissed && registeredNotification.seenDate < Date.now() - minTimeBetweenReshow)) {
+        if ((registeredNotification?.seenCount ?? 0) >= (notification.showCount ?? maxShowCount)) {
+          logger.log(`Notification ${notification.id} skipped due to maxShowCount`, [], {notification});
+          continue;
+        }
+
         if (notification.appVersions && !notification.appVersions.includes(packageJson.version)) {
           logger.log(`Notification ${notification.id} skipped due to app version`, [], {notification});
           continue;
