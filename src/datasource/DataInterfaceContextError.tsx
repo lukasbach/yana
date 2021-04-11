@@ -1,6 +1,7 @@
 import { Button, ButtonGroup, Menu, MenuItem, NonIdealState, Popover, Position } from '@blueprintjs/core';
 import * as React from 'react';
 import { useAppData } from '../appdata/AppDataProvider';
+import { remote } from 'electron';
 
 export const DataInterfaceContextError: React.FC<{
   message: string
@@ -18,7 +19,7 @@ export const DataInterfaceContextError: React.FC<{
       )}
       action={(
         <>
-          <ButtonGroup>
+          <ButtonGroup vertical={true} minimal={true}>
             {appdata.workspaces.length > 0 && (
               <Popover
                 content={(
@@ -36,6 +37,12 @@ export const DataInterfaceContextError: React.FC<{
                 <Button text="Open other workspace" />
               </Popover>
             )}
+            <Button
+              text="Show backups"
+              onClick={() => {
+                remote.shell.openPath(appdata.settings.autoBackupLocation)
+              }}
+            />
             <Button
               text="Create new workspace"
               onClick={() => {
