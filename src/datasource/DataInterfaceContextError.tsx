@@ -1,0 +1,50 @@
+import { Button, ButtonGroup, Menu, MenuItem, NonIdealState, Popover, Position } from '@blueprintjs/core';
+import * as React from 'react';
+import { useAppData } from '../appdata/AppDataProvider';
+
+export const DataInterfaceContextError: React.FC<{
+  message: string
+}> = props => {
+  const appdata = useAppData();
+
+  return (
+    <NonIdealState
+      title="Error"
+      description={(
+        <>
+          <p>The following error occured when loading workspace {appdata.currentWorkspace.name}:</p>
+          <p>{props.message}</p>
+        </>
+      )}
+      action={(
+        <>
+          <ButtonGroup>
+            {appdata.workspaces.length > 0 && (
+              <Popover
+                content={(
+                  <Menu>
+                    {appdata.workspaces.map(workspace => (
+                      <MenuItem
+                        text={workspace.name}
+                        onClick={() => appdata.setWorkSpace(workspace)}
+                      />
+                    ))}
+                  </Menu>
+                )}
+                position={Position.BOTTOM}
+              >
+                <Button text="Open other workspace" />
+              </Popover>
+            )}
+            <Button
+              text="Create new workspace"
+              onClick={() => {
+                appdata.openWorkspaceCreationWindow()
+              }}
+            />
+          </ButtonGroup>
+        </>
+      )}
+    />
+  );
+};

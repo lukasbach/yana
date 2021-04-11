@@ -8,6 +8,8 @@ import { useDevTools } from '../components/devtools/DevToolsContextProvider';
 import { useCloseEvent } from '../common/useCloseEvent';
 import { DataSourceRegistry } from './DataSourceRegistry';
 import { useTelemetry } from '../components/telemetry/TelemetryProvider';
+import { Alerter } from '../components/Alerter';
+import { DataInterfaceContextError } from './DataInterfaceContextError';
 
 export const useDataInterface = () => useContext(DataInterfaceContext);
 export const DataInterfaceContext = React.createContext<DataInterface>(null as any);
@@ -16,6 +18,7 @@ export const DataInterfaceProvider: React.FC = props => {
   const devtools = useDevTools();
   const telemetry = useTelemetry();
   const [dataInterface, setDataInterface] = useState<DataInterface | null>(null);
+  const [error, setError] = useState<string>();
 
   useAsyncEffect(async () => {
     if (appData.currentWorkspace) {
@@ -29,8 +32,13 @@ export const DataInterfaceProvider: React.FC = props => {
         undefined,
         devtools
       );
-      await di.load();
-      setDataInterface(di);
+
+      try {
+        await di.load();
+        setDataInterface(di);
+      } catch(e) {
+        setError(e.message);
+      }
     }
   }, [appData.currentWorkspace]);
 
@@ -48,6 +56,12 @@ export const DataInterfaceProvider: React.FC = props => {
   useEffect(() => () => {
     dataInterface?.unload();
   }, [dataInterface])
+
+  if (error) {
+    return (
+      <DataInterfaceContextError message={error} />
+    )
+  }
 
   return (
     <DataInterfaceContext.Provider value={ dataInterface! }>
