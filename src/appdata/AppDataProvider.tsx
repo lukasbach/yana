@@ -43,7 +43,6 @@ function moveItem<T>(array: T[], from: number, to: number) {
   const arrayClone = [...array];
   const f = arrayClone.splice(from, 1)[0];
   arrayClone.splice(to, 0, f);
-  console.log(array, arrayClone)
   return arrayClone;
 }
 
