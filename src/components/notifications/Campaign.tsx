@@ -21,7 +21,7 @@ export const Campaign: React.FC<{}> = props => {
 
   return (
     <CampaignComponent
-      changeInterval={60}
+      changeInterval={60 * 2}
       dontRenderIfLoading={true}
       weighted={true}
       ignore={['yana']}
