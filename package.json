@@ -29,13 +29,13 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@lukasbach/campaigns-react": "^0.1.0",
     "archiver": "^5.0.2",
     "electron-updater": "^4.3.5",
     "sqlite3": "^5.0.0",
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
+    "@lukasbach/campaigns-react": "^0.1.0",
     "@atlaskit/button": "^15.1.5",
     "@atlaskit/editor-common": "^55.4.3",
     "@atlaskit/editor-core": "^140.0.0",
