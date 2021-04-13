@@ -34,6 +34,7 @@ export const SideBarTree: React.FC<{
     sidebarOffsetPerLevel: offsetPerLevel
   } = useSettings();
   const [renamingItemId, setRenamingItemId] = useState<undefined | string>();
+  const [hasJustCreated, setHasJustCreated] = useState(false); // Was the renaming item just created and should be opened afterwards?
   const [isExpanded, setIsExpanded] = useState(true);
   const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems, props.masterItem?.id ?? props.title.toLowerCase().replace(/\s/g, '_'));
   const [untruncatedItems, setUntruncatedItems] = useState<string[]>([]); // TODO could be moved into its own hook
@@ -112,7 +113,11 @@ export const SideBarTree: React.FC<{
         title={props.title}
         onChangeIsExpanded={setIsExpanded}
         masterItem={props.masterItem}
-        onCreatedItem={item => setRenamingItemId(item.id)}
+        onCreatedItem={item => {
+          // setRenamingItemId(item.id);
+          // setHasJustCreated(true);
+          // Currently doesnt work
+        }}
       />
       {
         isExpanded && (
@@ -176,7 +181,16 @@ export const SideBarTree: React.FC<{
                       onExpand={() => onExpand(item.id)}
                       onCollapse={() => onCollapse(item.id)}
                       isRenaming={item.id === renamingItemId}
+                      hasJustCreated={item.id === renamingItemId && hasJustCreated}
+                      onCreatedItem={createdItemId => {
+                        setRenamingItemId(createdItemId);
+                        setHasJustCreated(true);
+                      }}
                       onStartRenameItem={setRenamingItemId}
+                      onStopRenameItem={() => {
+                        setRenamingItemId(undefined);
+                        setHasJustCreated(false);
+                      }}
                     />
                   </div>
                 );

@@ -9,7 +9,7 @@ import { useSettings } from '../../appdata/AppDataProvider';
 import { SettingsObject, SideBarItemAction } from '../../settings/types';
 import { IconName, Spinner } from '@blueprintjs/core';
 import { useOverlaySearch } from '../overlaySearch/OverlaySearchProvider';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useTelemetry } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
@@ -57,7 +57,10 @@ export const SideBarTreeItem: React.FC<{
   onExpand: () => void,
   onCollapse: () => void,
   isRenaming: boolean,
+  hasJustCreated: boolean,
+  onCreatedItem: (id: string) => void,
   onStartRenameItem: (id?: string) => void,
+  onStopRenameItem: () => void,
 }> = props => {
   const dataInterface = useDataInterface();
   const mainContent = useMainContentContext();
@@ -84,7 +87,6 @@ export const SideBarTreeItem: React.FC<{
           onExpand();
         }
         break;
-
     }
   }
 
@@ -93,7 +95,7 @@ export const SideBarTreeItem: React.FC<{
       item={item}
       renderer={Bp3MenuRenderer}
       onStartRename={() => props.onStartRenameItem(item.id)}
-      onCreatedItem={item => props.onStartRenameItem(item.id)}
+      onCreatedItem={item => props.onCreatedItem(item.id)}
       dataInterface={dataInterface}
       mainContent={mainContent}
       overlaySearch={overlaySearch}
@@ -114,6 +116,19 @@ export const SideBarTreeItem: React.FC<{
     }
   }
 
+  const clickAction = useMemo(
+    () => createOnAction(getActionPropertyFromSettings(ActionKind.BackgroundClick, item.kind, settings)),
+    [item.kind, settings],
+  );
+  const middleClickAction = useMemo(
+    () => createOnAction(getActionPropertyFromSettings(ActionKind.MiddleClick, item.kind, settings)),
+    [item.kind, settings],
+  );
+  const titleClickAction = useMemo(
+    () => createOnAction(getActionPropertyFromSettings(ActionKind.TitleClick, item.kind, settings)),
+    [item.kind, settings],
+  );
+
   return (
     <SideBarTreeItemUi
       text={item.name}
@@ -123,12 +138,17 @@ export const SideBarTreeItem: React.FC<{
       isActive={mainContent.openTab?.dataItem?.id === item.id}
       onRename={name => {
         dataInterface.changeItem(item.id, { ...item, name });
-        props.onStartRenameItem(undefined);
         telemetry.trackEvent(...TelemetryEvents.Items.renameFromSidebar);
+
+        if (props.hasJustCreated && item.kind === DataItemKind.NoteItem) {
+          clickAction();
+        }
+
+        props.onStopRenameItem();
       }}
-      onClick={createOnAction(getActionPropertyFromSettings(ActionKind.BackgroundClick, item.kind, settings))}
-      onMiddleClick={createOnAction(getActionPropertyFromSettings(ActionKind.MiddleClick, item.kind, settings))}
-      onTitleClick={createOnAction(getActionPropertyFromSettings(ActionKind.TitleClick, item.kind, settings))}
+      onClick={clickAction}
+      onMiddleClick={middleClickAction}
+      onTitleClick={titleClickAction}
       menu={menu}
       icon={icon}
       waiting={waiting}
