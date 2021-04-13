@@ -127,6 +127,18 @@ export const createNewChildsItems = (
           TelemetryService?.trackEvent(...TelemetryEvents.Items.createCollection);
         },
       },
+      { text: 'Create new Markdown Item', icon: 'document', onClick: () => {
+          dataInterface.createDataItemUnderParent({
+            name: 'New Markdown Item',
+            childIds: [],
+            kind: DataItemKind.NoteItem,
+            lastChange: new Date().getTime(),
+            created: new Date().getTime(),
+            tags: [],
+            noteType: 'markdown-editor-note'
+          } as any, item.id).then(onCreatedItem);
+          TelemetryService?.trackEvent(...TelemetryEvents.Items.createAtlaskitNote);
+        }},
       {
         text: 'Create new Code Snippet',
         icon: 'code',

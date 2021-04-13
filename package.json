@@ -35,6 +35,12 @@
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
+    "@bangle.dev/core": "^0.13.0",
+    "@bangle.dev/react": "^0.13.0",
+    "@bangle.dev/react-menu": "^0.13.0",
+    "@bangle.dev/table": "^0.13.0",
+    "@bangle.dev/tooltip": "^0.13.0",
+    "@bangle.dev/markdown": "^0.13.0",
     "@lukasbach/campaigns-react": "^0.1.0",
     "@atlaskit/button": "^15.1.5",
     "@atlaskit/editor-common": "^55.4.3",
