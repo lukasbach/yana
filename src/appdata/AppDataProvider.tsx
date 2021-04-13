@@ -220,8 +220,7 @@ export const AppDataProvider: React.FC = props => {
       setAppData(newAppData);
 
       if (currentWorkspace.name === workspace.name) {
-        ctx.setWorkSpace
-        setCurrentWorkspace(newWorkspace)
+        ctx.setWorkSpace(newWorkspace);
       }
     },
     saveSettings: async (settings: Partial<SettingsObject>) => {
