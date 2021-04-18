@@ -8,4 +8,4 @@ export const useEditItemDrawer = (itemId: string) => {
     EditItemDrawer: () => <EditItemDrawer isOpen={isOpen} onSetIsOpen={setIsOpen} itemId={itemId} />,
     onOpenEditItemDrawer: () => setIsOpen(true),
   };
-}
+};

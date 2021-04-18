@@ -6,7 +6,6 @@ import { DataItemKind, SearchQuery } from '../../types';
 import { useAvailableTags } from '../../datasource/useAvailableTags';
 import { parseSearch } from '../../datasource/parseSearch';
 
-
 export interface SearchBarContextValue {
   searchValue: string;
   setSearchValue: (value: string) => void;
@@ -18,8 +17,8 @@ export const SearchBarContext = React.createContext<SearchBarContextValue>(null 
 export const useSearchBar = () => useContext(SearchBarContext);
 
 export const SearchBar: React.FC<{
-  initialValue?: string,
-  onChangeSearchQuery?: (searchQuery: SearchQuery) => void,
+  initialValue?: string;
+  onChangeSearchQuery?: (searchQuery: SearchQuery) => void;
 }> = props => {
   const [value, setValue] = useState(props.initialValue || '');
   const [query, setQuery] = useState(parseSearch(props.initialValue || ''));
@@ -45,7 +44,7 @@ export const SearchBar: React.FC<{
         setSearchValue: setValue,
       }}
     >
-      { props.children }
+      {props.children}
     </SearchBarContext.Provider>
   );
 };

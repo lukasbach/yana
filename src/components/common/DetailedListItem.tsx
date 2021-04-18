@@ -11,28 +11,28 @@ const styles = {
     ':hover': {
       backgroundColor: '#eee',
       ' .buttongroup': {
-        opacity: 1
-      }
-    }
+        opacity: 1,
+      },
+    },
   }),
   containerHover: cxs({
     cursor: 'pointer',
   }),
   iconContainer: cxs({
-    paddingRight: '16px'
+    paddingRight: '16px',
   }),
   textContainer: cxs({
     flexGrow: 1,
   }),
   title: cxs({
     margin: 0,
-    fontSize: '16px'
+    fontSize: '16px',
   }),
   subtitle: cxs({
-    color: '#555'
+    color: '#555',
   }),
   rightContainer: cxs({
-    position: 'relative'
+    position: 'relative',
   }),
   buttonGroupContainer: cxs({
     position: 'absolute',
@@ -41,40 +41,35 @@ const styles = {
     opacity: 0,
     transition: '.1s all ease',
     backgroundColor: '#fff',
-    borderRadius: '8px'
+    borderRadius: '8px',
   }),
   rightText: cxs({}),
 };
 
 export const DetailedListItem: React.FC<{
-  icon?: IconName,
-  title: string,
-  subtitle?: string,
-  rightText?: string,
-  actionButtons?: React.ReactNode,
-  onClick?: () => void,
+  icon?: IconName;
+  title: string;
+  subtitle?: string;
+  rightText?: string;
+  actionButtons?: React.ReactNode;
+  onClick?: () => void;
 }> = props => {
-
   return (
     <div className={cx(styles.container, props.onClick && styles.containerHover)} onClick={props.onClick}>
-      { props.icon && (
+      {props.icon && (
         <div className={styles.iconContainer}>
           <Icon icon={props.icon} iconSize={32} />
         </div>
-      ) }
+      )}
       <div className={styles.textContainer}>
         <h2 children={props.title} className={styles.title} />
-        { props.subtitle && <p children={props.subtitle} className={styles.subtitle} /> }
+        {props.subtitle && <p children={props.subtitle} className={styles.subtitle} />}
       </div>
       <div className={styles.rightContainer}>
         <div className={cx(styles.buttonGroupContainer, 'buttongroup')}>
-          { props.actionButtons && (
-            <ButtonGroup>
-              { props.actionButtons }
-            </ButtonGroup>
-          )}
+          {props.actionButtons && <ButtonGroup>{props.actionButtons}</ButtonGroup>}
         </div>
-        { props.rightText && <p children={props.rightText} className={styles.rightText} /> }
+        {props.rightText && <p children={props.rightText} className={styles.rightText} />}
       </div>
     </div>
   );

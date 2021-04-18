@@ -16,9 +16,9 @@ const styles = {
     position: 'relative',
     ':hover': {
       '> div': {
-        opacity: 1
-      }
-    }
+        opacity: 1,
+      },
+    },
   }),
   draggingTab: cxs({
     borderRadius: '6px',
@@ -33,13 +33,13 @@ const styles = {
     opacity: 0,
     transition: '.1s all ease',
     ':hover': {
-      color: 'white'
-    }
+      color: 'white',
+    },
   }),
   tabsContainer: cxs({
     display: 'flex',
     WebkitAppRegion: 'no-drag',
-    userSelect: 'none'
+    userSelect: 'none',
   }),
 };
 
@@ -48,66 +48,66 @@ export const TabContainer: React.FC<{}> = props => {
   const mainContent = useMainContentContext();
 
   return (
-    <DragDropContext onDragEnd={(result, provided) => {
-      if (result.destination?.index !== undefined) {
-        mainContent.reorderTab(result.source.index, result.destination.index);
-      }
-    }}>
+    <DragDropContext
+      onDragEnd={(result, provided) => {
+        if (result.destination?.index !== undefined) {
+          mainContent.reorderTab(result.source.index, result.destination.index);
+        }
+      }}
+    >
       <Droppable droppableId="tabs-droppable" direction="horizontal">
         {(provided, snapshot) => (
-          <div
-            className={styles.tabsContainer}
-            ref={provided.innerRef}
-            {...provided.droppableProps}
-          >
-            {
-              mainContent.tabs.map((tab, idx) => {
-                const id = tab.dataItem?.id ?? tab.page ?? 'unknown';
-                const name = tab.dataItem?.name ?? (tab.page ? pages[tab.page]?.title : 'Unknown name');
+          <div className={styles.tabsContainer} ref={provided.innerRef} {...provided.droppableProps}>
+            {mainContent.tabs.map((tab, idx) => {
+              const id = tab.dataItem?.id ?? tab.page ?? 'unknown';
+              const name = tab.dataItem?.name ?? (tab.page ? pages[tab.page]?.title : 'Unknown name');
 
-                return (
-                  <Draggable key={id} draggableId={id} index={idx} disableInteractiveElementBlocking={true}>
-                    {(provided, snapshot) => (
+              return (
+                <Draggable key={id} draggableId={id} index={idx} disableInteractiveElementBlocking={true}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className={cx(
+                        styles.tab,
+                        snapshot.isDragging && styles.draggingTab,
+                        cxs({
+                          color:
+                            mainContent.openTabId === idx
+                              ? 'white'
+                              : Color(theme.topBarColor).mix(Color('#ffffff'), 0.5).toString(),
+                          borderBottom: mainContent.openTabId === idx ? `4px solid ${theme.primaryColor}` : undefined,
+                          fontWeight: mainContent.openTabId === idx ? 'bold' : 'normal',
+                          backgroundColor: theme.topBarColor,
+                          ':hover': {
+                            borderBottom: mainContent.openTabId !== idx ? `4px solid white` : undefined,
+                          },
+                        })
+                      )}
+                      onClick={() => mainContent.activateTab(idx)}
+                    >
+                      {name.substr(0, 12)}
+                      {name.length > 12 ? '...' : ''}
                       <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
                         className={cx(
-                          styles.tab,
-                          snapshot.isDragging && styles.draggingTab,
+                          styles.closeContainer,
                           cxs({
-                            color: mainContent.openTabId === idx ? 'white' : Color(theme.topBarColor).mix(Color('#ffffff'), .5).toString(),
-                            borderBottom: mainContent.openTabId === idx ? `4px solid ${theme.primaryColor}` : undefined,
-                            fontWeight: mainContent.openTabId === idx ? 'bold' : 'normal',
                             backgroundColor: theme.topBarColor,
-                            ':hover': {
-                              borderBottom: mainContent.openTabId !== idx ? `4px solid white` : undefined,
-                            }
                           })
                         )}
-                        onClick={() => mainContent.activateTab(idx)}
+                        onClick={e => {
+                          e.stopPropagation();
+                          mainContent.closeTab(idx);
+                        }}
                       >
-                        { name.substr(0, 12) }{ name.length > 12 ? '...' : '' }
-                        <div
-                          className={cx(
-                            styles.closeContainer,
-                            cxs({
-                              backgroundColor: theme.topBarColor
-                            })
-                          )}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            mainContent.closeTab(idx)
-                          }}
-                        >
-                          <Icon icon={'cross'} />
-                        </div>
+                        <Icon icon={'cross'} />
                       </div>
-                    )}
-                  </Draggable>
-                );
-              })
-            }
+                    </div>
+                  )}
+                </Draggable>
+              );
+            })}
           </div>
         )}
       </Droppable>

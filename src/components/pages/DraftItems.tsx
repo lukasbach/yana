@@ -19,25 +19,28 @@ export const DraftItems: React.FC<{}> = props => {
       icon="edit"
       hiddenSearch={{ tags: [InternalTag.Draft], notTags: [InternalTag.Trash] }}
       defaultSearch={{}}
-      rightContent={(
+      rightContent={
         <Button
-          outlined icon={'add'}
+          outlined
+          icon={'add'}
           onClick={() => {
-            dataInterface.createDataItem({
-              name: 'New Draft',
-              tags: [InternalTag.Draft],
-              kind: DataItemKind.NoteItem,
-              childIds: [],
-              lastChange: new Date().getTime(),
-              created: new Date().getTime(),
-              noteType: 'atlaskit-editor-note'
-            } as any).then(item => mainContent.newTab(item));
+            dataInterface
+              .createDataItem({
+                name: 'New Draft',
+                tags: [InternalTag.Draft],
+                kind: DataItemKind.NoteItem,
+                childIds: [],
+                lastChange: new Date().getTime(),
+                created: new Date().getTime(),
+                noteType: 'atlaskit-editor-note',
+              } as any)
+              .then(item => mainContent.newTab(item));
             TelemetryService?.trackEvent(...TelemetryEvents.Items.createDraftItem);
           }}
         >
           Create new draft
         </Button>
-      )}
+      }
     />
   );
 };

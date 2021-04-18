@@ -4,7 +4,8 @@ import { Button, Tag } from '@blueprintjs/core';
 import cxs from 'cxs';
 import {
   CompletedStatusSortCriterium,
-  SortCriterium, StarStatusSortCriterium,
+  SortCriterium,
+  StarStatusSortCriterium,
   TaskColorNameSortCriterium,
   TaskNameSortCriterium,
 } from '../sortCriteria';
@@ -13,24 +14,24 @@ import { SortCriteriumButton } from './SortCriteriumButton';
 const styles = {
   container: cxs({
     display: 'flex',
-    margin: '24px 0'
+    margin: '24px 0',
   }),
   left: cxs({
     flexGrow: 1,
     display: 'flex',
     alignItems: 'center',
-    marginRight: '24px'
-  })
-}
+    marginRight: '24px',
+  }),
+};
 
 export const ConfigurationHeader: React.FC<{
-  changeSorting: (criterium: SortCriterium, asc: boolean) => void,
-  sortCriterium?: SortCriterium,
-  asc?: boolean,
-  hideCompletedItems?: boolean,
-  toggleHideCompletedItems: () => void,
-  totalItems: number,
-  completedItems: number,
+  changeSorting: (criterium: SortCriterium, asc: boolean) => void;
+  sortCriterium?: SortCriterium;
+  asc?: boolean;
+  hideCompletedItems?: boolean;
+  toggleHideCompletedItems: () => void;
+  totalItems: number;
+  completedItems: number;
 }> = props => {
   const settings = useSettings();
 
@@ -38,7 +39,8 @@ export const ConfigurationHeader: React.FC<{
     <div className={styles.container}>
       <div className={styles.left}>
         <Button
-          minimal small
+          minimal
+          small
           active={props.hideCompletedItems}
           onClick={props.toggleHideCompletedItems}
           icon={props.hideCompletedItems ? 'eye-off' : 'eye-open'}
@@ -46,7 +48,7 @@ export const ConfigurationHeader: React.FC<{
           Hide completed items
         </Button>
         <Tag round intent="success" icon="tick" minimal>
-          { props.completedItems }/{ props.totalItems } completed
+          {props.completedItems}/{props.totalItems} completed
         </Tag>
       </div>
       <div>

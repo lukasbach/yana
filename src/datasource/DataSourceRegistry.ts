@@ -19,7 +19,6 @@ export class DataSourceRegistry {
         return await LocalFileSystemDataSource.init(workspace.dataSourceOptions);
       case 'sqlite3':
         return await LocalSqliteDataSource.init(workspace.dataSourceOptions);
-
     }
   }
 }

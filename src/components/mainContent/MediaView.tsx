@@ -18,13 +18,13 @@ const styles = {
     display: 'flex',
     alignContent: 'center',
     justifyContent: 'center',
-    alignItems: 'center'
-  })
-}
+    alignItems: 'center',
+  }),
+};
 
 export const MediaView: React.FC<{
-  dataItem: MediaItem,
-}> = ({ dataItem}) => {
+  dataItem: MediaItem;
+}> = ({ dataItem }) => {
   const dataInterface = useDataInterface();
   const mainContent = useMainContentContext();
   const overlaySearch = useOverlaySearch();
@@ -36,15 +36,15 @@ export const MediaView: React.FC<{
 
   return (
     <PageContainer
-      header={(
+      header={
         <PageHeader
           title={dataItem.name}
           icon={'media'}
           titleSubtext={dataItem.referencePath || previewPath}
-          rightContent={(
+          rightContent={
             <Popover
               interactionKind={'click'}
-              content={(
+              content={
                 <MediaItemContextMenu
                   item={dataItem}
                   renderer={Bp3MenuRenderer}
@@ -52,22 +52,22 @@ export const MediaView: React.FC<{
                   dataInterface={dataInterface}
                   overlaySearch={overlaySearch}
                 />
-              )}
+              }
             >
               <Button intent="primary" icon="edit" outlined>
                 Modify
               </Button>
             </Popover>
-          )}
+          }
         />
-      )}
+      }
     >
       <div className={styles.mainContainer}>
-        { (previewPath || dataItem.referencePath) && ['svg', 'png', 'jpg', 'jpeg', 'gif'].includes(dataItem.extension) && (
+        {(previewPath || dataItem.referencePath) && ['svg', 'png', 'jpg', 'jpeg', 'gif'].includes(dataItem.extension) && (
           <div>
-            <img src={previewPath || dataItem.referencePath} alt={"Media preview"} />
+            <img src={previewPath || dataItem.referencePath} alt={'Media preview'} />
           </div>
-        ) }
+        )}
       </div>
     </PageContainer>
   );

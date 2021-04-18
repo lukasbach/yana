@@ -1,7 +1,7 @@
 import { AppDataContextValue } from './AppDataProvider';
-import { remote } from "electron";
-import fs from "fs";
-import path from "path";
+import { remote } from 'electron';
+import fs from 'fs';
+import path from 'path';
 import { Alerter } from '../components/Alerter';
 import * as React from 'react';
 
@@ -20,7 +20,11 @@ export const runAddWorkspaceWizard = async (appDataContext: AppDataContextValue)
   if (!(await fs.existsSync(path.join(folder, 'notebook.json')))) {
     Alerter.Instance.alert({
       confirmButtonText: 'Okay',
-      content: <>The chosen directory is not a valid Yana workspace. It must contain a <code>notebook.json</code> file.</>,
+      content: (
+        <>
+          The chosen directory is not a valid Yana workspace. It must contain a <code>notebook.json</code> file.
+        </>
+      ),
       canOutsideClickCancel: true,
       canEscapeKeyCancel: true,
     });
@@ -36,14 +40,14 @@ export const runAddWorkspaceWizard = async (appDataContext: AppDataContextValue)
       canEscapeKeyCancel: true,
       prompt: {
         type: 'string',
-        onConfirmText: value => res(value)
-      }
+        onConfirmText: value => res(value),
+      },
     });
   });
 
   try {
     await appDataContext.addWorkSpace(workspaceName, folder);
-  } catch(e) {
+  } catch (e) {
     Alerter.Instance.alert({
       confirmButtonText: 'Okay',
       content: 'Error: ' + e.message,
@@ -51,4 +55,4 @@ export const runAddWorkspaceWizard = async (appDataContext: AppDataContextValue)
       canEscapeKeyCancel: true,
     });
   }
-}
+};

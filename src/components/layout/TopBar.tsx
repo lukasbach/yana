@@ -2,7 +2,7 @@ import * as React from 'react';
 import cxs from 'cxs';
 import Color from 'color';
 import cx from 'classnames';
-import { remote } from "electron";
+import { remote } from 'electron';
 import { useTheme } from '../../common/theming';
 import { TabContainer } from './TabContainer';
 import { useEffect, useState } from 'react';
@@ -51,8 +51,8 @@ export const TopBar: React.FC<{}> = props => {
     remote.getCurrentWindow().on('unmaximize', onUnmaximize);
     return () => {
       remote.getCurrentWindow().removeListener('maximize', onMaximize);
-      remote.getCurrentWindow().removeListener('unmaximize', onUnmaximize)
-    }
+      remote.getCurrentWindow().removeListener('unmaximize', onUnmaximize);
+    };
   }, []);
 
   const topBarControlButtonClass = cx(
@@ -78,19 +78,19 @@ export const TopBar: React.FC<{}> = props => {
       <div className={styles.dragArea} />
       <div className={styles.tobBarControls} style={{ WebkitAppRegion: 'no-drag' } as any}>
         <button className={topBarControlButtonClass} onClick={() => remote.getCurrentWindow().minimize()}>
-          { isWindows ? <>&#xE921;</> : <Icon icon={'minus'} /> }
+          {isWindows ? <>&#xE921;</> : <Icon icon={'minus'} />}
         </button>
-        { isMaximized ? (
+        {isMaximized ? (
           <button className={topBarControlButtonClass} onClick={() => remote.getCurrentWindow().unmaximize()}>
-            { isWindows ? <>&#xE923;</> : <Icon icon={'minimize'} /> }
+            {isWindows ? <>&#xE923;</> : <Icon icon={'minimize'} />}
           </button>
         ) : (
           <button className={topBarControlButtonClass} onClick={() => remote.getCurrentWindow().maximize()}>
-            { isWindows ? <>&#xE922;</> : <Icon icon={'maximize'} /> }
+            {isWindows ? <>&#xE922;</> : <Icon icon={'maximize'} />}
           </button>
-        ) }
+        )}
         <button className={topBarControlButtonClass} onClick={() => remote.getCurrentWindow().close()}>
-          { isWindows ? <>&#xE8BB;</> : <Icon icon={'cross'} /> }
+          {isWindows ? <>&#xE8BB;</> : <Icon icon={'cross'} />}
         </button>
       </div>
     </div>

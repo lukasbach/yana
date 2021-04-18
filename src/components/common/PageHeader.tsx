@@ -9,7 +9,7 @@ const styles = {
   container: cxs({
     padding: '56px 32px 16px 32px',
     display: 'flex',
-    position: 'relative'
+    position: 'relative',
   }),
   containerCollapsed: cxs({
     padding: '12px 32px 12px 32px',
@@ -20,7 +20,7 @@ const styles = {
     right: '12px',
   }),
   leftContainer: cxs({
-    flexGrow: 1
+    flexGrow: 1,
   }),
   rightContainer: cxs({
     textAlign: 'right',
@@ -28,7 +28,7 @@ const styles = {
       marginBottom: '4px',
     },
     ' button': {
-      marginBottom: '2px'
+      marginBottom: '2px',
     },
   }),
   title: cxs({
@@ -36,7 +36,7 @@ const styles = {
     fontWeight: 400,
     fontSize: '32px',
     margin: 0,
-    height: '42px'
+    height: '42px',
   }),
   titleInner: cxs({
     position: 'absolute',
@@ -47,19 +47,19 @@ const styles = {
     display: 'flex',
     '> span.bp3-icon': {
       margin: '0 14px 0 0px',
-      transform: 'translateY(4px)'
-    }
+      transform: 'translateY(4px)',
+    },
   }),
   titleSubtext: cxs({
-    color: Color('#fff').darken(.35).toString(),
+    color: Color('#fff').darken(0.35).toString(),
     fontSize: '12px',
-    margin: '12px 0 0 0'
+    margin: '12px 0 0 0',
   }),
   lowerContent: cxs({
     margin: '0 32px 16px 32px',
   }),
   lowerContentFlush: cxs({
-    marginBottom: '0 !important'
+    marginBottom: '0 !important',
   }),
 };
 
@@ -77,28 +77,17 @@ export const PageHeader: React.FC<{
 
   return (
     <>
-      <div className={cx(
-        styles.container,
-        pageHeaderCollapsed && styles.containerCollapsed
-      )}>
+      <div className={cx(styles.container, pageHeaderCollapsed && styles.containerCollapsed)}>
         <div className={styles.leftContainer}>
           <h1 className={styles.title}>
             <div className={styles.titleInner}>
-              { props.icon && <Icon icon={props.icon} color={props.iconColor} iconSize={32} /> }
-              { props.title }
+              {props.icon && <Icon icon={props.icon} color={props.iconColor} iconSize={32} />}
+              {props.title}
             </div>
           </h1>
-          { !pageHeaderCollapsed && (
-            <p className={styles.titleSubtext}>
-              { props.titleSubtext }
-            </p>
-          )}
+          {!pageHeaderCollapsed && <p className={styles.titleSubtext}>{props.titleSubtext}</p>}
         </div>
-        { !pageHeaderCollapsed && (
-          <div className={styles.rightContainer}>
-            { props.rightContent }
-          </div>
-        ) }
+        {!pageHeaderCollapsed && <div className={styles.rightContainer}>{props.rightContent}</div>}
         <div className={styles.collapseContainer}>
           <Tooltip
             content={!pageHeaderCollapsed ? 'Collapse header' : undefined}
@@ -111,17 +100,17 @@ export const PageHeader: React.FC<{
               onClick={() => {
                 appData.saveSettings({
                   ...appData.settings,
-                  pageHeaderCollapsed: !pageHeaderCollapsed
-                })
+                  pageHeaderCollapsed: !pageHeaderCollapsed,
+                });
               }}
               children={pageHeaderCollapsed ? 'Show header' : undefined}
             />
           </Tooltip>
         </div>
       </div>
-      { props.lowerContent && !pageHeaderCollapsed && (
+      {props.lowerContent && !pageHeaderCollapsed && (
         <div className={cx(styles.lowerContent, props.lowerContentFlush && styles.lowerContentFlush)}>
-          { props.lowerContent }
+          {props.lowerContent}
         </div>
       )}
     </>

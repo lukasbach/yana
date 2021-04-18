@@ -34,11 +34,12 @@ export const Settings: React.FC<{}> = props => {
     LogService.applySettings(settings);
     await appData.saveSettings(settings);
 
-    remote.getCurrentWebContents().session
-      .setSpellCheckerLanguages(settings.spellingActive ? settings.spellingLanguages : []);
+    remote
+      .getCurrentWebContents()
+      .session.setSpellCheckerLanguages(settings.spellingActive ? settings.spellingLanguages : []);
 
     telemetry.trackEvent(...TelemetryEvents.Settings.saveSettings);
-  }
+  };
 
   return (
     <SettingsContext.Provider
@@ -46,30 +47,42 @@ export const Settings: React.FC<{}> = props => {
         changeSettings: updateSettings,
         save: saveSettings,
         createStringHandler: key => value => updateSettings({ [key]: value }),
-        createIntHandler: key => value => updateSettings({ [key]: typeof value === 'string' ? parseInt(value) : value }),
-        createFloatHandler: key => value => updateSettings({ [key]: typeof value === 'string' ? parseFloat(value) : value }),
-        createBooleanHandler: key => value => updateSettings({ [key]: typeof value === 'boolean' ? value : value === 'true' }),
-        dirty, settings
+        createIntHandler: key => value =>
+          updateSettings({ [key]: typeof value === 'string' ? parseInt(value) : value }),
+        createFloatHandler: key => value =>
+          updateSettings({ [key]: typeof value === 'string' ? parseFloat(value) : value }),
+        createBooleanHandler: key => value =>
+          updateSettings({ [key]: typeof value === 'boolean' ? value : value === 'true' }),
+        dirty,
+        settings,
       }}
     >
-      <PageContainer header={(
-        <PageHeader
-          title={ dirty ? 'Settings*' : 'Settings' }
-          titleSubtext="Some settings might require restarting Yana to take effect."
-          icon="cog"
-          rightContent={dirty && <Button large outlined intent="primary" icon="floppy-disk" onClick={() => saveSettings()}>Save Settings</Button>}
-          lowerContentFlush={true}
-          lowerContent={(
-            <Tabs onChange={(newTabId: SettingsTabs) => setCurrentTab(newTabId)} selectedTabId={currentTab}>
-              <Tab id={SettingsTabs.General} title="General" />
-              <Tab id={SettingsTabs.Sidebar} title="Sidebar" />
-              <Tab id={SettingsTabs.Editors} title="Editors" />
-              <Tab id={SettingsTabs.Spelling} title="Spelling" />
-              <Tab id={SettingsTabs.Advanced} title="Advanced" />
-            </Tabs>
-          )}
-        />
-      )}>
+      <PageContainer
+        header={
+          <PageHeader
+            title={dirty ? 'Settings*' : 'Settings'}
+            titleSubtext="Some settings might require restarting Yana to take effect."
+            icon="cog"
+            rightContent={
+              dirty && (
+                <Button large outlined intent="primary" icon="floppy-disk" onClick={() => saveSettings()}>
+                  Save Settings
+                </Button>
+              )
+            }
+            lowerContentFlush={true}
+            lowerContent={
+              <Tabs onChange={(newTabId: SettingsTabs) => setCurrentTab(newTabId)} selectedTabId={currentTab}>
+                <Tab id={SettingsTabs.General} title="General" />
+                <Tab id={SettingsTabs.Sidebar} title="Sidebar" />
+                <Tab id={SettingsTabs.Editors} title="Editors" />
+                <Tab id={SettingsTabs.Spelling} title="Spelling" />
+                <Tab id={SettingsTabs.Advanced} title="Advanced" />
+              </Tabs>
+            }
+          />
+        }
+      >
         {(() => {
           switch (currentTab) {
             case SettingsTabs.Editors:

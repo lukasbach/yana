@@ -18,7 +18,7 @@ export class EventEmitter<EventPayload extends object> {
   public async emit(payload: EventPayload): Promise<void> {
     const promises: Array<Promise<void>> = [];
 
-    this.logger?.log('emit', [], {payload});
+    this.logger?.log('emit', [], { payload });
 
     for (let handler of this.handlers) {
       if (!!handler) {

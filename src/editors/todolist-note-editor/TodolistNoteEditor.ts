@@ -20,14 +20,14 @@ export interface TodoListNoteEditorContent {
 }
 
 export class TodolistNoteEditor implements EditorDefinition<'todolist-editor-note', TodoListNoteEditorContent> {
-  public id = "todolist-editor-note" as const;
-  public name = "Todo List";
+  public id = 'todolist-editor-note' as const;
+  public name = 'Todo List';
   public editorComponent = EditorComponent;
   public canInsertFiles = false;
 
   public initializeContent(): TodoListNoteEditorContent {
     return {
-      items: []
+      items: [],
     };
   }
 }

@@ -37,7 +37,7 @@ export const ItemCustomizationCard: React.FC<{ item: DataItem }> = props => {
               setIcon(e.target.checked ? 'document' : undefined);
               setDirty(true);
             }}
-            label={"Custom Icon"}
+            label={'Custom Icon'}
           />
         }
       >
@@ -68,13 +68,7 @@ export const ItemCustomizationCard: React.FC<{ item: DataItem }> = props => {
             setDirty(true);
           }}
         >
-          <Button
-            text={icon || 'No icon'}
-            rightIcon="caret-down"
-            icon={icon as any}
-            disabled={!icon}
-            minimal fill
-          />
+          <Button text={icon || 'No icon'} rightIcon="caret-down" icon={icon as any} disabled={!icon} minimal fill />
         </Select>
       </FormGroup>
 
@@ -86,7 +80,7 @@ export const ItemCustomizationCard: React.FC<{ item: DataItem }> = props => {
               setColor(e.target.checked ? '#000000' : undefined);
               setDirty(true);
             }}
-            label={"Custom Icon Color"}
+            label={'Custom Icon Color'}
           />
         }
       >
@@ -100,11 +94,11 @@ export const ItemCustomizationCard: React.FC<{ item: DataItem }> = props => {
         />
       </FormGroup>
 
-      { dirty && (
+      {dirty && (
         <Button onClick={save} intent={'primary'} outlined>
           Save
         </Button>
-      ) }
+      )}
     </>
   );
 };

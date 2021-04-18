@@ -20,11 +20,9 @@ const styles = {
       margin: '9px 9px 9px 14px',
       transition: '.2s color ease',
       // color: 'black'
-    }
+    },
   }),
-  containerFocus: cxs({
-
-  }),
+  containerFocus: cxs({}),
   input: cxs({
     height: '100%',
     border: 'none',
@@ -33,10 +31,9 @@ const styles = {
     padding: '0 32px 0 4px',
     fontSize: '20px',
   }),
-}
+};
 
-export const SearchInput: React.FC<{
-}> = props => {
+export const SearchInput: React.FC<{}> = props => {
   const [focus, setFocus] = useState(false);
   const theme = useTheme();
   const search = useSearchBar();
@@ -56,9 +53,10 @@ export const SearchInput: React.FC<{
       className={cx(
         styles.container,
         focus && styles.containerFocus,
-        focus && cxs({
-          borderColor: theme.primaryColor
-        })
+        focus &&
+          cxs({
+            borderColor: theme.primaryColor,
+          })
       )}
     >
       <Icon icon={'search'} iconSize={32} color={focus ? theme.primaryColor : 'black'} />

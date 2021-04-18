@@ -15,11 +15,14 @@ export class SearchHelper {
     if (search.exactParents || search.parents) {
       const parents = (await dataSource.getParentsOf(item.id)).map(parent => parent.id);
       if (search.parents && !doArraysIntersect(search.parents, parents)) {
-        return false
+        return false;
       }
 
-      if (search.exactParents && (parents.length !== search.exactParents.length
-        || !search.exactParents.map(p => parents.includes(p)).reduce((a, b) => a && b, true))) {
+      if (
+        search.exactParents &&
+        (parents.length !== search.exactParents.length ||
+          !search.exactParents.map(p => parents.includes(p)).reduce((a, b) => a && b, true))
+      ) {
         return false;
       }
     }
@@ -32,14 +35,22 @@ export class SearchHelper {
       return false;
     }
 
-    if (search.contains && !search.contains.map(c => item.name.toLowerCase().includes(c.toLowerCase())).reduce((a, b) => a || b, false)) {
+    if (
+      search.contains &&
+      !search.contains.map(c => item.name.toLowerCase().includes(c.toLowerCase())).reduce((a, b) => a || b, false)
+    ) {
       return false;
     }
 
     return true;
   }
 
-  public static sortItems(itemA: DataItem, itemB: DataItem, column: SearchQuerySortColumn, direction: SearchQuerySortDirection = SearchQuerySortDirection.Ascending) {
+  public static sortItems(
+    itemA: DataItem,
+    itemB: DataItem,
+    column: SearchQuerySortColumn,
+    direction: SearchQuerySortDirection = SearchQuerySortDirection.Ascending
+  ) {
     const a = direction === SearchQuerySortDirection.Ascending ? itemA : itemB;
     const b = direction === SearchQuerySortDirection.Ascending ? itemB : itemA;
 

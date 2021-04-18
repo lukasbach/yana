@@ -4,10 +4,10 @@ import { defaultTheme } from '../../common/theming';
 import { Button, ButtonGroup, Classes, ControlGroup, FormGroup, Icon, IconName, InputGroup } from '@blueprintjs/core';
 import { useAppData } from '../../appdata/AppDataProvider';
 import { useState } from 'react';
-import path from "path";
+import path from 'path';
 import { getElectronPath } from '../../utils';
 import pkg from '../../../package.json';
-import { remote } from "electron";
+import { remote } from 'electron';
 import { runImportWizard } from '../../appdata/runImportWizard';
 import { Alerter } from '../Alerter';
 import { OverlayCloseButton } from '../common/OverlayCloseButton';
@@ -31,18 +31,18 @@ const styles = {
     position: 'fixed',
     top: 0,
     right: 0,
-    padding: '16px'
+    padding: '16px',
   }),
   mainContainer: cxs({
     flexGrow: 1,
     display: 'flex',
     '> div': {
       padding: '64px',
-      width: '50%'
+      width: '50%',
     },
     '@media screen and (min-width: 1400px)': {
       margin: '0 256px',
-    }
+    },
   }),
   left: cxs({
     display: 'flex',
@@ -51,8 +51,8 @@ const styles = {
     alignItems: 'center',
     alignContent: 'center',
     '@media screen and (max-width: 800px)': {
-      display: 'none'
-    }
+      display: 'none',
+    },
   }),
   right: cxs({
     display: 'flex',
@@ -69,7 +69,7 @@ const styles = {
     },
     '@media screen and (max-width: 800px)': {
       width: '100% !important',
-    }
+    },
   }),
   bottom: cxs({
     WebkitAppRegion: 'no-drag',
@@ -87,13 +87,12 @@ const styles = {
     '> div': {
       width: '50%',
     },
-    '> :nth-child(1)': {
-    },
+    '> :nth-child(1)': {},
     '> :nth-child(2)': {
-      textAlign: 'right'
+      textAlign: 'right',
     },
     ' h2': {
-      margin: 0
+      margin: 0,
     },
     ' button': {
       color: 'white !important',
@@ -104,11 +103,11 @@ const styles = {
     ' a': {
       color: 'white !important',
       textDecoration: 'underline',
-    }
+    },
   }),
 
   justifyRight: cxs({
-    textAlign: 'right'
+    textAlign: 'right',
   }),
 
   brandPoint: cxs({
@@ -123,7 +122,7 @@ const styles = {
     padding: '12px',
     borderRadius: '1000px',
     backgroundColor: defaultTheme.primaryColor,
-    marginRight: '16px'
+    marginRight: '16px',
   }),
   brandText: cxs({
     flexGrow: 1,
@@ -131,32 +130,28 @@ const styles = {
     alignItems: 'center',
     fontSize: '16px',
     marginRight: '16px',
-  })
-}
+  }),
+};
 
-const BrandPoint: React.FC<{ icon: IconName }> = (props) => (
+const BrandPoint: React.FC<{ icon: IconName }> = props => (
   <div className={styles.brandPoint}>
     <div className={styles.brandIconContainer}>
       <Icon icon={props.icon} iconSize={32} color={'white'} />
     </div>
-    <div className={styles.brandText}>
-      { props.children }
-    </div>
+    <div className={styles.brandText}>{props.children}</div>
   </div>
 );
 
 export const CreateWorkspaceWindow: React.FC<{
-  onClose: () => void,
-  onCreate: (name: string, path: string) => void,
-  onImported: () => void,
-  defaultWorkspaceName?: string,
-  isInitialCreationScreen?: boolean,
+  onClose: () => void;
+  onCreate: (name: string, path: string) => void;
+  onImported: () => void;
+  defaultWorkspaceName?: string;
+  isInitialCreationScreen?: boolean;
 }> = props => {
   const appData = useAppData();
   const [createWorkspaceName, setCreateWorkspaceName] = useState(props.defaultWorkspaceName ?? 'My thoughts');
-  const [createWorkspacePath, setCreateWorkspacePath] = useState(
-    path.join(getElectronPath('home'), 'yana-workspace')
-  );
+  const [createWorkspacePath, setCreateWorkspacePath] = useState(path.join(getElectronPath('home'), 'yana-workspace'));
 
   return (
     <div className={styles.container}>
@@ -167,23 +162,17 @@ export const CreateWorkspaceWindow: React.FC<{
         </div>
         <div className={styles.mainContainer}>
           <div className={styles.left}>
-            <BrandPoint icon={'diagram-tree'}>
-              Organize your thoughts in your Yana Notebook
-            </BrandPoint>
-            <BrandPoint icon={'tag'}>
-              Find what you're looking for by searching for content or tags
-            </BrandPoint>
-            <BrandPoint icon={'code'}>
-              Manage rich-text notes as well as code snippets.
-            </BrandPoint>
+            <BrandPoint icon={'diagram-tree'}>Organize your thoughts in your Yana Notebook</BrandPoint>
+            <BrandPoint icon={'tag'}>Find what you're looking for by searching for content or tags</BrandPoint>
+            <BrandPoint icon={'code'}>Manage rich-text notes as well as code snippets.</BrandPoint>
           </div>
           <div className={styles.right}>
             <div>
               <h1>Create a new Workspace</h1>
               <p className={Classes.TEXT_MUTED + ' ' + Classes.RUNNING_TEXT}>
-                Yana organizes your notes in distinct workspaces. Each workspace is stored at a particular
-                location on your hard drive. Remember that you can choose a location within a cloud drive
-                to synchronize workspaces across devices. You can add more workspaces later.
+                Yana organizes your notes in distinct workspaces. Each workspace is stored at a particular location on
+                your hard drive. Remember that you can choose a location within a cloud drive to synchronize workspaces
+                across devices. You can add more workspaces later.
               </p>
 
               <FormGroup label="Path to workspace">
@@ -201,7 +190,7 @@ export const CreateWorkspaceWindow: React.FC<{
                         defaultPath: createWorkspacePath,
                         buttonLabel: 'Choose',
                         title: 'Choose location for new workspace',
-                        properties: ['createDirectory', 'openDirectory']
+                        properties: ['createDirectory', 'openDirectory'],
                       });
                       if (result.canceled) return;
                       setCreateWorkspacePath(result.filePaths[0]);
@@ -219,17 +208,20 @@ export const CreateWorkspaceWindow: React.FC<{
                 />
               </FormGroup>
 
-              { props.isInitialCreationScreen && (
+              {props.isInitialCreationScreen && (
                 <p className={Classes.TEXT_MUTED + ' ' + Classes.RUNNING_TEXT + ' ' + Classes.TEXT_SMALL}>
                   By using Yana, you accept{' '}
-                  <a href="#" onClick={() => remote.shell.openExternal('https://yana.js.org/privacy')}>Yana's privacy policy.</a>{' '}
+                  <a href="#" onClick={() => remote.shell.openExternal('https://yana.js.org/privacy')}>
+                    Yana's privacy policy.
+                  </a>{' '}
                   No personally identifiable data or contents of your notebooks will be sent to external servers.
                 </p>
-              ) }
+              )}
 
               <div className={styles.justifyRight}>
                 <Button
-                  large outlined
+                  large
+                  outlined
                   intent={'primary'}
                   rightIcon={'chevron-right'}
                   onClick={() => {
@@ -242,17 +234,23 @@ export const CreateWorkspaceWindow: React.FC<{
 
               <p style={{ marginTop: '10px' }}>
                 You can also&nbsp;
-                <a href="#" onClick={async () => {
-                  await runImportWizard(appData);
-                  props.onImported();
-                }}>
+                <a
+                  href="#"
+                  onClick={async () => {
+                    await runImportWizard(appData);
+                    props.onImported();
+                  }}
+                >
                   import a workspace from a zip file
-                </a>
-                {' '}or{' '}
-                <a href="#" onClick={async () => {
-                  await runAddWorkspaceWizard(appData);
-                  props.onImported();
-                }}>
+                </a>{' '}
+                or{' '}
+                <a
+                  href="#"
+                  onClick={async () => {
+                    await runAddWorkspaceWizard(appData);
+                    props.onImported();
+                  }}
+                >
                   add one from a local folder.
                 </a>
               </p>
@@ -268,7 +266,11 @@ export const CreateWorkspaceWindow: React.FC<{
           </div>
           <div>
             <p>
-              Developed with <Icon icon={'heart'} /> and TypeScript by <a href="#" onClick={() => remote.shell.openExternal('https://lukasbach.com')}>Lukas Bach</a>.
+              Developed with <Icon icon={'heart'} /> and TypeScript by{' '}
+              <a href="#" onClick={() => remote.shell.openExternal('https://lukasbach.com')}>
+                Lukas Bach
+              </a>
+              .
             </p>
             <ButtonGroup minimal color={'#fff'}>
               <Button
@@ -277,16 +279,10 @@ export const CreateWorkspaceWindow: React.FC<{
               >
                 GitHub
               </Button>
-              <Button
-                icon={'help'}
-                onClick={() => remote.shell.openExternal('https://yana.js.org')}
-              >
+              <Button icon={'help'} onClick={() => remote.shell.openExternal('https://yana.js.org')}>
                 Project Page
               </Button>
-              <Button
-                icon={'user'}
-                onClick={() => remote.shell.openExternal('https://lukasbach.com')}
-              >
+              <Button icon={'user'} onClick={() => remote.shell.openExternal('https://lukasbach.com')}>
                 About me
               </Button>
             </ButtonGroup>

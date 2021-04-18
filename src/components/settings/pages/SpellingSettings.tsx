@@ -16,7 +16,7 @@ export const SpellingSettings: React.FC<{}> = props => {
 
   useAsyncEffect(async () => {
     const session = remote.getCurrentWebContents().session;
-    setWords(await session.listWordsInSpellCheckerDictionary())
+    setWords(await session.listWordsInSpellCheckerDictionary());
   }, []);
 
   useAsyncEffect(async () => {
@@ -32,59 +32,60 @@ export const SpellingSettings: React.FC<{}> = props => {
       </SettingsSection>
 
       <SettingsSection title="Spell Checker Languages">
-        { specifiedLanguages.map(lang => (
+        {specifiedLanguages.map(lang => (
           <Tag
             style={{ marginRight: '6px' }}
-            round large
+            round
+            large
             onRemove={() => setSpecifiedLanguages(langs => langs.filter(lang2 => lang2 !== lang))}
           >
-            { lang }
+            {lang}
           </Tag>
-        )) }
-        <br /><br />
-        { availableLanguages.length !== specifiedLanguages.length ? (
+        ))}
+        <br />
+        <br />
+        {availableLanguages.length !== specifiedLanguages.length ? (
           <Popover
             boundary={'scrollParent'}
-            content={(
-              <div style={{
-                maxHeight: '200px',
-                overflowY: 'auto'
-              }}>
+            content={
+              <div
+                style={{
+                  maxHeight: '200px',
+                  overflowY: 'auto',
+                }}
+              >
                 <Menu>
-                  { availableLanguages.filter(lang => !specifiedLanguages.includes(lang)).map(lang => (
-                    <MenuItem
-                      text={lang}
-                      onClick={() => setSpecifiedLanguages(langs => [...langs, lang])}
-                    />
-                  )) }
+                  {availableLanguages
+                    .filter(lang => !specifiedLanguages.includes(lang))
+                    .map(lang => (
+                      <MenuItem text={lang} onClick={() => setSpecifiedLanguages(langs => [...langs, lang])} />
+                    ))}
                 </Menu>
               </div>
-            )}
+            }
           >
-            <Tag
-              style={{ marginRight: '6px' }}
-              large interactive round icon={'plus'} intent={'success'}
-            >
+            <Tag style={{ marginRight: '6px' }} large interactive round icon={'plus'} intent={'success'}>
               Add new language
             </Tag>
           </Popover>
-        ) : null }
+        ) : null}
       </SettingsSection>
 
       <SettingsSection title="Custom words">
-        { words.map(word => (
+        {words.map(word => (
           <Tag
             style={{ marginRight: '6px' }}
-            large round
+            large
+            round
             onRemove={() => {
               const session = remote.getCurrentWebContents().session;
               setWords(words => words.filter(w => w !== word));
-              session.removeWordFromSpellCheckerDictionary(word)
+              session.removeWordFromSpellCheckerDictionary(word);
             }}
           >
-            { word }
+            {word}
           </Tag>
-        )) }
+        ))}
         <p>To add a new word, write it in an editor, right click on it and add it to the spell checker.</p>
       </SettingsSection>
     </div>

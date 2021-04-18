@@ -27,18 +27,18 @@ const styles = {
     cursor: 'pointer',
     ':hover': {
       backgroundColor: 'white',
-      color: 'black'
+      color: 'black',
     },
     [`:hover > .${META_CONTAINER_CLASS}`]: {
-      color: 'rgba(100, 100, 100)'
-    }
+      color: 'rgba(100, 100, 100)',
+    },
   }),
   containerSelected: cxs({
     backgroundColor: 'white',
     color: 'black',
     [` .${META_CONTAINER_CLASS}`]: {
-      color: 'rgba(100, 100, 100)'
-    }
+      color: 'rgba(100, 100, 100)',
+    },
   }),
   selectedContainer: cxs({
     position: 'absolute',
@@ -51,34 +51,36 @@ const styles = {
     margin: '0 0 0 16px',
   }),
   metaContainer: cxs({
-    color: 'rgba(160, 160, 160)'
-  })
-}
+    color: 'rgba(160, 160, 160)',
+  }),
+};
 
 export const ResultItem: React.FC<{
-  selected?: boolean,
-  icon: IconName | MaybeElement,
-  title: string,
-  meta: string,
-  onClick?: () => void,
-  key: string,
-  containerStyle?: CSSProperties,
-  dataItem?: DataItem,
+  selected?: boolean;
+  icon: IconName | MaybeElement;
+  title: string;
+  meta: string;
+  onClick?: () => void;
+  key: string;
+  containerStyle?: CSSProperties;
+  dataItem?: DataItem;
 }> = props => {
   const [hover, setHover] = useState(false);
   const theme = useTheme();
   const mainContent = useMainContentContext();
   const dataInterface = useDataInterface();
   const overlaySearch = useOverlaySearch();
-  const contextMenuProps = useContextMenu(props.dataItem && (
-    <DataItemContextMenu
-      item={props.dataItem}
-      renderer={Bp3MenuRenderer}
-      mainContent={mainContent}
-      dataInterface={dataInterface}
-      overlaySearch={overlaySearch}
-    />
-  ));
+  const contextMenuProps = useContextMenu(
+    props.dataItem && (
+      <DataItemContextMenu
+        item={props.dataItem}
+        renderer={Bp3MenuRenderer}
+        mainContent={mainContent}
+        dataInterface={dataInterface}
+        overlaySearch={overlaySearch}
+      />
+    )
+  );
 
   return (
     <div
@@ -90,20 +92,16 @@ export const ResultItem: React.FC<{
       style={props.containerStyle}
       {...contextMenuProps}
     >
-      { props.selected && (
+      {props.selected && (
         <div className={styles.selectedContainer}>
-          <Icon icon={ !hover ? 'tick' : 'cross' } iconSize={36} color={theme.primaryColor} />
+          <Icon icon={!hover ? 'tick' : 'cross'} iconSize={36} color={theme.primaryColor} />
         </div>
       )}
       <div className={styles.iconContainer}>
-        <Icon icon={ props.icon } iconSize={16} />
+        <Icon icon={props.icon} iconSize={16} />
       </div>
-      <div className={styles.titleContainer + ' ' + Classes.TEXT_OVERFLOW_ELLIPSIS}>
-        { props.title }
-      </div>
-      <div className={styles.metaContainer + ' ' + META_CONTAINER_CLASS}>
-        { props.meta }
-      </div>
+      <div className={styles.titleContainer + ' ' + Classes.TEXT_OVERFLOW_ELLIPSIS}>{props.title}</div>
+      <div className={styles.metaContainer + ' ' + META_CONTAINER_CLASS}>{props.meta}</div>
     </div>
   );
 };

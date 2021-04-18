@@ -28,7 +28,7 @@ const styles = {
     ':hover': {
       transform: 'translateY(-8px)',
       boxShadow: '0px 6px 10px 2px #bbb',
-    }
+    },
   }),
   cardHeader: cxs({
     padding: '8px 16px 6px 16px',
@@ -36,9 +36,9 @@ const styles = {
       margin: 0,
       fontSize: '14px',
       ' .bp3-icon': {
-        marginRight: '12px'
-      }
-    }
+        marginRight: '12px',
+      },
+    },
   }),
   cardMiddle: cxs({
     padding: '16px',
@@ -52,16 +52,16 @@ const styles = {
     textAlign: 'right',
     fontStyle: 'italic',
     color: '#444',
-    fontSize: '11px'
+    fontSize: '11px',
   }),
-}
+};
 
 export const SearchViewCard: React.FC<{
-  cellProps: GridCellProps,
-  dataItem: DataItem,
-  additionalLeftMargin: number,
-  onClick?: () => void,
-  preview?: string | object,
+  cellProps: GridCellProps;
+  dataItem: DataItem;
+  additionalLeftMargin: number;
+  onClick?: () => void;
+  preview?: string | object;
 }> = ({ cellProps, dataItem, additionalLeftMargin, onClick, preview }) => {
   const mainContent = useMainContentContext();
   const dataInterface = useDataInterface();
@@ -88,11 +88,18 @@ export const SearchViewCard: React.FC<{
       onClick={onClick || (() => mainContent.openInCurrentTab(dataItem))}
       interactive={true}
       header={dataItem.name}
-      icon={dataItem.icon || (isNoteItem(dataItem) ? 'document' : isCollectionItem(dataItem) ? 'folder-open' : 'media') as any}
+      icon={
+        dataItem.icon ||
+        ((isNoteItem(dataItem) ? 'document' : isCollectionItem(dataItem) ? 'folder-open' : 'media') as any)
+      }
       iconColor={dataItem.color}
       thumbnail={thumbnail}
       isCollection={dataItem.kind === DataItemKind.Collection}
-      preview={isNoteItem(dataItem) ? <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} /> : undefined}
+      preview={
+        isNoteItem(dataItem) ? (
+          <DataItemSmallPreviewContainer noteItem={dataItem} noteItemContent={noteItemContent} />
+        ) : undefined
+      }
       footerText={ago(new Date(dataItem.lastChange))}
     />
   );

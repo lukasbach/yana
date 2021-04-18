@@ -24,11 +24,7 @@ export const AdvancedSettings: React.FC<{}> = props => {
   return (
     <div>
       <SettingsSection title="Privacy">
-        <SettingsSwitchInput
-          settingsKey={'telemetry'}
-          label="Help Yana improve"
-          helperText={telemetryHelperText}
-        />
+        <SettingsSwitchInput settingsKey={'telemetry'} label="Help Yana improve" helperText={telemetryHelperText} />
         <SettingsClickable
           title="View Yana's privacy policy"
           subtitle="https://yana.js.org/privacy"
@@ -46,10 +42,7 @@ export const AdvancedSettings: React.FC<{}> = props => {
       </SettingsSection>
 
       <SettingsSection title="Devtools">
-        <SettingsSwitchInput
-          settingsKey={'devToolsOpen'}
-          label={"Yana Devtools Sidebar open"}
-        />
+        <SettingsSwitchInput settingsKey={'devToolsOpen'} label={'Yana Devtools Sidebar open'} />
         <SettingsClickable
           title="Create performance testing workspace"
           subtitle="This will create a new workspace with *very* many items. This might take a very long time or crash the app."
@@ -64,17 +57,17 @@ export const AdvancedSettings: React.FC<{}> = props => {
       <SettingsSection title="Logging">
         <SettingsSwitchInput
           settingsKey={'devLoggerActive'}
-          label={"Logging active"}
+          label={'Logging active'}
           helperText="Logging happens in the Chrome Devtools Console. Press CTRL+SHIFT+I to open."
         />
         <SettingsTextAreaInput
           settingsKey={'devLoggerWhitelist'}
-          label={"Logging Whitelist"}
+          label={'Logging Whitelist'}
           helperText="If not empty, only components listed below may log to the console. One component name per line."
         />
         <SettingsTextAreaInput
           settingsKey={'devLoggerBlacklist'}
-          label={"Logging Blacklist"}
+          label={'Logging Blacklist'}
           helperText="Components listed below may not log to the console. Overwrites whitelist. One component name per line."
         />
         <SettingsClickable

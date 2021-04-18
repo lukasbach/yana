@@ -6,7 +6,6 @@ import { SettingsSwitchInput } from '../layout/SettingsSwitchInput';
 import { SettingsNumberInput } from '../layout/SettingsNumberInput';
 import { SettingsClickable } from '../layout/SettingsClickable';
 
-
 const sidebarActions = [
   { value: SideBarItemAction.OpenInNewTab, label: 'Open in new Tab' },
   { value: SideBarItemAction.OpenInCurrentTab, label: 'Open in current Tab' },
@@ -40,10 +39,7 @@ export const SidebarSettings: React.FC<{}> = props => {
           helperText="Number of pixels that every level should be offset in the sidebar."
         />
 
-        <SettingsSwitchInput
-          settingsKey={'sidebarShowStarredItems'}
-          label="Show starred items in sidebar"
-        />
+        <SettingsSwitchInput settingsKey={'sidebarShowStarredItems'} label="Show starred items in sidebar" />
         <SettingsNumberInput
           settingsKey={'sidebarShowStarredItemsCount'}
           label="Number of starred items shown"
@@ -52,10 +48,7 @@ export const SidebarSettings: React.FC<{}> = props => {
           max={20}
         />
 
-        <SettingsSwitchInput
-          settingsKey={'sidebarShowRecentItems'}
-          label="Show recently edited items in sidebar"
-        />
+        <SettingsSwitchInput settingsKey={'sidebarShowRecentItems'} label="Show recently edited items in sidebar" />
         <SettingsNumberInput
           settingsKey={'sidebarShowRecentItemsCount'}
           label="Number of recent items shown"
@@ -66,56 +59,54 @@ export const SidebarSettings: React.FC<{}> = props => {
       </SettingsSection>
 
       <SettingsSection title="Action Customizations">
-
         <SettingsSelectInput
           settingsKey={'sidebarNoteItemNameAction'}
-          label={"Action when clicking on the name of a Note Item"}
+          label={'Action when clicking on the name of a Note Item'}
           options={sidebarActions}
         />
         <SettingsSelectInput
           settingsKey={'sidebarNoteItemBackgroundAction'}
-          label={"Action when clicking on the background of a Note Item"}
+          label={'Action when clicking on the background of a Note Item'}
           options={sidebarActions}
         />
         <SettingsSelectInput
           settingsKey={'sidebarNoteItemMiddleClickAction'}
-          label={"Action when middle-clicking on a Note Item"}
+          label={'Action when middle-clicking on a Note Item'}
           options={sidebarActions}
         />
 
         <SettingsSelectInput
           settingsKey={'sidebarCollectionItemNameAction'}
-          label={"Action when clicking on the name of a Collection Item"}
+          label={'Action when clicking on the name of a Collection Item'}
           options={sidebarActions}
         />
         <SettingsSelectInput
           settingsKey={'sidebarCollectionItemBackgroundAction'}
-          label={"Action when clicking on the background of a Collection Item"}
+          label={'Action when clicking on the background of a Collection Item'}
           options={sidebarActions}
         />
         <SettingsSelectInput
           settingsKey={'sidebarCollectionItemMiddleClickAction'}
-          label={"Action when middle-clicking on a Collection Item"}
+          label={'Action when middle-clicking on a Collection Item'}
           options={sidebarActions}
         />
 
         <SettingsSelectInput
           settingsKey={'sidebarMediaItemNameAction'}
-          label={"Action when clicking on the name of a Media Item"}
+          label={'Action when clicking on the name of a Media Item'}
           options={sidebarActions}
         />
         <SettingsSelectInput
           settingsKey={'sidebarMediaItemBackgroundAction'}
-          label={"Action when clicking on the background of a Media Item"}
+          label={'Action when clicking on the background of a Media Item'}
           options={sidebarActions}
         />
         <SettingsSelectInput
           settingsKey={'sidebarMediaItemMiddleClickAction'}
-          label={"Action when middle-clicking on a Media Item"}
+          label={'Action when middle-clicking on a Media Item'}
           options={sidebarActions}
         />
       </SettingsSection>
-
     </div>
   );
 };

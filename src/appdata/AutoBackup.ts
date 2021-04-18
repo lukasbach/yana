@@ -23,7 +23,7 @@ export class AutoBackup {
   constructor(
     public workspace: WorkSpace,
     private settings: SettingsObject,
-    private queueBackup: (perform: () => Promise<any>) => void,
+    private queueBackup: (perform: () => Promise<any>) => void
   ) {
     this.backupIdentifier = workspace.name.toLowerCase().replace(/\s/g, '_');
   }
@@ -34,7 +34,11 @@ export class AutoBackup {
     this.lastBackup = (await dataInterface.getStructure('backup'))?.lastBackup || 0;
     await dataInterface.unload();
     this.nextBackup = this.lastBackup + this.settings.autoBackupInterval;
-    logger.log(`Loaded AutoBackups for ${this.workspace.name}. Last backup was ${new Date(this.lastBackup).toLocaleString()}, next one is ${new Date(this.nextBackup).toLocaleString()}`);
+    logger.log(
+      `Loaded AutoBackups for ${this.workspace.name}. Last backup was ${new Date(
+        this.lastBackup
+      ).toLocaleString()}, next one is ${new Date(this.nextBackup).toLocaleString()}`
+    );
     this.scheduleNextBackup();
   }
 
@@ -49,7 +53,7 @@ export class AutoBackup {
       return;
     }
 
-    logger.log("Performing automatic backup for workspace", [this.workspace.name], {workspace: this.workspace});
+    logger.log('Performing automatic backup for workspace', [this.workspace.name], { workspace: this.workspace });
     TelemetryService?.trackEvent(...TelemetryEvents.Backups.performBackup);
 
     const dataInterface = new DataInterface(DataSourceRegistry.getDataSource(this.workspace), null as any, 300);
@@ -69,7 +73,9 @@ export class AutoBackup {
     const numberOfExistingBackups = await this.countExistingBackups();
     const numberOfBackupsToKeep = this.settings.autoBackupCount;
 
-    logger.log(`${this.backupIdentifier}: Currently, ${numberOfExistingBackups} backups exist, ${numberOfBackupsToKeep} should be kept.`);
+    logger.log(
+      `${this.backupIdentifier}: Currently, ${numberOfExistingBackups} backups exist, ${numberOfBackupsToKeep} should be kept.`
+    );
 
     if (numberOfExistingBackups > numberOfBackupsToKeep) {
       logger.log(`${this.backupIdentifier}: Removing ${numberOfExistingBackups - numberOfBackupsToKeep} old backups.`);
@@ -112,15 +118,11 @@ export class AutoBackup {
       clearInterval(this.timer);
     }
 
-    if (nextBackup <= 100) { // effectively now
+    if (nextBackup <= 100) {
+      // effectively now
       this.queueBackup(() => this.performBackup());
     } else {
-      this.timer = setTimeout(
-        () => this.queueBackup(() => this.performBackup()),
-        nextBackup
-      ) as unknown as number;
+      this.timer = (setTimeout(() => this.queueBackup(() => this.performBackup()), nextBackup) as unknown) as number;
     }
   }
-
-
 }

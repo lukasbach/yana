@@ -1,5 +1,5 @@
 import { Alerter } from '../components/Alerter';
-import { remote } from "electron";
+import { remote } from 'electron';
 import { DataItemKind } from '../types';
 import { InternalTag } from '../datasource/InternalTag';
 import { AppDataContextValue } from './AppDataProvider';
@@ -20,8 +20,8 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
       canEscapeKeyCancel: true,
       prompt: {
         type: 'string',
-        onConfirmText: value => res(value)
-      }
+        onConfirmText: value => res(value),
+      },
     });
   });
 
@@ -38,12 +38,17 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
   const workspacePath = workspacePathDialog.filePaths[0];
 
   const currentWorkspace = appDataContext.currentWorkspace;
-  await appDataContext.createWorkSpace(workspaceName, workspacePath, 'sqlite3');  // TODO
+  await appDataContext.createWorkSpace(workspaceName, workspacePath, 'sqlite3'); // TODO
   await appDataContext.setWorkSpace(currentWorkspace);
 
-  const di = new DataInterface(new LocalSqliteDataSource({ // TODO
-    sourcePath: workspacePath
-  }), EditorRegistry.Instance, 500);
+  const di = new DataInterface(
+    new LocalSqliteDataSource({
+      // TODO
+      sourcePath: workspacePath,
+    }),
+    EditorRegistry.Instance,
+    500
+  );
 
   await di.load();
 
@@ -52,36 +57,45 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
   const searchResult = await di.search({ tags: [InternalTag.WorkspaceRoot], limit: 1 });
   const root = searchResult.results[0];
 
-  const bigFoldersContainer = await di.createDataItemUnderParent({
-    name: 'Folders with many items',
-    created: new Date().getTime(),
-    lastChange: new Date().getTime(),
-    tags: [],
-    kind: DataItemKind.Collection,
-    childIds: []
-  }, root.id);
+  const bigFoldersContainer = await di.createDataItemUnderParent(
+    {
+      name: 'Folders with many items',
+      created: new Date().getTime(),
+      lastChange: new Date().getTime(),
+      tags: [],
+      kind: DataItemKind.Collection,
+      childIds: [],
+    },
+    root.id
+  );
 
-  const deepContainer = await di.createDataItemUnderParent({
-    name: 'Very deep container',
-    created: new Date().getTime(),
-    lastChange: new Date().getTime(),
-    tags: [],
-    kind: DataItemKind.Collection,
-    childIds: []
-  }, root.id);
+  const deepContainer = await di.createDataItemUnderParent(
+    {
+      name: 'Very deep container',
+      created: new Date().getTime(),
+      lastChange: new Date().getTime(),
+      tags: [],
+      kind: DataItemKind.Collection,
+      childIds: [],
+    },
+    root.id
+  );
 
   for (const count of BIG_FOLDER_CHILD_COUNTS) {
     console.log('Creating big folders of size' + count);
     let lastAnnouncedPercentage = 0;
 
-    const container = await di.createDataItemUnderParent({
-      name: `${count} items`,
-      created: new Date().getTime(),
-      lastChange: new Date().getTime(),
-      tags: [],
-      kind: DataItemKind.Collection,
-      childIds: []
-    }, bigFoldersContainer.id);
+    const container = await di.createDataItemUnderParent(
+      {
+        name: `${count} items`,
+        created: new Date().getTime(),
+        lastChange: new Date().getTime(),
+        tags: [],
+        kind: DataItemKind.Collection,
+        childIds: [],
+      },
+      bigFoldersContainer.id
+    );
 
     for (let i = 0; i < count; i++) {
       const percentage = Math.floor((i / count) * 100);
@@ -91,40 +105,87 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
         console.log(percentage + '% done of folder with ' + count + ' items');
       }
 
-      const note = await di.createDataItemUnderParent({
-        name: `Item ${i}/${count}`,
-        created: new Date().getTime(),
-        lastChange: new Date().getTime(),
-        tags: [],
-        kind: DataItemKind.NoteItem,
-        childIds: [],
-        noteType: 'atlaskit-editor-note'
-      } as any, container.id);
-      await di.writeNoteItemContent(note.id, {"adf":{"version":1,"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Welcome to "},{"type":"text","text":"Yana","marks":[{"type":"em"},{"type":"strong"},{"type":"textColor","attrs":{"color":"#00b8d9"}}]},{"type":"text","text":", your easy notebook app with lots of different features!"}]}]}});
+      const note = await di.createDataItemUnderParent(
+        {
+          name: `Item ${i}/${count}`,
+          created: new Date().getTime(),
+          lastChange: new Date().getTime(),
+          tags: [],
+          kind: DataItemKind.NoteItem,
+          childIds: [],
+          noteType: 'atlaskit-editor-note',
+        } as any,
+        container.id
+      );
+      await di.writeNoteItemContent(note.id, {
+        adf: {
+          version: 1,
+          type: 'doc',
+          content: [
+            {
+              type: 'paragraph',
+              content: [
+                { type: 'text', text: 'Welcome to ' },
+                {
+                  type: 'text',
+                  text: 'Yana',
+                  marks: [{ type: 'em' }, { type: 'strong' }, { type: 'textColor', attrs: { color: '#00b8d9' } }],
+                },
+                { type: 'text', text: ', your easy notebook app with lots of different features!' },
+              ],
+            },
+          ],
+        },
+      });
     }
   }
 
   let depthContainerId = deepContainer.id;
   for (let depth = 0; depth < 100; depth++) {
-    const container = await di.createDataItemUnderParent({
-      name: `Depth ${depth}`,
-      created: new Date().getTime(),
-      lastChange: new Date().getTime(),
-      tags: [],
-      kind: DataItemKind.Collection,
-      childIds: []
-    }, depthContainerId);
-    for (let i = 0; i < 5; i++) {
-      const note = await di.createDataItemUnderParent({
-        name: `Note ${i} at Depth ${depth}`,
+    const container = await di.createDataItemUnderParent(
+      {
+        name: `Depth ${depth}`,
         created: new Date().getTime(),
         lastChange: new Date().getTime(),
         tags: [],
-        kind: DataItemKind.NoteItem,
+        kind: DataItemKind.Collection,
         childIds: [],
-        noteType: 'atlaskit-editor-note'
-      } as any, depthContainerId);
-      await di.writeNoteItemContent(note.id, {"adf":{"version":1,"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Welcome to "},{"type":"text","text":"Yana","marks":[{"type":"em"},{"type":"strong"},{"type":"textColor","attrs":{"color":"#00b8d9"}}]},{"type":"text","text":", your easy notebook app with lots of different features!"}]}]}});
+      },
+      depthContainerId
+    );
+    for (let i = 0; i < 5; i++) {
+      const note = await di.createDataItemUnderParent(
+        {
+          name: `Note ${i} at Depth ${depth}`,
+          created: new Date().getTime(),
+          lastChange: new Date().getTime(),
+          tags: [],
+          kind: DataItemKind.NoteItem,
+          childIds: [],
+          noteType: 'atlaskit-editor-note',
+        } as any,
+        depthContainerId
+      );
+      await di.writeNoteItemContent(note.id, {
+        adf: {
+          version: 1,
+          type: 'doc',
+          content: [
+            {
+              type: 'paragraph',
+              content: [
+                { type: 'text', text: 'Welcome to ' },
+                {
+                  type: 'text',
+                  text: 'Yana',
+                  marks: [{ type: 'em' }, { type: 'strong' }, { type: 'textColor', attrs: { color: '#00b8d9' } }],
+                },
+                { type: 'text', text: ', your easy notebook app with lots of different features!' },
+              ],
+            },
+          ],
+        },
+      });
     }
     depthContainerId = container.id;
   }
@@ -135,4 +196,4 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
   Alerter.Instance.alert({ content: 'Done.' });
 
   LogService.enabled = true;
-}
+};

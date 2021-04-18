@@ -11,18 +11,18 @@ export class AutoBackupService {
   // TODO queued backups is probably not required anymore as multiple parallel exports are now supported
   private isDoingBackup = false;
 
-  private queueBackup: (perform: () => Promise<any>) => void = (perform) => {
+  private queueBackup: (perform: () => Promise<any>) => void = perform => {
     this.queuedBackups.push(perform);
     if (!this.isDoingBackup) {
       this.isDoingBackup = true;
       this.performNextBackup();
     }
-  }
+  };
 
   constructor(
     private workspaces: WorkSpace[],
     private settings: SettingsObject,
-    private onFinishBackups: (time: number) => void,
+    private onFinishBackups: (time: number) => void
   ) {}
 
   public async load() {
@@ -30,14 +30,14 @@ export class AutoBackupService {
       const backup = new AutoBackup(workspace, this.settings, this.queueBackup);
       await backup.load();
       this.backups.push();
-      logger.log("Loaded workspace", [workspace.name]);
+      logger.log('Loaded workspace', [workspace.name]);
     }
   }
 
   public async unload() {
     for (const backup of this.backups) {
       await backup.unload();
-      logger.log("Unloaded workspace", [backup.workspace.name]);
+      logger.log('Unloaded workspace', [backup.workspace.name]);
     }
   }
 
@@ -45,17 +45,19 @@ export class AutoBackupService {
     const backup = new AutoBackup(workspace, this.settings, this.queueBackup);
     await backup.load();
     this.backups.push();
-    logger.log("Added workspace", [workspace.name]);
+    logger.log('Added workspace', [workspace.name]);
   }
 
   public async removeWorkspace(workspace: WorkSpace) {
-    const backup = this.backups.find(b => b.workspace.dataSourceOptions.sourcePath === workspace.dataSourceOptions.sourcePath);
+    const backup = this.backups.find(
+      b => b.workspace.dataSourceOptions.sourcePath === workspace.dataSourceOptions.sourcePath
+    );
 
     if (backup) {
       await backup.unload();
       this.backups = this.backups.filter(b => b !== backup);
     }
-    logger.log("Removed workspace", [workspace.name]);
+    logger.log('Removed workspace', [workspace.name]);
   }
 
   private async performNextBackup() {

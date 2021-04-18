@@ -30,4 +30,4 @@ export const useDataItemPreviews = (items: DataItem[]) => {
   }, [items]);
 
   return previews;
-}
+};

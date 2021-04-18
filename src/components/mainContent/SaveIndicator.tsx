@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useSettings } from '../../appdata/AppDataProvider';
 
 export const SaveIndicator: React.FC<{
-  saveIndicator?: SaveIndicatorState,
+  saveIndicator?: SaveIndicatorState;
 }> = props => {
   const settings = useSettings();
   const [saveIndicator, setSaveIndicator] = useState<SaveIndicatorState>(SaveIndicatorState.Saved);
@@ -48,6 +48,11 @@ export const SaveIndicator: React.FC<{
   }
 
   return (
-    <Tag children={saveIndicatorText} intent={saveIndicatorIntent} icon={<Icon icon={saveIndicatorIcon} iconSize={10} />} minimal />
+    <Tag
+      children={saveIndicatorText}
+      intent={saveIndicatorIntent}
+      icon={<Icon icon={saveIndicatorIcon} iconSize={10} />}
+      minimal
+    />
   );
 };

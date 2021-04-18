@@ -19,9 +19,9 @@ const TRUNCATION_ITEM = '__TRUNC_TOKEN';
 const styles = {
   expandButton: cxs({
     backgroundColor: 'transparent',
-    border: 'none'
-  })
-}
+    border: 'none',
+  }),
+};
 
 export const SideBarTree: React.FC<{
   title: string;
@@ -31,23 +31,28 @@ export const SideBarTree: React.FC<{
   const dataInterface = useDataInterface();
   const {
     sidebarNumberOfUntruncatedItems: untruncatedItemsCount,
-    sidebarOffsetPerLevel: offsetPerLevel
+    sidebarOffsetPerLevel: offsetPerLevel,
   } = useSettings();
   const [renamingItemId, setRenamingItemId] = useState<undefined | string>();
   const [hasJustCreated, setHasJustCreated] = useState(false); // Was the renaming item just created and should be opened afterwards?
   const [isExpanded, setIsExpanded] = useState(true);
-  const { items, collapse, expand, expandedIds } = useDataTree(props.rootItems, props.masterItem?.id ?? props.title.toLowerCase().replace(/\s/g, '_'));
+  const { items, collapse, expand, expandedIds } = useDataTree(
+    props.rootItems,
+    props.masterItem?.id ?? props.title.toLowerCase().replace(/\s/g, '_')
+  );
   const [untruncatedItems, setUntruncatedItems] = useState<string[]>([]); // TODO could be moved into its own hook
 
   const [treeData, setTreeData] = useState<TreeData>({
     rootId: 'root',
     items: {
       root: { id: 'root', hasChildren: false, data: {}, children: items.map(item => item.id) },
-      ...Object.fromEntries(items.map(item => [
-        item.id,
-        { id: item.id, hasChildren: item.kind === DataItemKind.Collection, data: item, children: [] }
-      ]))
-    }
+      ...Object.fromEntries(
+        items.map(item => [
+          item.id,
+          { id: item.id, hasChildren: item.kind === DataItemKind.Collection, data: item, children: [] },
+        ])
+      ),
+    },
   });
 
   useEffect(() => {
@@ -62,13 +67,19 @@ export const SideBarTree: React.FC<{
     }
   }, [renamingItemId, items]);
 
-  useEffect(() => { // TODO should be moved into its own hook
+  useEffect(() => {
+    // TODO should be moved into its own hook
     const itemIds = items.map(item => item.id);
     const newTree: TreeData = {
       rootId: 'root',
       items: {
-        root: { id: 'root', hasChildren: true, data: {}, children: !items.length? [] : props.rootItems.filter(item => itemIds.includes(item.id)).map(item => item.id) },
-      }
+        root: {
+          id: 'root',
+          hasChildren: true,
+          data: {},
+          children: !items.length ? [] : props.rootItems.filter(item => itemIds.includes(item.id)).map(item => item.id),
+        },
+      },
     };
 
     for (const item of items) {
@@ -82,9 +93,9 @@ export const SideBarTree: React.FC<{
           ...item.childIds
             .filter(child => itemIds.includes(child))
             .filter((child, idx) => idx < untruncatedItemsCount || untruncatedItems.includes(item.id)),
-          ...(shouldTruncate ? [token] : [])
+          ...(shouldTruncate ? [token] : []),
         ],
-        isExpanded: expandedIds.includes(item.id)
+        isExpanded: expandedIds.includes(item.id),
       };
 
       if (shouldTruncate) {
@@ -103,7 +114,7 @@ export const SideBarTree: React.FC<{
     expandedIds.join('___'),
     items.map(item => item.name).join('___'),
     items.map(item => item.childIds.join('___')).join('____'),
-    untruncatedItems
+    untruncatedItems,
   ]); // TODO!!
   // }, [items, expandedIds]); // TODO!!
 
@@ -119,86 +130,86 @@ export const SideBarTree: React.FC<{
           // Currently doesnt work
         }}
       />
-      {
-        isExpanded && (
-          <Tree
-            offsetPerLevel={offsetPerLevel}
-            isDragEnabled={true}
-            tree={treeData}
-            onExpand={(itemId) => expand(itemId as string)}
-            onCollapse={(itemId) => {
-              collapse(itemId as string);
-              setUntruncatedItems(utimes => utimes.filter(item => item !== itemId));
-            }}
-            onDragEnd={(source, destination) => {
-              logger.log(`onDragEnd invoked with`, [], {source, destination})
-              if (destination && destination.index !== undefined) {
-                const itemId = treeData.items[source.parentId].children[source.index] as string;
-                let originalParentId = source.parentId as string;
-                let targetParentId = destination.parentId as string;
+      {isExpanded && (
+        <Tree
+          offsetPerLevel={offsetPerLevel}
+          isDragEnabled={true}
+          tree={treeData}
+          onExpand={itemId => expand(itemId as string)}
+          onCollapse={itemId => {
+            collapse(itemId as string);
+            setUntruncatedItems(utimes => utimes.filter(item => item !== itemId));
+          }}
+          onDragEnd={(source, destination) => {
+            logger.log(`onDragEnd invoked with`, [], { source, destination });
+            if (destination && destination.index !== undefined) {
+              const itemId = treeData.items[source.parentId].children[source.index] as string;
+              let originalParentId = source.parentId as string;
+              let targetParentId = destination.parentId as string;
 
-                if (originalParentId === 'root') {
-                  originalParentId = props.masterItem?.id || 'root';
-                }
-                if (targetParentId === 'root') {
-                  targetParentId = props.masterItem?.id || 'root';
-                }
+              if (originalParentId === 'root') {
+                originalParentId = props.masterItem?.id || 'root';
+              }
+              if (targetParentId === 'root') {
+                targetParentId = props.masterItem?.id || 'root';
+              }
 
-                const targetIndex = destination.index;
-                logger.log('onDragEnd finished', [], {source, destination, itemId, originalParentId, targetParentId, targetIndex})
-                dataInterface.moveItem(itemId, originalParentId, targetParentId, targetIndex)
-              } else {
-                logger.log('Skipping onDragEnd, because destination or destination.index is undefined', [], {source, destination})
-              }
-            }}
-            renderItem={({ item, onExpand, onCollapse, provided, depth }) => {
-              if ((item.id as string).startsWith(TRUNCATION_ITEM)) {
-                const truncatedItem = (item.id as string).slice(TRUNCATION_ITEM.length);
-                return (
-                  <UntruncateItem
-                    itemCount={(item.data.truncatedItem as DataItem).childIds.length - untruncatedItemsCount}
-                    style={provided.draggableProps.style}
-                    onClick={() => setUntruncatedItems(uitems => [...uitems, truncatedItem])}
-                  >
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                    />
-                  </UntruncateItem>
-                );
-              } else {
-                return (
-                  <div
-                    ref={provided.innerRef}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                  >
-                    <SideBarTreeItem
-                      item={item.data}
-                      hasChildren={!!item.hasChildren}
-                      isExpanded={!!item.isExpanded}
-                      onExpand={() => onExpand(item.id)}
-                      onCollapse={() => onCollapse(item.id)}
-                      isRenaming={item.id === renamingItemId}
-                      hasJustCreated={item.id === renamingItemId && hasJustCreated}
-                      onCreatedItem={createdItemId => {
-                        setRenamingItemId(createdItemId);
-                        setHasJustCreated(true);
-                      }}
-                      onStartRenameItem={setRenamingItemId}
-                      onStopRenameItem={() => {
-                        setRenamingItemId(undefined);
-                        setHasJustCreated(false);
-                      }}
-                    />
-                  </div>
-                );
-              }
-            }}
-          />
-        )
-      }
+              const targetIndex = destination.index;
+              logger.log('onDragEnd finished', [], {
+                source,
+                destination,
+                itemId,
+                originalParentId,
+                targetParentId,
+                targetIndex,
+              });
+              dataInterface.moveItem(itemId, originalParentId, targetParentId, targetIndex);
+            } else {
+              logger.log('Skipping onDragEnd, because destination or destination.index is undefined', [], {
+                source,
+                destination,
+              });
+            }
+          }}
+          renderItem={({ item, onExpand, onCollapse, provided, depth }) => {
+            if ((item.id as string).startsWith(TRUNCATION_ITEM)) {
+              const truncatedItem = (item.id as string).slice(TRUNCATION_ITEM.length);
+              return (
+                <UntruncateItem
+                  itemCount={(item.data.truncatedItem as DataItem).childIds.length - untruncatedItemsCount}
+                  style={provided.draggableProps.style}
+                  onClick={() => setUntruncatedItems(uitems => [...uitems, truncatedItem])}
+                >
+                  <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} />
+                </UntruncateItem>
+              );
+            } else {
+              return (
+                <div ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
+                  <SideBarTreeItem
+                    item={item.data}
+                    hasChildren={!!item.hasChildren}
+                    isExpanded={!!item.isExpanded}
+                    onExpand={() => onExpand(item.id)}
+                    onCollapse={() => onCollapse(item.id)}
+                    isRenaming={item.id === renamingItemId}
+                    hasJustCreated={item.id === renamingItemId && hasJustCreated}
+                    onCreatedItem={createdItemId => {
+                      setRenamingItemId(createdItemId);
+                      setHasJustCreated(true);
+                    }}
+                    onStartRenameItem={setRenamingItemId}
+                    onStopRenameItem={() => {
+                      setRenamingItemId(undefined);
+                      setHasJustCreated(false);
+                    }}
+                  />
+                </div>
+              );
+            }
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -6,7 +6,7 @@ enum LogLevel {
   info,
   log,
   warn,
-  error
+  error,
 }
 
 type LogHandler = (description: string, appendedValues?: any[], subStructure?: object) => void;
@@ -21,7 +21,6 @@ export interface Logger {
   error: LogHandler;
   debug: LogHandler;
 }
-
 
 export class LogService {
   public static enabled = true;
@@ -43,9 +42,15 @@ export class LogService {
 
   public static applySettings = (settings: SettingsObject) => {
     LogService.enabled = settings.devLoggerActive;
-    LogService.whitelist = settings.devLoggerWhitelist.split('\n').map(el => el.replace(/\s/g, '')).filter(el => !!el);
-    LogService.blacklist = settings.devLoggerBlacklist.split('\n').map(el => el.replace(/\s/g, '')).filter(el => !!el);
-  }
+    LogService.whitelist = settings.devLoggerWhitelist
+      .split('\n')
+      .map(el => el.replace(/\s/g, ''))
+      .filter(el => !!el);
+    LogService.blacklist = settings.devLoggerBlacklist
+      .split('\n')
+      .map(el => el.replace(/\s/g, ''))
+      .filter(el => !!el);
+  };
 
   private static createLogger(name: string, level: LogLevel = LogLevel.log) {
     LogService.colorCounter++;
@@ -92,11 +97,14 @@ export class LogService {
       const css = [
         `color: ${color[1]}; background: ${color[0]}`,
         `color: #000; background: #fff`,
-        `color: #444; background: #fff`
-      ]
+        `color: #444; background: #fff`,
+      ];
 
       if (subStructure) {
-        console.groupCollapsed(`%c[${name}]%c: ${description}. %c${appendedValues.map(v => JSON.stringify(v))}`, ...css);
+        console.groupCollapsed(
+          `%c[${name}]%c: ${description}. %c${appendedValues.map(v => JSON.stringify(v))}`,
+          ...css
+        );
       } else {
         handler(`%c[${name}]%c: ${description}. %c${appendedValues}`, ...css);
       }
@@ -108,8 +116,8 @@ export class LogService {
         console.groupEnd();
       }
 
-      handler()
-    }
+      handler();
+    };
 
     this.loggers.push({
       name,

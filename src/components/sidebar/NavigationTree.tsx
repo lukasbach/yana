@@ -15,7 +15,7 @@ const navTreePageIndices = [
   PageIndex.StarredItems,
   PageIndex.FileItems,
   PageIndex.DraftItems,
-  PageIndex.Trash
+  PageIndex.Trash,
 ];
 
 export const NavigationTree: React.FC<{}> = props => {
@@ -25,45 +25,39 @@ export const NavigationTree: React.FC<{}> = props => {
 
   return (
     <div>
-      <SideBarTreeHeader
-        title="Yana"
-        onChangeIsExpanded={setIsExpanded}
-      />
+      <SideBarTreeHeader title="Yana" onChangeIsExpanded={setIsExpanded} />
 
-      {
-        isExpanded && (
-          <>
-            {
-              navTreePageIndices.map(idx => [idx, pages[idx]] as const).map(([idx, page]) => (
-                <SpotlightTarget name={`sidebar-navigationtree-${idx}`}>
-                  <SideBarTreeItemUi
-                    key={idx}
-                    text={page.title}
-                    isExpandable={false}
-                    isExpanded={false}
-                    onClick={() => mainContent.openInCurrentTab(idx)}
-                    icon={page.icon}
-                  />
-                </SpotlightTarget>
-              ))
-            }
-            <SideBarTreeItemUi
-              text={"Search"}
-              isExpandable={false}
-              isExpanded={false}
-              icon="search"
-              onClick={() => {
-                overlaySearch.performSearch({ buttonText: 'Open' })
-                  .then((items) => {
-                    if (items) {
-                      return mainContent.openInCurrentTab(items[0]);
-                    }
-                  })
-              }}
-            />
-          </>
-        )
-      }
+      {isExpanded && (
+        <>
+          {navTreePageIndices
+            .map(idx => [idx, pages[idx]] as const)
+            .map(([idx, page]) => (
+              <SpotlightTarget name={`sidebar-navigationtree-${idx}`}>
+                <SideBarTreeItemUi
+                  key={idx}
+                  text={page.title}
+                  isExpandable={false}
+                  isExpanded={false}
+                  onClick={() => mainContent.openInCurrentTab(idx)}
+                  icon={page.icon}
+                />
+              </SpotlightTarget>
+            ))}
+          <SideBarTreeItemUi
+            text={'Search'}
+            isExpandable={false}
+            isExpanded={false}
+            icon="search"
+            onClick={() => {
+              overlaySearch.performSearch({ buttonText: 'Open' }).then(items => {
+                if (items) {
+                  return mainContent.openInCurrentTab(items[0]);
+                }
+              });
+            }}
+          />
+        </>
+      )}
     </div>
   );
 };

@@ -7,8 +7,8 @@ export interface AtlassianNoteEditorContent {
 }
 
 export class AtlaskitNoteEditor implements EditorDefinition<'atlaskit-editor-note', AtlassianNoteEditorContent> {
-  public id = "atlaskit-editor-note" as const;
-  public name = "Note";
+  public id = 'atlaskit-editor-note' as const;
+  public name = 'Note';
   public editorComponent = EditorComponent;
   public smallPreviewComponent = SmallPreviewComponent;
   public canInsertFiles = false;
@@ -16,10 +16,10 @@ export class AtlaskitNoteEditor implements EditorDefinition<'atlaskit-editor-not
   public initializeContent(): AtlassianNoteEditorContent {
     return {
       adf: {
-        "version": 1,
-        "type": "doc",
-        "content": []
-      }
+        version: 1,
+        type: 'doc',
+        content: [],
+      },
     };
   }
 }

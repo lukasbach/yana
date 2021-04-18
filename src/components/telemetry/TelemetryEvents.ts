@@ -45,7 +45,7 @@ export const TelemetryEvents = {
   },
   Settings: {
     saveSettings: ['settings', 'settings_save'],
-    chooseTheme: ['settings', 'settings_choose_theme']
+    chooseTheme: ['settings', 'settings_choose_theme'],
   },
   Workspaces: {
     create: ['workspaces', 'workspaces_create'],
@@ -66,11 +66,11 @@ export const TelemetryEvents = {
     createItem: ['dssqlite', 'ds_create_item'],
     loadFailedBackupFine: ['dssqlite', 'ds_loading_failed_backup_fine'],
     loadFailedBackupBroken: ['dssqlite', 'ds_loading_failed_backup_failed'],
-    loadSuccess: ['dssqlite', 'ds_loading_success']
+    loadSuccess: ['dssqlite', 'ds_loading_success'],
   },
   AppNotifications: {
     timedOut: ['appnot', 'appnot_timeout'],
     dismissed: ['appnot', 'appnot_dismiss'],
     viewed: ['app_not', 'appnot_viewed'],
-  }
+  },
 } as const;

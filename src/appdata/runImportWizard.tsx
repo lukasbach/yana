@@ -1,5 +1,5 @@
 import { AppDataContextValue } from './AppDataProvider';
-import { remote } from "electron";
+import { remote } from 'electron';
 import { Alerter } from '../components/Alerter';
 import * as React from 'react';
 import { runImport } from './runImport';
@@ -9,7 +9,7 @@ export const runImportWizard = async (appDataContext: AppDataContextValue) => {
     buttonLabel: 'Import',
     properties: [],
     title: 'Choose a exported workspace',
-    filters: [{ name: 'Exported workspace', extensions: ['zip'] }]
+    filters: [{ name: 'Exported workspace', extensions: ['zip'] }],
   });
 
   if (zipResult.canceled || !zipResult.filePaths[0]) return;
@@ -23,8 +23,8 @@ export const runImportWizard = async (appDataContext: AppDataContextValue) => {
       canEscapeKeyCancel: true,
       prompt: {
         type: 'string',
-        onConfirmText: value => res(value)
-      }
+        onConfirmText: value => res(value),
+      },
     });
   });
 
@@ -42,9 +42,13 @@ export const runImportWizard = async (appDataContext: AppDataContextValue) => {
     Alerter.Instance.alert({
       confirmButtonText: 'Okay',
       cancelButtonText: 'Cancel',
-      content: <>Do you want to import the workspace into the folder
-        <pre>{ destResult.filePaths[0] }</pre>? The files will be spread
-        directly into this folder. You cannot change this later!</>,
+      content: (
+        <>
+          Do you want to import the workspace into the folder
+          <pre>{destResult.filePaths[0]}</pre>? The files will be spread directly into this folder. You cannot change
+          this later!
+        </>
+      ),
       canOutsideClickCancel: true,
       canEscapeKeyCancel: true,
       onConfirm: () => res(true),
@@ -55,14 +59,8 @@ export const runImportWizard = async (appDataContext: AppDataContextValue) => {
   if (!confirmed) return;
 
   try {
-    await runImport(
-      zipResult.filePaths[0],
-      workspaceName,
-      destResult.filePaths[0],
-      appDataContext,
-      console.log
-    );
-  } catch(e) {
+    await runImport(zipResult.filePaths[0], workspaceName, destResult.filePaths[0], appDataContext, console.log);
+  } catch (e) {
     Alerter.Instance.alert({
       confirmButtonText: 'Okay',
       content: 'Error: ' + e.message,
@@ -70,4 +68,4 @@ export const runImportWizard = async (appDataContext: AppDataContextValue) => {
       canEscapeKeyCancel: true,
     });
   }
-}
+};

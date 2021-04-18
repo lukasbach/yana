@@ -5,7 +5,7 @@ import { Button, Tooltip } from '@blueprintjs/core';
 import { DetailedListContainer } from '../common/DetailedListContainer';
 import { DetailedListItem } from '../common/DetailedListItem';
 import { useAppData } from '../../appdata/AppDataProvider';
-import { remote } from "electron";
+import { remote } from 'electron';
 import { AppDataExportService } from '../../appdata/AppDataExportService';
 import { runRemoveWorkspaceWizard } from '../../appdata/runRemoveWorkspaceWizard';
 import { runImportWizard } from '../../appdata/runImportWizard';
@@ -18,105 +18,86 @@ export const ManageWorkspaces: React.FC<{}> = props => {
   const appData = useAppData();
 
   return (
-    <PageContainer header={(
-      <PageHeader
-        title="Manage workspaces"
-        icon="cog"
-      />
-    )}>
+    <PageContainer header={<PageHeader title="Manage workspaces" icon="cog" />}>
       <DetailedListContainer>
-        {
-          appData.workspaces.map(workspace => (
-            <DetailedListItem
-              key={workspace.dataSourceOptions.sourcePath}
-              title={workspace.name}
-              subtitle={workspace.dataSourceOptions.sourcePath}
-              icon={'database'}
-              actionButtons={(
-                <>
-                  <Tooltip content="Move workspace up" position={'bottom'}>
-                    <Button
-                      outlined
-                      icon={'chevron-up'}
-                      onClick={() => appData.moveWorkspace(workspace, 'up')}
-                    />
-                  </Tooltip>
-                  <Tooltip content="Move workspace down" position={'bottom'}>
-                    <Button
-                      outlined
-                      icon={'chevron-down'}
-                      onClick={() => appData.moveWorkspace(workspace, 'down')}
-                    />
-                  </Tooltip>
-                  <Tooltip content="Rename workspace" position={'bottom'}>
-                    <Button
-                      outlined
-                      icon={'edit'}
-                      onClick={() => {
-                        Alerter.Instance.alert({
-                          confirmButtonText: 'Okay',
-                          content: 'Choose a new name for the workspace:',
-                          canOutsideClickCancel: true,
-                          canEscapeKeyCancel: true,
-                          prompt: {
-                            type: 'string',
-                            defaultValue: workspace.name,
-                            placeholder: 'Workspace name',
-                            onConfirmText: async newName => {
-                              try {
-                                await appData.renameWorkspace(workspace, newName)
-                              } catch (e) {
-                                Alerter.Instance.alert({
-                                  confirmButtonText: 'Okay',
-                                  content: 'Error: ' + e.message,
-                                  canOutsideClickCancel: true,
-                                  canEscapeKeyCancel: true,
-                                });
-                              }
+        {appData.workspaces.map(workspace => (
+          <DetailedListItem
+            key={workspace.dataSourceOptions.sourcePath}
+            title={workspace.name}
+            subtitle={workspace.dataSourceOptions.sourcePath}
+            icon={'database'}
+            actionButtons={
+              <>
+                <Tooltip content="Move workspace up" position={'bottom'}>
+                  <Button outlined icon={'chevron-up'} onClick={() => appData.moveWorkspace(workspace, 'up')} />
+                </Tooltip>
+                <Tooltip content="Move workspace down" position={'bottom'}>
+                  <Button outlined icon={'chevron-down'} onClick={() => appData.moveWorkspace(workspace, 'down')} />
+                </Tooltip>
+                <Tooltip content="Rename workspace" position={'bottom'}>
+                  <Button
+                    outlined
+                    icon={'edit'}
+                    onClick={() => {
+                      Alerter.Instance.alert({
+                        confirmButtonText: 'Okay',
+                        content: 'Choose a new name for the workspace:',
+                        canOutsideClickCancel: true,
+                        canEscapeKeyCancel: true,
+                        prompt: {
+                          type: 'string',
+                          defaultValue: workspace.name,
+                          placeholder: 'Workspace name',
+                          onConfirmText: async newName => {
+                            try {
+                              await appData.renameWorkspace(workspace, newName);
+                            } catch (e) {
+                              Alerter.Instance.alert({
+                                confirmButtonText: 'Okay',
+                                content: 'Error: ' + e.message,
+                                canOutsideClickCancel: true,
+                                canEscapeKeyCancel: true,
+                              });
                             }
-                          }
-                        });
-                      }}
-                    />
-                  </Tooltip>
-                  <Tooltip content="Switch to workspace" position={'bottom'}>
-                    <Button
-                      outlined
-                      icon={'chevron-right'}
-                      onClick={() => appData.setWorkSpace(workspace)}
-                    />
-                  </Tooltip>
-                  <Tooltip content="Export workspace to file" position={'bottom'}>
-                    <Button
-                      outlined
-                      icon={'export'}
-                      onClick={async () => {
-                        const result = await remote.dialog.showSaveDialog({
-                          buttonLabel: 'Export',
-                          properties: ['createDirectory', 'showOverwriteConfirmation'],
-                          title: 'Choose a location to export your workspace to',
-                          defaultPath: workspace.name.toLowerCase().replace(/\s/g, '_') + '.zip',
-                        });
-                        if (result.filePath) {
-                          await AppDataExportService.exportTo(result.filePath, workspace, console.log)
-                          remote.shell.showItemInFolder(result.filePath);
-                        }
-                      }}
-                    />
-                  </Tooltip>
-                  <Tooltip content="Delete workspace" position={'bottom'}>
-                    <Button
-                      outlined
-                      intent="danger"
-                      icon={'trash'}
-                      onClick={async () => runRemoveWorkspaceWizard(workspace, appData)}
-                    />
-                  </Tooltip>
-                </>
-              )}
-            />
-          ))
-        }
+                          },
+                        },
+                      });
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip content="Switch to workspace" position={'bottom'}>
+                  <Button outlined icon={'chevron-right'} onClick={() => appData.setWorkSpace(workspace)} />
+                </Tooltip>
+                <Tooltip content="Export workspace to file" position={'bottom'}>
+                  <Button
+                    outlined
+                    icon={'export'}
+                    onClick={async () => {
+                      const result = await remote.dialog.showSaveDialog({
+                        buttonLabel: 'Export',
+                        properties: ['createDirectory', 'showOverwriteConfirmation'],
+                        title: 'Choose a location to export your workspace to',
+                        defaultPath: workspace.name.toLowerCase().replace(/\s/g, '_') + '.zip',
+                      });
+                      if (result.filePath) {
+                        await AppDataExportService.exportTo(result.filePath, workspace, console.log);
+                        remote.shell.showItemInFolder(result.filePath);
+                      }
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip content="Delete workspace" position={'bottom'}>
+                  <Button
+                    outlined
+                    intent="danger"
+                    icon={'trash'}
+                    onClick={async () => runRemoveWorkspaceWizard(workspace, appData)}
+                  />
+                </Tooltip>
+              </>
+            }
+          />
+        ))}
       </DetailedListContainer>
 
       <DetailedListContainer>

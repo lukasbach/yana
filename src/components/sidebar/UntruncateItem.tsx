@@ -2,9 +2,9 @@ import * as React from 'react';
 import { SideBarTreeItemUi } from './SideBarTreeItemUi';
 
 export const UntruncateItem: React.FC<{
-  itemCount: number,
-  onClick: () => void,
-  style?: React.CSSProperties,
+  itemCount: number;
+  onClick: () => void;
+  style?: React.CSSProperties;
 }> = props => {
   return (
     <div style={props.style}>
@@ -14,7 +14,7 @@ export const UntruncateItem: React.FC<{
         onClick={props.onClick}
         isExpandable={false}
       >
-        { props.children }
+        {props.children}
       </SideBarTreeItemUi>
     </div>
   );

@@ -13,9 +13,17 @@ import { useMemo, useState } from 'react';
 import { useTelemetry } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
-enum ActionKind { BackgroundClick, MiddleClick, TitleClick }
+enum ActionKind {
+  BackgroundClick,
+  MiddleClick,
+  TitleClick,
+}
 
-const getActionPropertyFromSettings = (actionKind: ActionKind, dataItemKind: DataItemKind, settings: SettingsObject) => {
+const getActionPropertyFromSettings = (
+  actionKind: ActionKind,
+  dataItemKind: DataItemKind,
+  settings: SettingsObject
+) => {
   switch (actionKind) {
     case ActionKind.BackgroundClick:
       switch (dataItemKind) {
@@ -48,19 +56,19 @@ const getActionPropertyFromSettings = (actionKind: ActionKind, dataItemKind: Dat
       }
       break;
   }
-}
+};
 
 export const SideBarTreeItem: React.FC<{
-  item: DataItem,
-  hasChildren: boolean,
-  isExpanded: boolean,
-  onExpand: () => void,
-  onCollapse: () => void,
-  isRenaming: boolean,
-  hasJustCreated: boolean,
-  onCreatedItem: (id: string) => void,
-  onStartRenameItem: (id?: string) => void,
-  onStopRenameItem: () => void,
+  item: DataItem;
+  hasChildren: boolean;
+  isExpanded: boolean;
+  onExpand: () => void;
+  onCollapse: () => void;
+  isRenaming: boolean;
+  hasJustCreated: boolean;
+  onCreatedItem: (id: string) => void;
+  onStartRenameItem: (id?: string) => void;
+  onStopRenameItem: () => void;
 }> = props => {
   const dataInterface = useDataInterface();
   const mainContent = useMainContentContext();
@@ -88,7 +96,7 @@ export const SideBarTreeItem: React.FC<{
         }
         break;
     }
-  }
+  };
 
   const menu = (
     <DataItemContextMenu
@@ -118,15 +126,15 @@ export const SideBarTreeItem: React.FC<{
 
   const clickAction = useMemo(
     () => createOnAction(getActionPropertyFromSettings(ActionKind.BackgroundClick, item.kind, settings)),
-    [item.kind, settings],
+    [item.kind, settings]
   );
   const middleClickAction = useMemo(
     () => createOnAction(getActionPropertyFromSettings(ActionKind.MiddleClick, item.kind, settings)),
-    [item.kind, settings],
+    [item.kind, settings]
   );
   const titleClickAction = useMemo(
     () => createOnAction(getActionPropertyFromSettings(ActionKind.TitleClick, item.kind, settings)),
-    [item.kind, settings],
+    [item.kind, settings]
   );
 
   return (

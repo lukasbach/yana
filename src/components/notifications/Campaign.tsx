@@ -25,9 +25,11 @@ export const Campaign: React.FC<{}> = props => {
       dontRenderIfLoading={true}
       weighted={true}
       ignore={['yana']}
-      render={( campaign ) => (
+      render={campaign => (
         <Button
-          small={true} minimal={true} icon="link"
+          small={true}
+          minimal={true}
+          icon="link"
           onClick={() => {
             if (campaign) {
               remote.shell.openExternal(campaign.url);
@@ -35,7 +37,7 @@ export const Campaign: React.FC<{}> = props => {
           }}
         >
           <span className={styles.text}>
-            { campaign?.product }: {campaign?.short}
+            {campaign?.product}: {campaign?.short}
           </span>
         </Button>
       )}

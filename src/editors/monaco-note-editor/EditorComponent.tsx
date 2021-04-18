@@ -18,12 +18,12 @@ const styles = {
   container: cxs({
     height: '100%',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   }),
   header: cxs({
     height: '36px',
     margin: '0 16px',
-    textAlign: 'right'
+    textAlign: 'right',
   }),
   editorContainer: cxs({
     position: 'relative',
@@ -34,12 +34,84 @@ const styles = {
       top: 0,
       left: 0,
       right: 0,
-      bottom: 0
-    }
-  })
+      bottom: 0,
+    },
+  }),
 };
 
-const languages = ["Text","abap","aes","apex","azcli","bat","c","cameligo","clojure","coffeescript","cpp","csharp","csp","css","dart","dockerfile","fsharp","go","graphql","handlebars","hcl","html","ini","java","javascript","json","julia","kotlin","less","lexon","lua","markdown","mips","msdax","mysql","objective-c","pascal","pascaligo","perl","pgsql","php","plaintext","postiats","powerquery","powershell","pug","python","r","razor","redis","redshift","restructuredtext","ruby","rust","sb","scala","scheme","scss","shell","sol","sql","st","swift","systemverilog","tcl","twig","typescript","vb","verilog","xml","yaml"];
+const languages = [
+  'Text',
+  'abap',
+  'aes',
+  'apex',
+  'azcli',
+  'bat',
+  'c',
+  'cameligo',
+  'clojure',
+  'coffeescript',
+  'cpp',
+  'csharp',
+  'csp',
+  'css',
+  'dart',
+  'dockerfile',
+  'fsharp',
+  'go',
+  'graphql',
+  'handlebars',
+  'hcl',
+  'html',
+  'ini',
+  'java',
+  'javascript',
+  'json',
+  'julia',
+  'kotlin',
+  'less',
+  'lexon',
+  'lua',
+  'markdown',
+  'mips',
+  'msdax',
+  'mysql',
+  'objective-c',
+  'pascal',
+  'pascaligo',
+  'perl',
+  'pgsql',
+  'php',
+  'plaintext',
+  'postiats',
+  'powerquery',
+  'powershell',
+  'pug',
+  'python',
+  'r',
+  'razor',
+  'redis',
+  'redshift',
+  'restructuredtext',
+  'ruby',
+  'rust',
+  'sb',
+  'scala',
+  'scheme',
+  'scss',
+  'shell',
+  'sol',
+  'sql',
+  'st',
+  'swift',
+  'systemverilog',
+  'tcl',
+  'twig',
+  'typescript',
+  'vb',
+  'verilog',
+  'xml',
+  'yaml',
+];
 
 export const EditorComponent: React.FC<EditorComponentProps<MonacoNoteEditorContent>> = props => {
   const settings = useSettings();
@@ -59,17 +131,20 @@ export const EditorComponent: React.FC<EditorComponentProps<MonacoNoteEditorCont
     props.onRegister(async () => currentNoteValue.current);
   }, []);
 
-  useEffect(() => () => {
-    props.onDismount(currentNoteValue.current);
-  }, []);
+  useEffect(
+    () => () => {
+      props.onDismount(currentNoteValue.current);
+    },
+    []
+  );
 
   useEffect(() => {
     if (monacoRef.current) {
       monacoRef.current.languages.typescript.typescriptDefaults.setCompilerOptions({
         ...monacoRef.current?.languages.typescript.typescriptDefaults.getCompilerOptions(),
-         jsx: 2,
-         jsxFactory: 'React.createElement',
-         reactNamespace: 'React',
+        jsx: 2,
+        jsxFactory: 'React.createElement',
+        reactNamespace: 'React',
       });
       monacoRef.current.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
         noSemanticValidation: !settings.editorMonacoSemanticChecking,
@@ -97,7 +172,7 @@ export const EditorComponent: React.FC<EditorComponentProps<MonacoNoteEditorCont
           options={languages}
           value={language}
           onChange={(e: any) => {
-            setLanguage(e.target.value === "Text" ? undefined : e.target.value);
+            setLanguage(e.target.value === 'Text' ? undefined : e.target.value);
             props.onChange();
           }}
         />
@@ -109,10 +184,12 @@ export const EditorComponent: React.FC<EditorComponentProps<MonacoNoteEditorCont
             theme={settings.editorMonacoTheme}
             value={content}
             options={{
-              minimap: {enabled: settings.editorMonacoMinimap},
+              minimap: { enabled: settings.editorMonacoMinimap },
               renderControlCharacters: settings.editorMonacoRenderControlChars,
               renderWhitespace: settings.editorMonacoRenderWhitespace as any,
-              rulers: (!!settings.editorMonacoRuler && settings.editorMonacoRuler !== 0 && [settings.editorMonacoRuler]) || undefined,
+              rulers:
+                (!!settings.editorMonacoRuler && settings.editorMonacoRuler !== 0 && [settings.editorMonacoRuler]) ||
+                undefined,
               tabSize: settings.editorMonacoTabSize,
               wordWrap: settings.editorMonacoWordWrap as any,
             }}

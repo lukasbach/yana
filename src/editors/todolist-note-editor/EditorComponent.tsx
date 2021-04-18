@@ -11,7 +11,7 @@ import * as monacoEditor from 'monaco-editor';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { useScreenView } from '../../components/telemetry/useScreenView';
 import { TodoListNoteEditorContent } from './TodolistNoteEditor';
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { ListItem } from './components/ListItem';
 import { ListItemUi } from './components/ListItemUi';
 import { v4 as uuid } from 'uuid';
@@ -64,9 +64,12 @@ export const EditorComponent: React.FC<EditorComponentProps<TodoListNoteEditorCo
     props.onRegister(async () => currentNoteValue.current);
   }, []);
 
-  useEffect(() => () => {
-    props.onDismount(currentNoteValue.current);
-  }, []);
+  useEffect(
+    () => () => {
+      props.onDismount(currentNoteValue.current);
+    },
+    []
+  );
 
   return (
     <div className={styles.container}>
@@ -75,7 +78,7 @@ export const EditorComponent: React.FC<EditorComponentProps<TodoListNoteEditorCo
           setSortCriterium(criterium);
           setSortAsc(asc);
           setContent(content => ({
-            items: content.items.sort((a, b) => criterium.compare(a, b) * (asc ? 1 : -1))
+            items: content.items.sort((a, b) => criterium.compare(a, b) * (asc ? 1 : -1)),
           }));
         }}
         toggleHideCompletedItems={() => setHideCompletedItems(x => !x)}
@@ -85,30 +88,33 @@ export const EditorComponent: React.FC<EditorComponentProps<TodoListNoteEditorCo
         totalItems={content.items.length}
         completedItems={content.items.filter(i => (i.tickedOn || 0) > 0).length}
       />
-      <DragDropContext onDragEnd={(result, provided) => {
-        setContent(content => ({
-          items: !result.destination ? content.items : reorder(content.items, result.source.index, result.destination.index)
-        }));
-        setSortCriterium(undefined);
-        setSortAsc(false);
-      }}>
+      <DragDropContext
+        onDragEnd={(result, provided) => {
+          setContent(content => ({
+            items: !result.destination
+              ? content.items
+              : reorder(content.items, result.source.index, result.destination.index),
+          }));
+          setSortCriterium(undefined);
+          setSortAsc(false);
+        }}
+      >
         <Droppable droppableId="droppable">
           {(provided, snapshot) => (
-            <div
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {content.items.filter(item => !hideCompletedItems || !item.tickedOn).map((item, index) => (
-                <ListItem
-                  item={item}
-                  index={index}
-                  onChangeItem={changedItem => {
-                    setContent(content => ({
-                      items: content.items.map((old, idx) => idx === index ? changedItem : old)
-                    }))
-                  }}
-                />
-              ))}
+            <div {...provided.droppableProps} ref={provided.innerRef}>
+              {content.items
+                .filter(item => !hideCompletedItems || !item.tickedOn)
+                .map((item, index) => (
+                  <ListItem
+                    item={item}
+                    index={index}
+                    onChangeItem={changedItem => {
+                      setContent(content => ({
+                        items: content.items.map((old, idx) => (idx === index ? changedItem : old)),
+                      }));
+                    }}
+                  />
+                ))}
               {provided.placeholder}
             </div>
           )}
@@ -128,10 +134,10 @@ export const EditorComponent: React.FC<EditorComponentProps<TodoListNoteEditorCo
                 description: '',
                 starred: false,
                 steps: [],
-                tickedOn: undefined
-              }
-            ]
-          }))
+                tickedOn: undefined,
+              },
+            ],
+          }));
         }}
       />
     </div>

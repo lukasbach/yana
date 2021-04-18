@@ -13,7 +13,7 @@ import { undup } from '../../utils';
 import { useTheme } from '../../common/theming';
 
 export interface SpotlightContextValue {
-  startScenario: (scenario: SpotlightScenarioId, force?: boolean) => void,
+  startScenario: (scenario: SpotlightScenarioId, force?: boolean) => void;
 }
 
 export const SpotlightContext = React.createContext<SpotlightContextValue>(null as any);
@@ -37,27 +37,29 @@ export const SpotlightContainer: React.FC<{}> = props => {
         mainContent.newTab(PageIndex.Home);
       }
     }
-  }, [])
+  }, []);
 
   return (
     <SpotlightManager>
-      <SpotlightContext.Provider value={{
-        startScenario: (scenarioId, force) => {
-          if (force || !appData.settings.completedSpotlights.includes(scenarioId)) {
-            setStep(0);
-            setScenario(scenarioId);
-          }
+      <SpotlightContext.Provider
+        value={{
+          startScenario: (scenarioId, force) => {
+            if (force || !appData.settings.completedSpotlights.includes(scenarioId)) {
+              setStep(0);
+              setScenario(scenarioId);
+            }
 
-          if (force) {
-            telemetry.trackEvent(...TelemetryEvents.Tutorial.restart);
-          }
-        }
-      }}>
-        { props.children }
+            if (force) {
+              telemetry.trackEvent(...TelemetryEvents.Tutorial.restart);
+            }
+          },
+        }}
+      >
+        {props.children}
 
-        { scenario && (
+        {scenario && (
           <SpotlightTransition>
-            { (() => {
+            {(() => {
               let scenarioObj: SpotlightScenario;
 
               switch (scenario) {
@@ -74,10 +76,7 @@ export const SpotlightContainer: React.FC<{}> = props => {
               const completeScenario = async () => {
                 await appData.saveSettings({
                   ...appData.settings,
-                  completedSpotlights: undup([
-                    ...appData.settings.completedSpotlights,
-                    scenario
-                  ])
+                  completedSpotlights: undup([...appData.settings.completedSpotlights, scenario]),
                 });
               };
 
@@ -85,26 +84,34 @@ export const SpotlightContainer: React.FC<{}> = props => {
                 <Comp
                   nextStep={nextStep}
                   previousStep={prevStep}
-                  defaultActions={[
-                    step === scenarioObj.steps.length - 1 && { text: 'Got it!', onClick: async () => {
-                      await completeScenario();
-                      setScenario(undefined);
-                      setStep(0);
-                      telemetry.trackEvent(...TelemetryEvents.Tutorial.complete);
-                    }},
-                    step < scenarioObj.steps.length - 1 && { text: 'Next', onClick: nextStep },
-                    step > 0 && { text: 'Back', onClick: prevStep },
-                    step === 0 && { text: 'Skip tutorial', onClick: async () => {
-                      await completeScenario();
-                      setScenario(undefined);
-                      setStep(0);
-                      telemetry.trackEvent(...TelemetryEvents.Tutorial.skip);
-                    }},
-                  ].filter(x => !!x) as any}
+                  defaultActions={
+                    [
+                      step === scenarioObj.steps.length - 1 && {
+                        text: 'Got it!',
+                        onClick: async () => {
+                          await completeScenario();
+                          setScenario(undefined);
+                          setStep(0);
+                          telemetry.trackEvent(...TelemetryEvents.Tutorial.complete);
+                        },
+                      },
+                      step < scenarioObj.steps.length - 1 && { text: 'Next', onClick: nextStep },
+                      step > 0 && { text: 'Back', onClick: prevStep },
+                      step === 0 && {
+                        text: 'Skip tutorial',
+                        onClick: async () => {
+                          await completeScenario();
+                          setScenario(undefined);
+                          setStep(0);
+                          telemetry.trackEvent(...TelemetryEvents.Tutorial.skip);
+                        },
+                      },
+                    ].filter(x => !!x) as any
+                  }
                   theme={theme}
                 />
               );
-            })() }
+            })()}
           </SpotlightTransition>
         )}
       </SpotlightContext.Provider>

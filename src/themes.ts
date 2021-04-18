@@ -8,7 +8,7 @@ export const themes: Theme[] = [
     sidebarColor: '#d6dde4',
     sidebarTextColor: '#3a4149',
     sidebarHoverColor: '#9fb0c2',
-    topBarColor: '#2370b9'
+    topBarColor: '#2370b9',
   },
   {
     title: 'Crunchy Carrot',
@@ -16,7 +16,7 @@ export const themes: Theme[] = [
     sidebarColor: '#EED6C4',
     sidebarTextColor: '#66370D',
     sidebarHoverColor: '#DFB99D',
-    topBarColor: '#B95D23'
+    topBarColor: '#B95D23',
   },
   {
     title: 'Luxurious Apartment',

@@ -46,11 +46,12 @@ export type DataSourceActionResult = void;
 export enum SearchQuerySortColumn {
   Name = 'name',
   Created = 'created',
-  LastChange = 'lastChange'
+  LastChange = 'lastChange',
 }
 
 export enum SearchQuerySortDirection {
-  Ascending = 'asc', Descending = 'desc'
+  Ascending = 'asc',
+  Descending = 'desc',
 }
 
 export interface SearchQuery {

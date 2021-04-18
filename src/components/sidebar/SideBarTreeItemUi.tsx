@@ -19,14 +19,14 @@ const styles = {
     transition: '.1s all ease',
     ':hover': {
       '> .more': {
-        opacity: 1
-      }
-    }
+        opacity: 1,
+      },
+    },
   }),
   itemContainerActive: cxs({
     backgroundColor: 'white',
     '> .more': {
-      opacity: 1
+      opacity: 1,
     },
     ' input': {
       color: 'black !important',
@@ -34,14 +34,14 @@ const styles = {
   }),
   chevronContainer: cxs({
     width: '18px',
-    cursor: 'pointer'
+    cursor: 'pointer',
   }),
   textContainer: cxs({
     flexGrow: 1,
     display: 'flex',
     '> .bp3-icon': {
-      marginRight: '4px'
-    }
+      marginRight: '4px',
+    },
   }),
   nameContainer: cxs({
     position: 'relative',
@@ -55,8 +55,8 @@ const styles = {
     bottom: 0,
     '> span:not(.bp3-icon)': {
       ':hover': {
-        textDecoration: 'underline'
-      }
+        textDecoration: 'underline',
+      },
     },
   }),
   contextMenuContainer: cxs({
@@ -71,7 +71,7 @@ const styles = {
       border: 'none',
       backgroundColor: 'transparent',
       color: 'white',
-      outline: 'none'
+      outline: 'none',
     },
     '> button': {
       border: 'none',
@@ -79,11 +79,11 @@ const styles = {
       color: 'inherit',
       cursor: 'pointer',
       ':hover': {
-        color: 'white'
-      }
-    }
-  })
-}
+        color: 'white',
+      },
+    },
+  }),
+};
 
 export const SideBarTreeItemUi: React.FC<{
   text: string;
@@ -127,14 +127,15 @@ export const SideBarTreeItemUi: React.FC<{
           padding: settings.sidebarItemPadding,
           ':hover': {
             backgroundColor: !props.isActive ? theme.sidebarHoverColor : undefined,
-          }
+          },
         }),
         isActive && styles.itemContainerActive,
-        isActive && cxs({
-          color: (isDark ? theme.sidebarColor : Color(theme.sidebarColor).darken(.5)) + ' !important'
-        })
+        isActive &&
+          cxs({
+            color: (isDark ? theme.sidebarColor : Color(theme.sidebarColor).darken(0.5)) + ' !important',
+          })
       )}
-      onClick={(e) => {
+      onClick={e => {
         props.onClick?.();
       }}
       onMouseDown={e => {
@@ -147,22 +148,12 @@ export const SideBarTreeItemUi: React.FC<{
       }}
       {...contextMenuProps}
     >
-      <div
-        className={styles.chevronContainer}
-      >
-        {
-          props.isExpandable && (
-            <Icon
-              icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
-            />
-          )
-        }
+      <div className={styles.chevronContainer}>
+        {props.isExpandable && <Icon icon={props.isExpanded ? 'chevron-down' : 'chevron-right'} />}
       </div>
 
-      <div
-        className={styles.textContainer}
-      >
-        { props.waiting ? (
+      <div className={styles.textContainer}>
+        {props.waiting ? (
           <>
             <Spinner size={16} />
             &nbsp;
@@ -170,70 +161,58 @@ export const SideBarTreeItemUi: React.FC<{
         ) : (
           <Icon icon={props.icon} color={props.iconColor} />
         )}
-        {
-          props.isRenaming ? (
-            <form
-              className={styles.nameChangeContainer}
-              onSubmit={() => props.onRename?.(name)}
-              onClick={e => e.stopPropagation()}
-            >
-              <input
-                ref={renameInputRef}
-                value={name}
-                onChange={(e: any) => setName(e.target.value)}
-                style={{
-                  color: isDark ? 'white' : 'black'
-                }}
-              />
-              <button type="submit">
-                <Icon icon="tick" />
-              </button>
-            </form>
-          ) : (
-            <div className={styles.nameContainer}>
-              <span
-                className={cx(Classes.TEXT_OVERFLOW_ELLIPSIS, styles.nameContainerInner)}
-              >
-                <span
-                  onClick={e => {
-                    e.stopPropagation();
-                    if (props.onTitleClick) {
-                      props.onTitleClick();
-                    } else {
-                      props.onClick?.();
-                    }
-                  }}
-                >
-                  { props.text }
-                  { props.children }
-                </span>
-              </span>
-            </div>
-          )
-        }
-      </div>
-
-      {
-        props.menu && !props.isRenaming && (
-          <div
-            className={cx(
-              styles.contextMenuContainer,
-              'more'
-            )}
+        {props.isRenaming ? (
+          <form
+            className={styles.nameChangeContainer}
+            onSubmit={() => props.onRename?.(name)}
             onClick={e => e.stopPropagation()}
           >
-            <Popover
-              content={props.menu}
-              onOpening={() => setIsActive(true)}
-              onClose={() => setIsActive(props.isActive || false)}
-              position={'bottom'}
-              minimal
-            >
-              <Icon icon={'more'} />
-            </Popover>
+            <input
+              ref={renameInputRef}
+              value={name}
+              onChange={(e: any) => setName(e.target.value)}
+              style={{
+                color: isDark ? 'white' : 'black',
+              }}
+            />
+            <button type="submit">
+              <Icon icon="tick" />
+            </button>
+          </form>
+        ) : (
+          <div className={styles.nameContainer}>
+            <span className={cx(Classes.TEXT_OVERFLOW_ELLIPSIS, styles.nameContainerInner)}>
+              <span
+                onClick={e => {
+                  e.stopPropagation();
+                  if (props.onTitleClick) {
+                    props.onTitleClick();
+                  } else {
+                    props.onClick?.();
+                  }
+                }}
+              >
+                {props.text}
+                {props.children}
+              </span>
+            </span>
           </div>
-        )
-      }
+        )}
+      </div>
+
+      {props.menu && !props.isRenaming && (
+        <div className={cx(styles.contextMenuContainer, 'more')} onClick={e => e.stopPropagation()}>
+          <Popover
+            content={props.menu}
+            onOpening={() => setIsActive(true)}
+            onClose={() => setIsActive(props.isActive || false)}
+            position={'bottom'}
+            minimal
+          >
+            <Icon icon={'more'} />
+          </Popover>
+        </div>
+      )}
     </div>
   );
 };

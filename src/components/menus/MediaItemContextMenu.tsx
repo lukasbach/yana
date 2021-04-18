@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { DataItem, MediaItem } from '../../types';
 import { MenuRenderer } from './types';
-import {
-  MainContentContextType,
-} from '../mainContent/context';
+import { MainContentContextType } from '../mainContent/context';
 import { DataInterface } from '../../datasource/DataInterface';
 import { createDeletionItems, createOpenItems, createOrganizeItems, createRenameItems } from './commonItems';
 import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
@@ -29,7 +27,7 @@ export const MediaItemContextMenu: React.FC<{
           ...createOrganizeItems(dataInterface, overlaySearch, item),
           'divider',
           ...createDeletionItems(dataInterface, item),
-        ]
+        ],
       }}
     />
   );

@@ -17,7 +17,7 @@ let isQuitting = false;
     await updates.load();
     await updates.runAutoUpdateIfSettingsSet();
   } else {
-    console.log("Skipping potential updates, dev mode.");
+    console.log('Skipping potential updates, dev mode.');
   }
 })();
 
@@ -50,7 +50,7 @@ app.on('ready', async () => {
     mainWindow.loadURL(`http://localhost:4000`);
     // mainWindow.webContents.openDevTools();
   } else {
-    const serve = serveStatic(path.join(app.getAppPath(), '/app/'), { 'index': ['index.html', 'index.htm'] })
+    const serve = serveStatic(path.join(app.getAppPath(), '/app/'), { index: ['index.html', 'index.htm'] });
 
     const server = http.createServer((req, res) => {
       serve(req as any, res as any, finalhandler as any);
@@ -71,13 +71,13 @@ app.on('ready', async () => {
       });
       ipcMain.emit(IpcChannel.InitiateQuit);
     }
-  })
+  });
 
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 
-  mainWindow.webContents.on('new-window', function(e, url) {
+  mainWindow.webContents.on('new-window', function (e, url) {
     e.preventDefault();
     shell.openExternal(url);
   });
@@ -93,4 +93,3 @@ app.allowRendererProcessReuse = false;
 // },2)
 
 // https://github.com/electron/electron/issues/19554
-

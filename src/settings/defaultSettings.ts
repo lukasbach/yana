@@ -1,5 +1,5 @@
 import { SettingsObject, SideBarItemAction, SidebarPadding } from './types';
-import path from "path";
+import path from 'path';
 import { getElectronPath } from '../utils';
 import { defaultTheme } from '../common/theming';
 

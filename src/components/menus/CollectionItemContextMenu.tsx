@@ -7,7 +7,8 @@ import {
   createDeletionItems,
   createMetaItems,
   createNewChildsItems,
-  createOpenItems, createOrganizeItems,
+  createOpenItems,
+  createOrganizeItems,
   createRenameItems,
 } from './commonItems';
 import { OverlaySearchContextValue } from '../overlaySearch/OverlaySearchProvider';
@@ -37,7 +38,7 @@ export const CollectionItemContextMenu: React.FC<{
           ...createOrganizeItems(dataInterface, overlaySearch, item),
           'divider',
           ...createDeletionItems(dataInterface, item),
-        ]
+        ],
       }}
     />
   );

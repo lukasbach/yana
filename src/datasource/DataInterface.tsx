@@ -14,7 +14,7 @@ export enum ItemChangeEventReason {
   Created = 'created',
   ChangedNoteContents = 'changed_contents',
   Removed = 'removed',
-  Changed = 'changed'
+  Changed = 'changed',
 }
 
 export interface ItemChangeEvent {
@@ -43,7 +43,7 @@ export class DataInterface implements AbstractDataSource {
     public dataSource: AbstractDataSource,
     private editors: EditorRegistry,
     private cacheLength: number = 50,
-    private devtools?: DevtoolsContextType,
+    private devtools?: DevtoolsContextType
   ) {
     if (devtools) {
       this.onChangeItems.on(() => devtools.increaseCounter('DI onChangeItems'));
@@ -52,21 +52,21 @@ export class DataInterface implements AbstractDataSource {
   }
 
   public async load() {
-    logger.log("load", [], {dataInterface: this});
+    logger.log('load', [], { dataInterface: this });
     await this.dataSource.load();
-    if (!await this.dataSource.getStructure('tags')) {
+    if (!(await this.dataSource.getStructure('tags'))) {
       await this.dataSource.storeStructure('tags', {});
     }
-    this.persistInterval = setInterval(() => this.persist(), 10000) as unknown as number;
+    this.persistInterval = (setInterval(() => this.persist(), 10000) as unknown) as number;
   }
 
   public async reload() {
-    logger.log("reload", [], {dataInterface: this});
+    logger.log('reload', [], { dataInterface: this });
     await this.dataSource.reload();
   }
 
   public async unload() {
-    logger.log("unload", [], {dataInterface: this});
+    logger.log('unload', [], { dataInterface: this });
     await this.dataSource.unload();
     if (this.persistInterval) {
       clearInterval(this.persistInterval);
@@ -109,7 +109,7 @@ export class DataInterface implements AbstractDataSource {
   public async getDataItem<K extends DataItemKind>(id: string): Promise<DataItem<K>> {
     this.devtools?.increaseCounter('DI getDataItem');
     const item = await this.tryCache(id, () => this.dataSource.getDataItem(id));
-    logger.log('Getting item with Id', [id], {item});
+    logger.log('Getting item with Id', [id], { item });
     return item;
   }
 
@@ -121,14 +121,16 @@ export class DataInterface implements AbstractDataSource {
   public async writeNoteItemContent<C extends object>(id: string, content: C): Promise<DataSourceActionResult> {
     this.devtools?.increaseCounter('DI writeNoteItemContent');
     const result = await this.dataSource.writeNoteItemContent<C>(id, content);
-    logger.out("Writing contents to file for ", [id], {content});
+    logger.out('Writing contents to file for ', [id], { content });
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.ChangedNoteContents }]);
     const currentItemContent = await this.getDataItem(id);
-    await this.changeItem(id, { ...currentItemContent, lastChange: (new Date()).getTime() });
+    await this.changeItem(id, { ...currentItemContent, lastChange: new Date().getTime() });
     return result;
   }
 
-  public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'> & { id?: string }): Promise<DataItem<K>> {
+  public async createDataItem<K extends DataItemKind>(
+    item: Omit<DataItem<K>, 'id'> & { id?: string }
+  ): Promise<DataItem<K>> {
     this.devtools?.increaseCounter('DI createDataItem');
     const result = await this.dataSource.createDataItem<K>(item);
     await this.initializeNoteContent(result);
@@ -137,7 +139,10 @@ export class DataInterface implements AbstractDataSource {
     return result;
   }
 
-  public async createDataItemUnderParent<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'>, parentId: string): Promise<DataItem<K>> {
+  public async createDataItemUnderParent<K extends DataItemKind>(
+    item: Omit<DataItem<K>, 'id'>,
+    parentId: string
+  ): Promise<DataItem<K>> {
     const parent = await this.dataSource.getDataItem(parentId);
 
     if (!parent) {
@@ -146,7 +151,7 @@ export class DataInterface implements AbstractDataSource {
 
     const itemResult = await this.dataSource.createDataItem<K>(item);
     await this.initializeNoteContent(itemResult);
-    const overwriteParent = {...parent, childIds: [...parent.childIds, itemResult.id]};
+    const overwriteParent = { ...parent, childIds: [...parent.childIds, itemResult.id] };
     await this.dataSource.changeItem(parentId, overwriteParent);
     this.updateCache(parentId, overwriteParent);
     this.onChangeItems.emit([{ id: itemResult.id, reason: ItemChangeEventReason.Created }]);
@@ -178,7 +183,7 @@ export class DataInterface implements AbstractDataSource {
     for (const parent of parents) {
       await this.changeItem(parent.id, {
         ...parent,
-        childIds: parent.childIds.filter(childId => childId !== id)
+        childIds: parent.childIds.filter(childId => childId !== id),
       });
     }
 
@@ -206,7 +211,7 @@ export class DataInterface implements AbstractDataSource {
 
     await this.changeItem(originalParentId, {
       ...originalParent,
-      childIds: originalParent.childIds.filter(childId => id !== childId)
+      childIds: originalParent.childIds.filter(childId => id !== childId),
     });
 
     const targetParent = await this.getDataItem(targetParentId);
@@ -217,14 +222,14 @@ export class DataInterface implements AbstractDataSource {
         ...targetParent.childIds.filter((childId, index) => index < targetIndex),
         id,
         ...targetParent.childIds.filter((childId, index) => index >= targetIndex),
-      ]
+      ],
     });
 
     const item = await this.getDataItem(id);
 
     if (item.tags.includes(InternalTag.Draft)) {
       await this.changeItem(id, {
-        tags: item.tags.filter(t => t !== InternalTag.Draft && t !== InternalTag.Trash)
+        tags: item.tags.filter(t => t !== InternalTag.Draft && t !== InternalTag.Trash),
       });
     }
   }
@@ -234,7 +239,7 @@ export class DataInterface implements AbstractDataSource {
     overwriteWith: Partial<DataItem<K>> | ((old: DataItem<K>) => Partial<DataItem<K>>)
   ): Promise<DataSourceActionResult> {
     this.devtools?.increaseCounter('DI changeItem');
-    const old = await this.dataSource.getDataItem(id) as DataItem<K>;
+    const old = (await this.dataSource.getDataItem(id)) as DataItem<K>;
 
     if (!old) {
       throw Error(`Dataitem with id ${id} does not exist.`);
@@ -262,7 +267,7 @@ export class DataInterface implements AbstractDataSource {
           tagsStructure[addedTag].count++;
         } else {
           tagsStructure[addedTag] = {
-            count: 1
+            count: 1,
           };
         }
       }
@@ -271,7 +276,7 @@ export class DataInterface implements AbstractDataSource {
     }
 
     const completeOverwriteItem = { ...old, ...overwriteItem };
-    logger.log('Updating item', [id], { old, update: overwriteItem, newItem: completeOverwriteItem })
+    logger.log('Updating item', [id], { old, update: overwriteItem, newItem: completeOverwriteItem });
     const result = await this.dataSource.changeItem(id, completeOverwriteItem);
     this.updateCache(id, completeOverwriteItem);
     this.onChangeItems.emit([{ id, reason: ItemChangeEventReason.Changed }]);
@@ -279,9 +284,7 @@ export class DataInterface implements AbstractDataSource {
     return result;
   }
 
-  public async search(
-    search: SearchQuery,
-  ): Promise<SearchResult> {
+  public async search(search: SearchQuery): Promise<SearchResult> {
     this.devtools?.increaseCounter('DI search');
     if (Object.keys(search).filter(key => (search as any)[key] !== undefined).length === 0) {
       return {
@@ -289,7 +292,7 @@ export class DataInterface implements AbstractDataSource {
         nextPageAvailable: false,
       };
     }
-    logger.log("Performing search", [], {search});
+    logger.log('Performing search', [], { search });
     return await this.dataSource.search(search);
   }
 
@@ -305,22 +308,28 @@ export class DataInterface implements AbstractDataSource {
     return await this.dataSource.loadMediaItemContentThumbnailAsPath(id);
   }
 
-  public async storeMediaItemContent(id: string, localPath: string, thumbnail: { width?: number; height?: number } | undefined): Promise<DataSourceActionResult> {
+  public async storeMediaItemContent(
+    id: string,
+    localPath: string,
+    thumbnail: { width?: number; height?: number } | undefined
+  ): Promise<DataSourceActionResult> {
     return await this.dataSource.storeMediaItemContent(id, localPath, thumbnail);
   }
 
   public removeMediaItemContent(item: MediaItem): Promise<DataSourceActionResult> {
-    throw Error('Do not call DataInterface.removeMediaItemContent() directly, DataInterface.removeItem() will delete media data automatically.');
+    throw Error(
+      'Do not call DataInterface.removeMediaItemContent() directly, DataInterface.removeItem() will delete media data automatically.'
+    );
   }
 
   public async persist(): Promise<DataSourceActionResult> {
     this.devtools?.increaseCounter('DI persist');
     if (this.dirty) {
-      logger.log("Persisting", [], {source: this.dataSource});
+      logger.log('Persisting', [], { source: this.dataSource });
       this.dirty = false;
       return await this.dataSource.persist();
     } else {
-      logger.log("Skipping Persist, not dirty", [], {source: this.dataSource});
+      logger.log('Skipping Persist, not dirty', [], { source: this.dataSource });
     }
   }
 
@@ -345,13 +354,13 @@ export class DataInterface implements AbstractDataSource {
     this.devtools?.increaseCounter('DI getStructure');
     this.devtools?.increaseCounter('DI getStructure:' + id);
     const structure = await this.dataSource.getStructure(id);
-    logger.log('getStructure', [id], {structure});
+    logger.log('getStructure', [id], { structure });
     return structure; // TODO cache?
   }
 
   public async storeStructure<K extends any = any>(id: string, structure: K): Promise<DataSourceActionResult> {
     this.devtools?.increaseCounter('DI storeStructure');
-    logger.log('storeStructure', [id], {structure});
+    logger.log('storeStructure', [id], { structure });
     this.makeDirty();
     return await this.dataSource.storeStructure(id, structure);
   }

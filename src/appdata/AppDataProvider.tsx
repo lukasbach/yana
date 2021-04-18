@@ -72,7 +72,7 @@ export const AppDataProvider: React.FC = props => {
     } else {
       appData = {
         ...appData,
-        ...JSON.parse(await fs.readFile(appDataFile, { encoding: 'utf8' }))
+        ...JSON.parse(await fs.readFile(appDataFile, { encoding: 'utf8' })),
       };
     }
 
@@ -103,8 +103,8 @@ export const AppDataProvider: React.FC = props => {
         name,
         dataSourceType: 'sqlite3', // TODO
         dataSourceOptions: {
-          sourcePath: path
-        }
+          sourcePath: path,
+        },
       };
 
       if (appData.workspaces.find(w => w.name === name)) {
@@ -113,10 +113,7 @@ export const AppDataProvider: React.FC = props => {
 
       const newAppData: AppData = {
         ...appData,
-        workspaces: [
-          ...appData.workspaces,
-          workspace,
-        ],
+        workspaces: [...appData.workspaces, workspace],
       };
 
       await fs.writeFile(appDataFile, JSON.stringify(newAppData));
@@ -134,10 +131,7 @@ export const AppDataProvider: React.FC = props => {
 
       const newAppData: AppData = {
         ...appData,
-        workspaces: [
-          ...appData.workspaces,
-          workspace,
-        ],
+        workspaces: [...appData.workspaces, workspace],
       };
 
       await fs.writeFile(appDataFile, JSON.stringify(newAppData));
@@ -185,7 +179,10 @@ export const AppDataProvider: React.FC = props => {
     moveWorkspace: async (workspace, direction) => {
       const oldIndex = appData.workspaces.findIndex(w => w.name === workspace.name);
 
-      if ((oldIndex === 0 && direction === 'up') || (oldIndex === appData.workspaces.length - 1 && direction === 'down')) {
+      if (
+        (oldIndex === 0 && direction === 'up') ||
+        (oldIndex === appData.workspaces.length - 1 && direction === 'down')
+      ) {
         return;
       }
 
@@ -210,11 +207,11 @@ export const AppDataProvider: React.FC = props => {
       const newWorkspace = {
         ...oldWorkspace,
         name: newName,
-      }
+      };
 
       const newAppData: AppData = {
         ...appData,
-        workspaces: appData.workspaces.map(ws => ws.name === workspace.name ? newWorkspace : ws),
+        workspaces: appData.workspaces.map(ws => (ws.name === workspace.name ? newWorkspace : ws)),
       };
       await fs.writeFile(appDataFile, JSON.stringify(newAppData));
       setAppData(newAppData);
@@ -226,7 +223,7 @@ export const AppDataProvider: React.FC = props => {
     saveSettings: async (settings: Partial<SettingsObject>) => {
       const newAppData: AppData = {
         ...appData,
-        settings: { ...defaultSettings, ...appData.settings, ...settings }
+        settings: { ...defaultSettings, ...appData.settings, ...settings },
       };
 
       await fs.writeFile(appDataFile, JSON.stringify(newAppData));
@@ -238,17 +235,19 @@ export const AppDataProvider: React.FC = props => {
   return (
     <AppDataContext.Provider value={ctx}>
       <div key={currentWorkspace?.dataSourceOptions?.sourcePath || '__'} style={{ height: '100%' }}>
-        { isCreatingWorkspace || isInInitialCreationScreen ? (
+        {isCreatingWorkspace || isInInitialCreationScreen ? (
           <CreateWorkspaceWindow
             isInitialCreationScreen={isInInitialCreationScreen}
             defaultWorkspaceName={getNewWorkspaceName(ctx)}
-            onClose={() => isInInitialCreationScreen ? remote.getCurrentWindow().close() : setIsCreatingWorkspace(false)}
+            onClose={() =>
+              isInInitialCreationScreen ? remote.getCurrentWindow().close() : setIsCreatingWorkspace(false)
+            }
             onCreate={async (name, wsPath) => {
               try {
                 const workspace = await ctx.createWorkSpace(name, wsPath, 'sqlite3'); // TODO
                 setCurrentWorkspace(workspace);
                 setIsCreatingWorkspace(false);
-              } catch(e) {
+              } catch (e) {
                 Alerter.Instance.alert({
                   content: `Error: ${e.message}`,
                   intent: 'danger',
@@ -262,7 +261,9 @@ export const AppDataProvider: React.FC = props => {
               setCurrentWorkspace(appData.workspaces[0]);
             }}
           />
-        ) : props.children }
+        ) : (
+          props.children
+        )}
       </div>
     </AppDataContext.Provider>
   );

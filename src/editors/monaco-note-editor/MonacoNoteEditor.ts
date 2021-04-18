@@ -7,14 +7,14 @@ export interface MonacoNoteEditorContent {
 }
 
 export class MonacoNoteEditor implements EditorDefinition<'monaco-editor-note', MonacoNoteEditorContent> {
-  public id = "monaco-editor-note" as const;
-  public name = "Code Snippet";
+  public id = 'monaco-editor-note' as const;
+  public name = 'Code Snippet';
   public editorComponent = EditorComponent;
   public canInsertFiles = false;
 
   public initializeContent(): MonacoNoteEditorContent {
     return {
-      content: ''
+      content: '',
     };
   }
 }

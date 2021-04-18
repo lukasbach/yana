@@ -26,43 +26,41 @@ export const SideBarContent: React.FC<{}> = props => {
         <NavigationTree />
       </SpotlightTarget>
 
-      { settings.sidebarShowRecentItems && (
+      {settings.sidebarShowRecentItems && (
         <SideBarTreeOnSearchQuery
           search={{
             sortColumn: SearchQuerySortColumn.LastChange,
             sortDirection: SearchQuerySortDirection.Descending,
             limit: settings.sidebarShowRecentItemsCount,
-            notTags: [InternalTag.Internal]
+            notTags: [InternalTag.Internal],
           }}
           title="Recent Items"
         />
-      ) }
+      )}
 
-      { settings.sidebarShowStarredItems && (
+      {settings.sidebarShowStarredItems && (
         <SideBarTreeOnSearchQuery
           search={{
             sortColumn: SearchQuerySortColumn.LastChange,
             sortDirection: SearchQuerySortDirection.Descending,
             tags: [InternalTag.Starred],
             limit: settings.sidebarShowStarredItemsCount,
-            notTags: [InternalTag.Internal]
+            notTags: [InternalTag.Internal],
           }}
           title="Starred Items"
         />
-      ) }
+      )}
 
       <SpotlightTarget name="sidebar-items">
         <div>
-          {
-            rootChilds.map(rootChild => (
-              <SideBarTreeOnIds
-                key={rootChild.id}
-                title={rootChild.name}
-                rootItems={rootChild.childIds}
-                masterItem={rootChild}
-              />
-            ))
-          }
+          {rootChilds.map(rootChild => (
+            <SideBarTreeOnIds
+              key={rootChild.id}
+              title={rootChild.name}
+              rootItems={rootChild.childIds}
+              masterItem={rootChild}
+            />
+          ))}
         </div>
       </SpotlightTarget>
     </>

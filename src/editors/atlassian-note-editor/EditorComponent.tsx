@@ -23,32 +23,35 @@ const styles = {
     ' .akEditor': {
       border: 'none',
       ' hr': {
-        borderBottom: '1px solid #000 !important'
+        borderBottom: '1px solid #000 !important',
       },
       ' [data-editor-popup="true"]': {
         left: '20px',
-        width: 'max-content !important'
-      }
-    }
-  })
-}
+        width: 'max-content !important',
+      },
+    },
+  }),
+};
 
 export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorContent>> = props => {
   const settings = useSettings();
   const editorRef = useRef<EditorActions | null>(null);
-  const [insertImageFn, setInsertImageFn] = useState< { fn: (props: InsertedImageProperties) => void } | undefined>();
+  const [insertImageFn, setInsertImageFn] = useState<{ fn: (props: InsertedImageProperties) => void } | undefined>();
   const dataInterface = useDataInterface();
 
   useScreenView('atlassian-note-editor');
 
-  useEffect(() => logger.log("Remount", [props.item.id], {content: props.content}), [])
-  useEffect(() => () => {
-    if (editorRef.current) {
-      editorRef.current.getValue().then(adf => {
-        props.onDismount({adf});
-      });
-    }
-  }, [])
+  useEffect(() => logger.log('Remount', [props.item.id], { content: props.content }), []);
+  useEffect(
+    () => () => {
+      if (editorRef.current) {
+        editorRef.current.getValue().then(adf => {
+          props.onDismount({ adf });
+        });
+      }
+    },
+    []
+  );
 
   // useEffect(() => {
   //   isChangingNote.current = true;
@@ -64,24 +67,26 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
   return (
     <div className={styles.container}>
       <AutoSizer>
-        {({width, height}) => {
+        {({ width, height }) => {
           return (
-            <div className={cxs({
-              ' .akEditor': {
-                height: height + 'px',
-                width: width + 'px'
-              },
-              ' .akEditor > :nth-child(2)': {
-                height: height - 40 + 'px',
-                width: width + 'px',
-                overflow: 'auto'
-              }
-            })}>
+            <div
+              className={cxs({
+                ' .akEditor': {
+                  height: height + 'px',
+                  width: width + 'px',
+                },
+                ' .akEditor > :nth-child(2)': {
+                  height: height - 40 + 'px',
+                  width: width + 'px',
+                  overflow: 'auto',
+                },
+              })}
+            >
               <IgnoreErrorBoundary>
                 <EditorContext>
                   <WithEditorActions
                     render={actions => {
-                      logger.log("Render WithEditorActions")
+                      logger.log('Render WithEditorActions');
                       editorRef.current = actions;
                       props.onRegister(async () => ({ adf: await actions.getValue() }));
                       return (
@@ -89,19 +94,22 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                           allowTables={{
                             advanced: settings.editorAtlassianAdvancedTables,
                           }}
-                          codeBlock={{
-                          }}
+                          codeBlock={{}}
                           media={{
                             allowMediaSingle: true,
                           }}
                           allowRule={true}
-                          legacyImageUploadProvider={new Promise(res => res((e: Event | undefined, insertImageFn: (props: InsertedImageProperties) => void) => {
-                            setInsertImageFn({ fn: insertImageFn });
-                          }))}
+                          legacyImageUploadProvider={
+                            new Promise(res =>
+                              res((e: Event | undefined, insertImageFn: (props: InsertedImageProperties) => void) => {
+                                setInsertImageFn({ fn: insertImageFn });
+                              })
+                            )
+                          }
                           allowTasksAndDecisions={true}
                           allowExpand={true}
                           allowFindReplace={{
-                            allowMatchCase: true
+                            allowMatchCase: true,
                           }}
                           insertMenuItems={[]}
                           quickInsert={true}
@@ -110,7 +118,7 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                           defaultValue={JSON.stringify(props.content.adf)}
                           allowLayouts={{
                             allowBreakout: true,
-                            UNSAFE_addSidebarLayouts: true
+                            UNSAFE_addSidebarLayouts: true,
                           }}
                           onChange={editorView => {
                             // if (!isChangingNote.current) props.onChange();
@@ -123,16 +131,16 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                 </EditorContext>
               </IgnoreErrorBoundary>
             </div>
-          )
+          );
         }}
       </AutoSizer>
       <FindItemsDrawer
-        title={"Insert file"}
+        title={'Insert file'}
         icon={'insert'}
         hiddenSearch={{ kind: DataItemKind.MediaItem }}
         isOpen={!!insertImageFn}
         onSetIsOpen={open => !open && setInsertImageFn(undefined)}
-        onClickItem={(item) => {
+        onClickItem={item => {
           (async () => {
             if (insertImageFn) {
               if (isMediaItem(item)) {

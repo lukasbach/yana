@@ -36,7 +36,7 @@ export const DataInterfaceProvider: React.FC = props => {
       try {
         await di.load();
         setDataInterface(di);
-      } catch(e) {
+      } catch (e) {
         setError(e.message);
       }
     }
@@ -53,19 +53,20 @@ export const DataInterfaceProvider: React.FC = props => {
     }
   }, [dataInterface]);
 
-  useEffect(() => () => {
-    dataInterface?.unload();
-  }, [dataInterface])
+  useEffect(
+    () => () => {
+      dataInterface?.unload();
+    },
+    [dataInterface]
+  );
 
   if (error) {
-    return (
-      <DataInterfaceContextError message={error} />
-    )
+    return <DataInterfaceContextError message={error} />;
   }
 
   return (
-    <DataInterfaceContext.Provider value={ dataInterface! }>
-      { dataInterface && props.children }
+    <DataInterfaceContext.Provider value={dataInterface!}>
+      {dataInterface && props.children}
     </DataInterfaceContext.Provider>
   );
 };

@@ -29,7 +29,7 @@ const config: webpack.Configuration = {
       {
         test: /\.(woff|woff2|eot|ttf|otf)$/,
         use: ['file-loader'],
-      }
+      },
     ],
   },
   devServer: {
@@ -44,7 +44,7 @@ const config: webpack.Configuration = {
     path: path.resolve(__dirname, 'app'),
     filename: 'js/[name].js',
     publicPath: './',
-    libraryTarget: 'commonjs2'
+    libraryTarget: 'commonjs2',
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -58,28 +58,28 @@ const config: webpack.Configuration = {
     ),
   ],
   externals: {
-    "archiver": "archiver",
-    "unzip": "unzip",
+    archiver: 'archiver',
+    unzip: 'unzip',
 
     // Possible drivers for knex - we'll ignore them
-    'sqlite3': 'sqlite3',
-    'mariasql': 'mariasql',
-    'mssql': 'mssql',
-    'mysql': 'mysql',
-    'oracle': 'oracle',
+    sqlite3: 'sqlite3',
+    mariasql: 'mariasql',
+    mssql: 'mssql',
+    mysql: 'mysql',
+    oracle: 'oracle',
     'strong-oracle': 'strong-oracle',
-    'oracledb': 'oracledb',
-    'pg': 'pg',
+    oracledb: 'oracledb',
+    pg: 'pg',
     'pg-query-stream': 'pg-query-stream',
-    'tedious': 'tedious',
-    'mysql2': 'mysql2',
+    tedious: 'tedious',
+    mysql2: 'mysql2',
     'mssql/package.json': 'mssql/package.json',
     'mssql/lib/base': 'mssql/lib/base',
 
     'aws-sdk': 'aws-sdk',
     'node-pre-gyp': 'node-pre-gyp',
     // '../package': '../package',
-  }
+  },
 };
 
 export default config;

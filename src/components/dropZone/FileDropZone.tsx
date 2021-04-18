@@ -18,9 +18,9 @@ const styles = {
     justifyContent: 'center',
     color: 'white',
     fontSize: '24px',
-    fontWeight: 'bold'
-  })
-}
+    fontWeight: 'bold',
+  }),
+};
 
 export const FileDropZone: React.FC<{
   onDropFiles: (files: File[]) => void;
@@ -29,10 +29,17 @@ export const FileDropZone: React.FC<{
   const mainContent = useMainContentContext();
 
   useEffect(() => {
-    const onDrag = (e: DragEvent) => { e.preventDefault(); setIsDragging(true); };
+    const onDrag = (e: DragEvent) => {
+      e.preventDefault();
+      setIsDragging(true);
+    };
     const onDragExit = (e: Event) => setIsDragging(false);
     const onDragLeave = (e: DragEvent) => e.x === 0 && e.y === 0 && setIsDragging(false);
-    const onDrop = (e: DragEvent) => { e.preventDefault(); setIsDragging(false); e.dataTransfer?.files.length && props.onDropFiles([...(e.dataTransfer?.files || [])]); };
+    const onDrop = (e: DragEvent) => {
+      e.preventDefault();
+      setIsDragging(false);
+      e.dataTransfer?.files.length && props.onDropFiles([...(e.dataTransfer?.files || [])]);
+    };
 
     document.body.addEventListener('drop', onDrop, false);
     document.body.addEventListener('dragexit', onDragExit, false);
@@ -46,12 +53,13 @@ export const FileDropZone: React.FC<{
       document.body.removeEventListener('dragleave', onDragLeave, false);
       document.body.removeEventListener('dragenter', onDrag, false);
       document.body.removeEventListener('dragover', onDrag, false);
-    }
+    };
   }, []);
 
-  return ReactDOM.createPortal(isDragging && (
-    <div className={styles.container}>
-      Drop files to add to { mainContent.openTab?.dataItem?.name || 'Yana' }
-    </div>
-  ), document.body);
+  return ReactDOM.createPortal(
+    isDragging && (
+      <div className={styles.container}>Drop files to add to {mainContent.openTab?.dataItem?.name || 'Yana'}</div>
+    ),
+    document.body
+  );
 };

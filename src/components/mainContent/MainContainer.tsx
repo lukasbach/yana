@@ -24,30 +24,19 @@ const logger = LogService.getLogger('MainContainer');
 export const MainContainer: React.FC<{}> = props => {
   const mainContent = useMainContentContext();
   const dataInterface = useDataInterface();
-  logger.log("rerender", [], {mainContent})
+  logger.log('rerender', [], { mainContent });
 
   if (mainContent.openTab?.page) {
     return (pages[mainContent.openTab.page]?.content() || '') as any;
   } else if (mainContent.openTab?.dataItem) {
     if (isNoteItem(mainContent.openTab.dataItem)) {
       return (
-        <NoteContainer
-          dataItem={mainContent.openTab.dataItem}
-          currentContent={mainContent.openTab.currentContent}
-        />
+        <NoteContainer dataItem={mainContent.openTab.dataItem} currentContent={mainContent.openTab.currentContent} />
       );
     } else if (isCollectionItem(mainContent.openTab.dataItem)) {
-      return (
-        <CollectionContainer
-          dataItem={mainContent.openTab.dataItem}
-        />
-      );
+      return <CollectionContainer dataItem={mainContent.openTab.dataItem} />;
     } else if (isMediaItem(mainContent.openTab.dataItem)) {
-      return (
-        <MediaView
-          dataItem={mainContent.openTab.dataItem}
-        />
-      )
+      return <MediaView dataItem={mainContent.openTab.dataItem} />;
     } else {
       return <>Unknown data type</>;
     }
@@ -57,32 +46,32 @@ export const MainContainer: React.FC<{}> = props => {
         icon={'home'}
         title="Welcome to Yana!"
         description="It looks like you don't have any tabs open."
-        action={(
+        action={
           <>
-            <Button
-              icon={'home'} minimal
-              onClick={() => mainContent.newTab(PageIndex.Home)}
-            >
+            <Button icon={'home'} minimal onClick={() => mainContent.newTab(PageIndex.Home)}>
               See recent notes
             </Button>
             <Button
-              icon={'plus'} minimal
+              icon={'plus'}
+              minimal
               onClick={() => {
-                dataInterface.createDataItem({
-                  name: 'New Draft',
-                  tags: [InternalTag.Draft],
-                  kind: DataItemKind.NoteItem,
-                  childIds: [],
-                  lastChange: new Date().getTime(),
-                  created: new Date().getTime(),
-                  noteType: 'atlaskit-editor-note'
-                } as any).then(item => mainContent.newTab(item));
+                dataInterface
+                  .createDataItem({
+                    name: 'New Draft',
+                    tags: [InternalTag.Draft],
+                    kind: DataItemKind.NoteItem,
+                    childIds: [],
+                    lastChange: new Date().getTime(),
+                    created: new Date().getTime(),
+                    noteType: 'atlaskit-editor-note',
+                  } as any)
+                  .then(item => mainContent.newTab(item));
               }}
             >
               New draft
             </Button>
           </>
-        )}
+        }
       />
     );
   }

@@ -5,7 +5,7 @@ const styles = {
   container: cxs({
     display: 'flex',
     flexDirection: 'column',
-    height: '100%'
+    height: '100%',
   }),
   content: cxs({
     flexGrow: 1,
@@ -15,7 +15,7 @@ const styles = {
     ' .ReactVirtualized__Grid__innerScrollContainer': {
       width: '100% !important',
       maxWidth: '100% !important',
-    }
+    },
   }),
 };
 
@@ -23,9 +23,7 @@ export const PageContainer: React.FC<{
   header: React.ReactNode;
 }> = props => (
   <div className={styles.container}>
-    { props.header }
-    <div className={styles.content}>
-      { props.children }
-    </div>
+    {props.header}
+    <div className={styles.content}>{props.children}</div>
   </div>
 );

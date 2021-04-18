@@ -7,7 +7,7 @@ export const useStoredStucture = <T = any>(
   structureId: string,
   onLoad: (value: T) => any,
   defaultValue: T,
-  persistDelay = 10000,
+  persistDelay = 10000
 ) => {
   const [currentStructureId, setCurrentStructureId] = useState(structureId);
   const [value, setValue] = useState(defaultValue);
@@ -54,10 +54,10 @@ export const useStoredStucture = <T = any>(
         clearTimeout(persistTimer.current);
       }
       persist();
-    }
+    };
   }, []);
 
   useCloseEvent(persist, [structureId, value]);
 
   return [value, setValue] as const;
-}
+};

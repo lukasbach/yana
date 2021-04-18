@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { DataItem, NoteDataItem } from '../../types';
 import { MenuRenderer } from './types';
-import {
-  MainContentContextType,
-} from '../mainContent/context';
+import { MainContentContextType } from '../mainContent/context';
 import { DataInterface } from '../../datasource/DataInterface';
 import {
   createDeletionItems,
@@ -37,7 +35,7 @@ export const NoteItemContextMenu: React.FC<{
           ...createOrganizeItems(dataInterface, overlaySearch, item),
           'divider',
           ...createDeletionItems(dataInterface, item),
-        ]
+        ],
       }}
     />
   );

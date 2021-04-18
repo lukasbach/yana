@@ -18,19 +18,21 @@ export const AboutContainerPage: React.FC<{}> = props => {
   const [currentTab, setCurrentTab] = useState(AboutPageTabs.AboutYana);
 
   return (
-    <PageContainer header={(
-      <PageHeader
-        title={ 'About Yana' }
-        icon="help"
-        lowerContentFlush={true}
-        lowerContent={(
-          <Tabs onChange={(newTabId: AboutPageTabs) => setCurrentTab(newTabId)} selectedTabId={currentTab}>
-            <Tab id={AboutPageTabs.AboutYana} title="About Yana" />
-            <Tab id={AboutPageTabs.Dependencies} title="Dependencies" />
-          </Tabs>
-        )}
-      />
-    )}>
+    <PageContainer
+      header={
+        <PageHeader
+          title={'About Yana'}
+          icon="help"
+          lowerContentFlush={true}
+          lowerContent={
+            <Tabs onChange={(newTabId: AboutPageTabs) => setCurrentTab(newTabId)} selectedTabId={currentTab}>
+              <Tab id={AboutPageTabs.AboutYana} title="About Yana" />
+              <Tab id={AboutPageTabs.Dependencies} title="Dependencies" />
+            </Tabs>
+          }
+        />
+      }
+    >
       {(() => {
         switch (currentTab) {
           case AboutPageTabs.Dependencies:

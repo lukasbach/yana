@@ -22,9 +22,9 @@ import { SaveIndicator } from './SaveIndicator';
 import { Campaign } from '../notifications/Campaign';
 
 export const EditorHeader: React.FC<{
-  dataItem: NoteDataItem<any>,
-  onChange: (changed: NoteDataItem<any>) => Promise<void>,
-  saveIndicator?: SaveIndicatorState,
+  dataItem: NoteDataItem<any>;
+  onChange: (changed: NoteDataItem<any>) => Promise<void>;
+  saveIndicator?: SaveIndicatorState;
 }> = props => {
   const mainContent = useMainContentContext();
   const dataInterface = useDataInterface();
@@ -40,12 +40,12 @@ export const EditorHeader: React.FC<{
   return (
     <>
       <PageHeader
-        title={(
+        title={
           <>
             <EditableText
               value={titleValue}
               onChange={setTitleValue}
-              onConfirm={name => props.onChange({...props.dataItem, name})}
+              onConfirm={name => props.onChange({ ...props.dataItem, name })}
             />
             <Button
               style={{ marginLeft: '12px' }}
@@ -53,8 +53,9 @@ export const EditorHeader: React.FC<{
               onClick={() => {
                 props.onChange({
                   ...props.dataItem,
-                  tags: isStarred ? props.dataItem.tags.filter(tag => tag !== InternalTag.Starred)
-                    : [...props.dataItem.tags, InternalTag.Starred]
+                  tags: isStarred
+                    ? props.dataItem.tags.filter(tag => tag !== InternalTag.Starred)
+                    : [...props.dataItem.tags, InternalTag.Starred],
                 });
 
                 if (isStarred) {
@@ -67,38 +68,47 @@ export const EditorHeader: React.FC<{
               large
             />
           </>
-        )}
-        icon={props.dataItem.icon as any || 'document'}
+        }
+        icon={(props.dataItem.icon as any) || 'document'}
         iconColor={props.dataItem.color}
-        titleSubtext={(
+        titleSubtext={
           <>
             Edited{' '}
-            <Tooltip content={new Date(lastChange).toLocaleString()} position={'bottom'}>{ ago(new Date(lastChange)) }</Tooltip>,{' '}
-            created{' '}
-            <Tooltip content={new Date(created).toLocaleString()} position={'bottom'}>{ ago(new Date(created)) }</Tooltip>.{' '}
-            <SaveIndicator saveIndicator={props.saveIndicator} />
+            <Tooltip content={new Date(lastChange).toLocaleString()} position={'bottom'}>
+              {ago(new Date(lastChange))}
+            </Tooltip>
+            , created{' '}
+            <Tooltip content={new Date(created).toLocaleString()} position={'bottom'}>
+              {ago(new Date(created))}
+            </Tooltip>
+            . <SaveIndicator saveIndicator={props.saveIndicator} />
           </>
-        )}
-        rightContent={(
+        }
+        rightContent={
           <>
             <div>
-              {
-                props.dataItem.tags.includes(InternalTag.Draft) && (
-                  <Button outlined icon="arrow-right" onClick={() => {
-                    promptMoveItem(dataInterface, overlaySearch, props.dataItem)
-                  }}>
-                    Mount draft to folder
-                  </Button>
-                )
-              }
-              {' '}
-              <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>Edit Tags</Button>{' '}
-              <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>Configure document</Button>{' '}
+              {props.dataItem.tags.includes(InternalTag.Draft) && (
+                <Button
+                  outlined
+                  icon="arrow-right"
+                  onClick={() => {
+                    promptMoveItem(dataInterface, overlaySearch, props.dataItem);
+                  }}
+                >
+                  Mount draft to folder
+                </Button>
+              )}{' '}
+              <Button outlined icon={'tag'} onClick={() => setIsEditingTags(true)}>
+                Edit Tags
+              </Button>{' '}
+              <Button outlined icon={'cog'} onClick={onOpenEditItemDrawer}>
+                Configure document
+              </Button>{' '}
               <Popover
                 interactionKind={'click'}
                 position={'bottom'}
                 captureDismiss={true}
-                content={(
+                content={
                   <DataItemContextMenu
                     item={props.dataItem}
                     renderer={Bp3MenuRenderer}
@@ -106,35 +116,31 @@ export const EditorHeader: React.FC<{
                     dataInterface={dataInterface}
                     overlaySearch={overlaySearch}
                   />
-                )}
+                }
               >
-                <Button outlined rightIcon={'chevron-down'}>More</Button>
+                <Button outlined rightIcon={'chevron-down'}>
+                  More
+                </Button>
               </Popover>
             </div>
             {!isEditingTags && (
               <div>
                 {props.dataItem.tags.length > 0 ? (
-                  <TagList
-                    dataItem={props.dataItem}
-                    isEditing={false}
-                    onStopEditing={() => setIsEditingTags(false)}
-                  />
+                  <TagList dataItem={props.dataItem} isEditing={false} onStopEditing={() => setIsEditingTags(false)} />
                 ) : (
                   <Campaign />
                 )}
               </div>
             )}
           </>
-        )}
-        lowerContent={isEditingTags && (
-          <TagList
-            dataItem={props.dataItem}
-            isEditing={true}
-            onStopEditing={() => setIsEditingTags(false)}
-          />
-        )}
+        }
+        lowerContent={
+          isEditingTags && (
+            <TagList dataItem={props.dataItem} isEditing={true} onStopEditing={() => setIsEditingTags(false)} />
+          )
+        }
       />
-    <EditItemDrawer />
+      <EditItemDrawer />
     </>
   );
 };

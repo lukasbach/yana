@@ -14,11 +14,11 @@ export const parseSearch = (value: string): SearchQuery => {
   const pieces = [...value.matchAll(/(?:("[^"]*"))|([^\s]*)/g)]
     .filter(v => !!v[0].length)
     .map(v => v[0])
-    .map(v => v.startsWith('"') && v.endsWith('"') ? v.slice(1, -1) : v);
+    .map(v => (v.startsWith('"') && v.endsWith('"') ? v.slice(1, -1) : v));
 
   for (const piece of pieces) {
     if (piece.includes(':')) {
-      const [operator, value] = piece.split(":");
+      const [operator, value] = piece.split(':');
       switch (operator) {
         case 'tag':
           addToList(value, 'tags');
@@ -38,4 +38,4 @@ export const parseSearch = (value: string): SearchQuery => {
   }
 
   return query;
-}
+};

@@ -5,14 +5,14 @@ import { DataItemKind } from '../../types';
 import { useAvailableTags } from '../../datasource/useAvailableTags';
 import { useSearchBar } from './SearchBar';
 
-const dataItemKinds: Array<{ key: DataItemKind, text: string }> = [
+const dataItemKinds: Array<{ key: DataItemKind; text: string }> = [
   { key: DataItemKind.NoteItem, text: 'Note' },
   { key: DataItemKind.Collection, text: 'Collection' },
   { key: DataItemKind.MediaItem, text: 'Media' },
 ];
 
 export const SearchBarModifiers: React.FC<{
-  buttonProps?: { minimal?: boolean, small?: boolean, big?: boolean, outlined?: boolean  },
+  buttonProps?: { minimal?: boolean; small?: boolean; big?: boolean; outlined?: boolean };
 }> = props => {
   const { searchQuery, setSearchValue, searchValue } = useSearchBar();
   const tags = useAvailableTags();
@@ -22,8 +22,7 @@ export const SearchBarModifiers: React.FC<{
       <Select<{ value: string }>
         items={tags}
         itemRenderer={(tag, props) => <MenuItem text={tag.value} onClick={props.handleClick} />}
-        itemPredicate={(query, item, index, exactMatch) =>
-          item.value.toLowerCase().includes(query.toLowerCase())}
+        itemPredicate={(query, item, index, exactMatch) => item.value.toLowerCase().includes(query.toLowerCase())}
         noResults={<MenuItem disabled={true} text="No tags available" />}
         onItemSelect={tag => setSearchValue(`${searchValue} tag:${tag.value}`)}
       >
@@ -31,7 +30,7 @@ export const SearchBarModifiers: React.FC<{
           Filter by tag
         </Button>
       </Select>
-      <Select<{ key: DataItemKind, text: string }>
+      <Select<{ key: DataItemKind; text: string }>
         items={dataItemKinds}
         itemRenderer={(kind, props) => <MenuItem text={kind.text} onClick={props.handleClick} />}
         filterable={false}

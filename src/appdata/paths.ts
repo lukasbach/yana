@@ -1,4 +1,4 @@
-import path from "path";
+import path from 'path';
 import { getElectronPath } from '../utils';
 
 export const userDataFolder = path.join(getElectronPath('appData'), 'yana');

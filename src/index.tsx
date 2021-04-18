@@ -9,7 +9,7 @@ import { Alerter } from './components/Alerter';
 import { DropZoneContainer } from './components/dropZone/DropZoneContainer';
 import { DevToolsContextProvider } from './components/devtools/DevToolsContextProvider';
 // @ts-ignore
-import {IntlProvider} from 'react-intl';
+import { IntlProvider } from 'react-intl';
 
 import '@blueprintjs/core/lib/css/blueprint.css';
 import '@blueprintjs/icons/lib/css/blueprint-icons.css';
@@ -29,7 +29,7 @@ registerCommonContextMenu();
 
 // TODO closing a open tab removes its file contents, because the editor isnt mounted anymore and the content getter returns {}, which overwrites the previous content
 ReactDOM.render(
-  <IntlProvider locale='en'>
+  <IntlProvider locale="en">
     <AppDataProvider>
       <TelemetryProvider>
         <AppNotifications />

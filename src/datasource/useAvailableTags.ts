@@ -11,6 +11,5 @@ export const useAvailableTags = (includeInternalTags?: boolean, dependencies?: a
     setTags(t);
   }, dependencies || []);
 
-  return includeInternalTags ? tags
-    : tags.filter(tag => !tag.value.startsWith('__'));
+  return includeInternalTags ? tags : tags.filter(tag => !tag.value.startsWith('__'));
 };

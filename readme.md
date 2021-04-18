@@ -17,21 +17,20 @@
   <a href="https://www.producthunt.com/posts/yana-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-yana-3" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=276473&theme=light" alt="Yana - Powerful & organizable note-taking app with lots of features | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 </p>
 
-
 Yana is a powerful notebook app which allows
-you to manage local workspaces of hierarchically structured taggable 
+you to manage local workspaces of hierarchically structured taggable
 and searchable notes. It supports multiple kinds of notes, currently
 rich-text notes (including embedded media and complex tables) and code
 snippets (based on the VSCode editor frontend) are supported. Other
 features include
 
-* Manage note structure via drag-and-drop
-* Rich notes editor powered by the Atlassian editor core
-* Multiple local workspaces
-* Multiple notes can be opened at once in tabs
-* Starring of notes
-* Trashcan functionality
-* Scalability, working fluently even on notebooks with ten thousands of notes
+- Manage note structure via drag-and-drop
+- Rich notes editor powered by the Atlassian editor core
+- Multiple local workspaces
+- Multiple notes can be opened at once in tabs
+- Starring of notes
+- Trashcan functionality
+- Scalability, working fluently even on notebooks with ten thousands of notes
 
 Download [the latest release](https://github.com/lukasbach/yana/releases).
 Currently available for Windows, Linux and Mac.

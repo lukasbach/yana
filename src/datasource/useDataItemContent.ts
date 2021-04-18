@@ -9,7 +9,7 @@ export const useDataItemContent = <C extends object>(dataItemId?: string) => {
     if (dataItemId) {
       dataInterface.getNoteItemContent(dataItemId).then(setContent as any);
     }
-  }, [dataItemId])
+  }, [dataItemId]);
 
   return content;
-}
+};

@@ -8,11 +8,11 @@ You can post both as GitHub issues.
 
 To release a new version,
 
-* update the field ``version`` in ``package.json`` to the ``X.X.X``,
-* author a new commit with the message ``vX.X.X``,
-* tag the commit with the title ``vX.X.X``,
-* push the commit and the tag to GitHub and
-* after the release was drafted by the CI pipeline, publish the draft.
+- update the field `version` in `package.json` to the `X.X.X`,
+- author a new commit with the message `vX.X.X`,
+- tag the commit with the title `vX.X.X`,
+- push the commit and the tag to GitHub and
+- after the release was drafted by the CI pipeline, publish the draft.
 
 ## Performance testing
 

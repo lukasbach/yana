@@ -8,13 +8,13 @@ import { OverlaySearchContextValue } from '../components/overlaySearch/OverlaySe
 export const promptMoveItem = async (
   dataInterface: DataInterface,
   overlaySearch: OverlaySearchContextValue,
-  item: DataItem,
+  item: DataItem
 ) => {
   const parent = (await dataInterface.getParentsOf(item.id))[0];
 
   const target = await overlaySearch.performSearch({
     selectMultiple: false,
-    hiddenSearch: { kind: DataItemKind.Collection }
+    hiddenSearch: { kind: DataItemKind.Collection },
   });
 
   if (parent) {
@@ -27,10 +27,10 @@ export const promptMoveItem = async (
 
     if (item.tags.includes(InternalTag.Trash) || item.tags.includes(InternalTag.Draft)) {
       await dataInterface.changeItem(item.id, ({ tags }) => ({
-        tags: tags.filter(tag => tag !== InternalTag.Trash && tag !== InternalTag.Draft)
+        tags: tags.filter(tag => tag !== InternalTag.Trash && tag !== InternalTag.Draft),
       }));
     }
 
     TelemetryService?.trackEvent(...TelemetryEvents.Items.move);
   }
-}
+};

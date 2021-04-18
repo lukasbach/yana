@@ -8,7 +8,6 @@ export const SearchInput: React.FC = props => {
   const { setSearchValue, searchQuery, searchValue } = useSearchBar();
   const [isActive, setIsActive] = useState(false);
 
-
   return (
     <>
       <InputGroup

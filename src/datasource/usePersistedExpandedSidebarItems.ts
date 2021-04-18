@@ -10,13 +10,13 @@ const logger = LogService.getLogger('usePersistedExpandedSidebarItems');
 export const usePersistedExpandedSidebarItems = (
   storageId: string,
   expand: (id: string) => Promise<void>,
-  expandedIds: string[],
+  expandedIds: string[]
 ) => {
   const structureId = 'sessionSidebar_' + storageId;
   const [ignored, setStoredValue] = useStoredStucture<string[]>(
     structureId,
-    async (folders) => {
-      logger.log("Loading", [], {folders, expandedIds});
+    async folders => {
+      logger.log('Loading', [], { folders, expandedIds });
       if (folders) {
         for (const folder of folders) {
           if (!(folder in expandedIds)) {
@@ -29,7 +29,7 @@ export const usePersistedExpandedSidebarItems = (
   );
 
   useEffect(() => {
-    logger.log(`Persisting to ${structureId}: ${expandedIds.join(', ')}`, [], {storageId, expandedIds});
+    logger.log(`Persisting to ${structureId}: ${expandedIds.join(', ')}`, [], { storageId, expandedIds });
     setStoredValue(expandedIds);
   }, [expandedIds]);
 };

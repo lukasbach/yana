@@ -13,46 +13,51 @@ program
 
 program.parse(process.argv);
 
-console.log(process.argv)
-console.log(program.dest, program.sizes, program.transactionsize)
-console.log(program.opts())
+console.log(process.argv);
+console.log(program.dest, program.sizes, program.transactionsize);
+console.log(program.opts());
 
 const targetFolder = program.dest;
 const folderSizes = (program.sizes as string).split(',').map(i => parseInt(i));
 const transactionSize = parseInt(program.transactionsize);
 const totalNumberOfNotes = folderSizes.reduce((a, b) => a + b, 0);
 
-const loremIpsum = 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.';
+const loremIpsum =
+  'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.';
 
-const tags = undup(loremIpsum
-  .replace(/\.|\,/g, '')
-  .toLowerCase()
-  .split(' '));
+const tags = undup(loremIpsum.replace(/\.|\,/g, '').toLowerCase().split(' '));
 
 const noteContent = JSON.stringify({
-  "adf": {
-    "version": 1,
-    "type": "doc",
-    "content": [
+  adf: {
+    version: 1,
+    type: 'doc',
+    content: [
       {
-        "type": "paragraph",
-        "content": '_'.repeat(25).split('').map(() => ({
-          "type": "text",
-          "text": loremIpsum
-        }))
-      }
-    ]
-  }
+        type: 'paragraph',
+        content: '_'
+          .repeat(25)
+          .split('')
+          .map(() => ({
+            type: 'text',
+            text: loremIpsum,
+          })),
+      },
+    ],
+  },
 });
 
 LogService.enabled = false;
 
-function randomIntFromInterval(min: number, max: number) { // min and max included
+function randomIntFromInterval(min: number, max: number) {
+  // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 function getRandomSubarray(arr: any[], size: number) {
-  var shuffled = arr.slice(0), i = arr.length, temp, index;
+  var shuffled = arr.slice(0),
+    i = arr.length,
+    temp,
+    index;
   while (i--) {
     index = Math.floor((i + 1) * Math.random());
     temp = shuffled[index];
@@ -67,19 +72,19 @@ const getTimes = () => {
   let maxDiff = 4000000;
   const lastChange = randomIntFromInterval(now - maxDiff, now);
   const created = randomIntFromInterval(lastChange - maxDiff, lastChange);
-  return { lastChange, created }
-}
+  return { lastChange, created };
+};
 
 const performTransactions = async (items: any[], handler: (items: any[]) => Promise<void>) => {
   for (let i = 0; i < items.length; i += transactionSize) {
     const numberOfItems = transactionSize + i >= items.length ? items.length - i : transactionSize;
     await handler(items.slice(i, i + numberOfItems));
   }
-}
+};
 
 (async () => {
-  await  LocalSqliteDataSource.init({
-    sourcePath: targetFolder
+  await LocalSqliteDataSource.init({
+    sourcePath: targetFolder,
   });
 
   const db = LocalSqliteDataSource.getDb(targetFolder);
@@ -104,32 +109,37 @@ const performTransactions = async (items: any[], handler: (items: any[]) => Prom
 
         const currentItemIds: string[] = [];
 
-        await db('items').insert(names.map(name => {
-          const id = uuid();
-          itemIds.push(id);
-          currentItemIds.push(id);
-          return {
-            id,
-            name,
-            kind: DataItemKind.NoteItem,
-            ...getTimes(),
-            noteType: 'atlaskit-editor-note'
-          };
-        }));
+        await db('items').insert(
+          names.map(name => {
+            const id = uuid();
+            itemIds.push(id);
+            currentItemIds.push(id);
+            return {
+              id,
+              name,
+              kind: DataItemKind.NoteItem,
+              ...getTimes(),
+              noteType: 'atlaskit-editor-note',
+            };
+          })
+        );
 
-        await db('note_contents').insert(currentItemIds.map(id => {
-          return {
-            noteId: id,
-            content: noteContent
-          };
-        }));
+        await db('note_contents').insert(
+          currentItemIds.map(id => {
+            return {
+              noteId: id,
+              content: noteContent,
+            };
+          })
+        );
 
         await db('items_tags').insert(
           currentItemIds
             .map(id => {
               const appliedTags = getRandomSubarray(tags, randomIntFromInterval(0, 18));
               return appliedTags.map(tag => ({
-                tagName: tag, noteId: id
+                tagName: tag,
+                noteId: id,
               }));
             })
             .reduce((a, b) => [...a, ...b], [])
@@ -144,13 +154,16 @@ const performTransactions = async (items: any[], handler: (items: any[]) => Prom
       id: rootId,
       name: `Folder with ${size} items`,
       kind: DataItemKind.Collection,
-      ...getTimes()
+      ...getTimes(),
     });
 
     await performTransactions(itemIds, async setOfItemIds => {
-      await db('items_childs').insert(setOfItemIds.map(itemId => ({
-        parentId: rootId, childId: itemId
-      })));
+      await db('items_childs').insert(
+        setOfItemIds.map(itemId => ({
+          parentId: rootId,
+          childId: itemId,
+        }))
+      );
     });
   }
 
@@ -172,18 +185,22 @@ const performTransactions = async (items: any[], handler: (items: any[]) => Prom
   await db('items_tags').insert([
     {
       noteId: 'workspace-root',
-      tagName: InternalTag.WorkspaceRoot
+      tagName: InternalTag.WorkspaceRoot,
     },
   ]);
 
   await performTransactions(rootItemIds, async setOfRootItemIds => {
-    await db('items_childs').insert(setOfRootItemIds.map(rootId => ({
-      parentId: 'my-collections', childId: rootId
-    })));
+    await db('items_childs').insert(
+      setOfRootItemIds.map(rootId => ({
+        parentId: 'my-collections',
+        childId: rootId,
+      }))
+    );
   });
 
   await db('items_childs').insert({
-    parentId: 'workspace-root', childId: 'my-collections'
+    parentId: 'workspace-root',
+    childId: 'my-collections',
   });
 
   await db.destroy();

@@ -48,16 +48,19 @@ export class AppDataExportService {
           await fs.promises.writeFile(path.resolve(folder, 'notes', `${item.id}.json`), JSON.stringify(content));
         }
       }
-    } while(result.nextPageAvailable);
+    } while (result.nextPageAvailable);
 
     await di.unload();
 
     onUpdate('Storing meta data');
     await fs.promises.writeFile(path.resolve(folder, 'media.json'), JSON.stringify(mediaItems));
-    await fs.promises.writeFile(path.resolve(folder, 'workspace.json'), JSON.stringify({
-      ...workspace,
-      name: workspace.name,
-    }));
+    await fs.promises.writeFile(
+      path.resolve(folder, 'workspace.json'),
+      JSON.stringify({
+        ...workspace,
+        name: workspace.name,
+      })
+    );
 
     const basePath = path.dirname(destination);
     if (!fs.existsSync(basePath)) {
@@ -68,29 +71,29 @@ export class AppDataExportService {
     onUpdate('Preparing Zip file');
     const output = fs.createWriteStream(destination);
     const archive = archiver('zip', {
-      zlib: { level: 1 }
+      zlib: { level: 1 },
     });
 
     archive.pipe(output);
 
-    archive.on('warning', function(err) {
+    archive.on('warning', function (err) {
       if (err.code === 'ENOENT') {
         // log warning
-        console.log(err)
+        console.log(err);
       } else {
         // throw error
         throw err;
       }
     });
 
-    archive.on('error', function(err) {
+    archive.on('error', function (err) {
       throw err;
     });
 
     archive.directory(folder + '/', false);
 
     return new Promise(res => {
-      output.on('close', function() {
+      output.on('close', function () {
         onUpdate('Clearing temporary folder');
         rimraf(folder, () => {});
         onUpdate('Done');
@@ -100,6 +103,6 @@ export class AppDataExportService {
       });
       archive.finalize();
       onUpdate('Storing zip file');
-    })
+    });
   }
 }

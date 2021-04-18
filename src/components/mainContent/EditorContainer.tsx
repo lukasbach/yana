@@ -39,18 +39,25 @@ export const EditorContainer: React.FC<{
 
   const clearSaveHandler = () => {
     if (saveHandler.current) {
-      logger.log("Clearning save handler");
+      logger.log('Clearning save handler');
       clearTimeout(saveHandler.current);
       saveHandler.current = undefined;
     }
-  }
+  };
 
   const save = async (contentToSave?: object) => {
-    logger.log("Invoking save()");
+    logger.log('Invoking save()');
     if (saveHandler.current) {
       clearSaveHandler();
     } else {
-      logger.log("Skipping save, editor was not dirty.", [], {...props, currentNote, contentToSave, saveHandler, saveHandlerCurrent: saveHandler.current, existsSaveHandler: !!saveHandler.current});
+      logger.log('Skipping save, editor was not dirty.', [], {
+        ...props,
+        currentNote,
+        contentToSave,
+        saveHandler,
+        saveHandlerCurrent: saveHandler.current,
+        existsSaveHandler: !!saveHandler.current,
+      });
       return;
     }
 
@@ -60,16 +67,16 @@ export const EditorContainer: React.FC<{
       telemetry.trackException('save_attempt_before_editor_is_registered');
       throw Error('Trying to save before editor has registered.');
     }
-    const content = contentToSave || await grabContentHandler.current?.();
+    const content = contentToSave || (await grabContentHandler.current?.());
     if (!!content && Object.keys(content).length > 0) {
       telemetry.trackEvent(...TelemetryEvents.Notes.saveChanges);
-      logger.log("Saving editor contents for ", [currentNote.id, currentNote.name], {currentNote, content});
+      logger.log('Saving editor contents for ', [currentNote.id, currentNote.name], { currentNote, content });
       props.onChangeContent(currentNote.id, content);
       await dataInterface.writeNoteItemContent(currentNote.id, content);
       props.onChangeSaveIndicatorState?.(SaveIndicatorState.Saved);
     } else {
       telemetry.trackException('cannot_save_note_no_content_retrieved');
-      logger.error("Not saving editor contents, no content retrieved", [], {currentNote, content});
+      logger.error('Not saving editor contents, no content retrieved', [], { currentNote, content });
     }
   };
 
@@ -94,20 +101,20 @@ export const EditorContainer: React.FC<{
         telemetry.trackEvent(...TelemetryEvents.Notes.saveChangesViaContextSwitch);
       }}
       onRegister={grabContent => {
-        logger.log("Registered")
+        logger.log('Registered');
         grabContentHandler.current = grabContent;
       }}
       onChange={() => {
         if (grabContentHandler.current) {
-          logger.log("change detected, grabContentHandler registered");
+          logger.log('change detected, grabContentHandler registered');
           props.onChangeSaveIndicatorState?.(SaveIndicatorState.Unsaved);
           clearSaveHandler();
-          saveHandler.current = setTimeout(() => {
+          saveHandler.current = (setTimeout(() => {
             save();
             telemetry.trackEvent(...TelemetryEvents.Notes.saveChangesViaTimer);
-          }, settings.noteItemSaveDelay) as unknown as number;
+          }, settings.noteItemSaveDelay) as unknown) as number;
         } else {
-          logger.log("change detected, but no grabContentHandler registered");
+          logger.log('change detected, but no grabContentHandler registered');
         }
       }}
     />

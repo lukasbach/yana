@@ -38,10 +38,10 @@ const styles = {
     transition: '.3s all ease',
     cursor: 'pointer',
     ':hover': {
-      color: '#fff'
-    }
+      color: '#fff',
+    },
   }),
-}
+};
 
 export const SideBarTreeHeader: React.FC<{
   title: string;
@@ -62,37 +62,29 @@ export const SideBarTreeHeader: React.FC<{
 
   const hoverEffectClass = cxs({
     ':hover': {
-      color: Color(theme.sidebarColor).isDark() ? '#fff' : '#000'
+      color: Color(theme.sidebarColor).isDark() ? '#fff' : '#000',
     },
   });
 
   return (
-    <div className={cx(
-      styles.container,
-      cxs({
-        color: Color(theme.sidebarTextColor).lighten(.2).toString()
-      })
-    )}>
-      <div
-        className={cx(
-          styles.clickableContainer,
-          hoverEffectClass
-        )}
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
+    <div
+      className={cx(
+        styles.container,
+        cxs({
+          color: Color(theme.sidebarTextColor).lighten(0.2).toString(),
+        })
+      )}
+    >
+      <div className={cx(styles.clickableContainer, hoverEffectClass)} onClick={() => setIsExpanded(!isExpanded)}>
         <div className={styles.chevronContainer}>
-          <Icon
-            icon={isExpanded ? 'chevron-down' : 'chevron-right'}
-          />
+          <Icon icon={isExpanded ? 'chevron-down' : 'chevron-right'} />
         </div>
-        <div className={styles.titleContainer}>
-          { props.title }
-        </div>
+        <div className={styles.titleContainer}>{props.title}</div>
       </div>
-      { props.masterItem && (
+      {props.masterItem && (
         <SpotlightTarget name="sidebar-new-note">
           <Popover
-            content={(
+            content={
               <TreeAddIconContextMenu
                 item={props.masterItem}
                 mainContent={mainContent}
@@ -100,13 +92,13 @@ export const SideBarTreeHeader: React.FC<{
                 renderer={Bp3MenuRenderer}
                 onCreatedItem={props.onCreatedItem}
               />
-            )}
+            }
             position={'bottom-right'}
             minimal
           >
-              <div className={cx(styles.addContainer, hoverEffectClass)}>
-                <Icon icon={'plus'} />
-              </div>
+            <div className={cx(styles.addContainer, hoverEffectClass)}>
+              <Icon icon={'plus'} />
+            </div>
           </Popover>
         </SpotlightTarget>
       )}

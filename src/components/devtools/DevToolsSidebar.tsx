@@ -18,19 +18,16 @@ export const DevToolsSidebar: React.FC<{}> = props => {
           onClick={() => devtools.resetAllCounters()}
           icon={'info-sign'}
         />
-        { Object.keys(devtools.counters).filter(key => (devtools.counters[key] || 0) > 0).map(key => (
-          <DetailedListItem
-            key={key}
-            title={key}
-            rightText={(devtools.counters[key] || '') + ''}
-            actionButtons={(
-              <Button
-                icon={'trash'}
-                onClick={() => devtools.resetCounter(key)}
-              />
-            )}
-          />
-        )) }
+        {Object.keys(devtools.counters)
+          .filter(key => (devtools.counters[key] || 0) > 0)
+          .map(key => (
+            <DetailedListItem
+              key={key}
+              title={key}
+              rightText={(devtools.counters[key] || '') + ''}
+              actionButtons={<Button icon={'trash'} onClick={() => devtools.resetCounter(key)} />}
+            />
+          ))}
       </DetailedListContainer>
     </div>
   );

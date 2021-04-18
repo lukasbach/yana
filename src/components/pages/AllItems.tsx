@@ -4,12 +4,5 @@ import { useScreenView } from '../telemetry/useScreenView';
 
 export const AllItems: React.FC<{}> = props => {
   useScreenView('all-items');
-  return (
-    <SearchView
-      title="All Items"
-      icon="layout-grid"
-      hiddenSearch={{ all: true }}
-      defaultSearch={{}}
-    />
-  );
+  return <SearchView title="All Items" icon="layout-grid" hiddenSearch={{ all: true }} defaultSearch={{}} />;
 };

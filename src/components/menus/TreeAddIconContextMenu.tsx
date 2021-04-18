@@ -20,54 +20,90 @@ export const TreeAddIconContextMenu: React.FC<{
       <Renderer
         menu={{
           childs: [
-            { text: 'Create new Collection', icon: 'folder-new', onClick: () => {
-              dataInterface.createDataItemUnderParent({
-                name: 'New Collection',
-                childIds: [],
-                kind: DataItemKind.Collection,
-                lastChange: new Date().getTime(),
-                created: new Date().getTime(),
-                tags: []
-              } as any, item.id).then(onCreatedItem);
-              TelemetryService?.trackEvent(...TelemetryEvents.Items.createCollection);
-            }},
-            { text: 'Create new Note Item', icon: 'document', onClick: () => {
-              dataInterface.createDataItemUnderParent({
-                name: 'New Note Item',
-                childIds: [],
-                kind: DataItemKind.NoteItem,
-                lastChange: new Date().getTime(),
-                created: new Date().getTime(),
-                tags: [],
-                noteType: 'atlaskit-editor-note'
-              } as any, item.id).then(onCreatedItem);
-              TelemetryService?.trackEvent(...TelemetryEvents.Items.createAtlaskitNote);
-            }},
-            { text: 'Create new Code Snippet', icon: 'code', onClick: () => {
-              dataInterface.createDataItemUnderParent({
-                name: 'New Code Sippet',
-                childIds: [],
-                kind: DataItemKind.NoteItem,
-                lastChange: new Date().getTime(),
-                created: new Date().getTime(),
-                tags: [],
-                noteType: 'monaco-editor-note'
-              } as any, item.id).then(onCreatedItem);
-              TelemetryService?.trackEvent(...TelemetryEvents.Items.createCodeSnippet);
-            }},
-            { text: 'Create new Todo List', icon: 'tick-circle', onClick: () => {
-              dataInterface.createDataItemUnderParent({
-                name: 'New Todo List',
-                childIds: [],
-                kind: DataItemKind.NoteItem,
-                lastChange: new Date().getTime(),
-                created: new Date().getTime(),
-                tags: [],
-                noteType: 'todolist-editor-note'
-              } as any, item.id).then(onCreatedItem);
-              TelemetryService?.trackEvent(...TelemetryEvents.Items.createTodoList);
-            }},
-          ]
+            {
+              text: 'Create new Collection',
+              icon: 'folder-new',
+              onClick: () => {
+                dataInterface
+                  .createDataItemUnderParent(
+                    {
+                      name: 'New Collection',
+                      childIds: [],
+                      kind: DataItemKind.Collection,
+                      lastChange: new Date().getTime(),
+                      created: new Date().getTime(),
+                      tags: [],
+                    } as any,
+                    item.id
+                  )
+                  .then(onCreatedItem);
+                TelemetryService?.trackEvent(...TelemetryEvents.Items.createCollection);
+              },
+            },
+            {
+              text: 'Create new Note Item',
+              icon: 'document',
+              onClick: () => {
+                dataInterface
+                  .createDataItemUnderParent(
+                    {
+                      name: 'New Note Item',
+                      childIds: [],
+                      kind: DataItemKind.NoteItem,
+                      lastChange: new Date().getTime(),
+                      created: new Date().getTime(),
+                      tags: [],
+                      noteType: 'atlaskit-editor-note',
+                    } as any,
+                    item.id
+                  )
+                  .then(onCreatedItem);
+                TelemetryService?.trackEvent(...TelemetryEvents.Items.createAtlaskitNote);
+              },
+            },
+            {
+              text: 'Create new Code Snippet',
+              icon: 'code',
+              onClick: () => {
+                dataInterface
+                  .createDataItemUnderParent(
+                    {
+                      name: 'New Code Sippet',
+                      childIds: [],
+                      kind: DataItemKind.NoteItem,
+                      lastChange: new Date().getTime(),
+                      created: new Date().getTime(),
+                      tags: [],
+                      noteType: 'monaco-editor-note',
+                    } as any,
+                    item.id
+                  )
+                  .then(onCreatedItem);
+                TelemetryService?.trackEvent(...TelemetryEvents.Items.createCodeSnippet);
+              },
+            },
+            {
+              text: 'Create new Todo List',
+              icon: 'tick-circle',
+              onClick: () => {
+                dataInterface
+                  .createDataItemUnderParent(
+                    {
+                      name: 'New Todo List',
+                      childIds: [],
+                      kind: DataItemKind.NoteItem,
+                      lastChange: new Date().getTime(),
+                      created: new Date().getTime(),
+                      tags: [],
+                      noteType: 'todolist-editor-note',
+                    } as any,
+                    item.id
+                  )
+                  .then(onCreatedItem);
+                TelemetryService?.trackEvent(...TelemetryEvents.Items.createTodoList);
+              },
+            },
+          ],
         }}
       />
     </>

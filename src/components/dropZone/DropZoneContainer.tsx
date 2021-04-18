@@ -39,7 +39,7 @@ export const DropZoneContainer: React.FC<{}> = props => {
     const events: FileAddEvent[] = [];
 
     for (const file of droppedFiles) {
-      const dataItem = await dataInferface.createDataItem<DataItemKind.MediaItem>({
+      const dataItem = (await dataInferface.createDataItem<DataItemKind.MediaItem>({
         name: file.name,
         kind: DataItemKind.MediaItem,
         tags: [],
@@ -50,8 +50,8 @@ export const DropZoneContainer: React.FC<{}> = props => {
         size: file.file.size,
         type: 'image', // TODO
         extension: path.extname(file.file.path).slice(1),
-        hasThumbnail: createThumbnails
-      } as Omit<MediaItem, 'id'>) as MediaItem;
+        hasThumbnail: createThumbnails,
+      } as Omit<MediaItem, 'id'>)) as MediaItem;
       await dataInferface.storeMediaItemContent(
         dataItem.id,
         file.file.path,
@@ -80,18 +80,18 @@ export const DropZoneContainer: React.FC<{}> = props => {
           <Callout intent={'danger'} icon={'warning-sign'}>
             Adding files is currently in beta. Use at your own risk!
           </Callout>
-          {
-            droppedFiles.map(file => (
-              <FilePreview
-                key={file.file.path}
-                file={file}
-                onRemove={() => {}}
-                onChange={changed => setDroppedFiles(files => files.map(f => f.file.path === changed.file.path ? changed : f))}
-              />
-            ))
-          }
+          {droppedFiles.map(file => (
+            <FilePreview
+              key={file.file.path}
+              file={file}
+              onRemove={() => {}}
+              onChange={changed =>
+                setDroppedFiles(files => files.map(f => (f.file.path === changed.file.path ? changed : f)))
+              }
+            />
+          ))}
 
-          { canAddToCurrentEditor && (
+          {canAddToCurrentEditor && (
             <Switch
               label="Add files to current note"
               checked={addToCurrentEditor}
@@ -114,7 +114,14 @@ export const DropZoneContainer: React.FC<{}> = props => {
             <Button icon="cross" minimal onClick={() => setDroppedFiles([])}>
               Discard
             </Button>
-            <Button icon="upload"loading={isUploading} intent="primary" outlined disabled={isUploading} onClick={confirm}>
+            <Button
+              icon="upload"
+              loading={isUploading}
+              intent="primary"
+              outlined
+              disabled={isUploading}
+              onClick={confirm}
+            >
               Upload
             </Button>
           </div>

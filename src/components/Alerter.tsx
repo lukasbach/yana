@@ -9,17 +9,19 @@ const logger = LogService.getLogger('Alerter');
 
 interface AlertOptions extends Partial<IAlertProps> {
   content: React.ReactNode;
-  prompt?: {
-    type: 'string';
-    defaultValue?: string;
-    placeholder?: string;
-    onConfirmText: (value: string) => void;
-  } | {
-    type: 'boolean',
-    defaultValue?: boolean;
-    text: string;
-    onConfirmBoolean: (value: boolean) => void;
-  };
+  prompt?:
+    | {
+        type: 'string';
+        defaultValue?: string;
+        placeholder?: string;
+        onConfirmText: (value: string) => void;
+      }
+    | {
+        type: 'boolean';
+        defaultValue?: boolean;
+        text: string;
+        onConfirmBoolean: (value: boolean) => void;
+      };
 }
 
 export class Alerter {
@@ -38,7 +40,7 @@ export class Alerter {
   }
 
   public alert(options: AlertOptions) {
-    logger.log('alert()', [], {options});
+    logger.log('alert()', [], { options });
     this.onAlert.emit(options);
   }
 
@@ -64,10 +66,10 @@ export class Alerter {
           canOutsideClickCancel={true}
           canEscapeKeyCancel={true}
           className={cxs({ ' .bp3-alert-contents': { flexGrow: 1 } })}
-          children={(
+          children={
             <>
-              { currentAlert.content }
-              { currentAlert?.prompt?.type === 'string' && (
+              {currentAlert.content}
+              {currentAlert?.prompt?.type === 'string' && (
                 <InputGroup
                   value={textValue}
                   onChange={(e: any) => setTextValue(e.target.value)}
@@ -75,22 +77,24 @@ export class Alerter {
                   fill={true}
                   autoFocus={true}
                 />
-              ) }
-              { currentAlert?.prompt?.type === 'boolean' && (
+              )}
+              {currentAlert?.prompt?.type === 'boolean' && (
                 <Checkbox
                   checked={booleanValue}
                   onChange={(e: any) => setBooleanValue(e.target.checked)}
                   label={currentAlert.prompt.text}
                 />
-              ) }
+              )}
             </>
-          )}
+          }
           {...currentAlert}
           onClose={() => setCurrentAlert(undefined)}
-          onConfirm={
-            (() => currentAlert?.prompt?.type === 'string' ? currentAlert.prompt.onConfirmText(textValue)
-              : currentAlert?.prompt?.type === 'boolean' ? currentAlert.prompt.onConfirmBoolean(booleanValue)
-                : currentAlert?.onConfirm?.())
+          onConfirm={() =>
+            currentAlert?.prompt?.type === 'string'
+              ? currentAlert.prompt.onConfirmText(textValue)
+              : currentAlert?.prompt?.type === 'boolean'
+              ? currentAlert.prompt.onConfirmBoolean(booleanValue)
+              : currentAlert?.onConfirm?.()
           }
           isOpen={true}
         />
@@ -99,5 +103,5 @@ export class Alerter {
       logger.log('Hide alert');
       return null;
     }
-  }
+  };
 }

@@ -12,7 +12,11 @@ import { ColorPickerInput } from '../../common/ColorPickerInput';
 import { ItemCustomizationCard } from './ItemCustomizationCard';
 import { DetailedListItem } from '../../common/DetailedListItem';
 
-export const EditItemDrawer: React.FC<{ isOpen: boolean, onSetIsOpen: (open: boolean) => void, itemId: string }> = props => {
+export const EditItemDrawer: React.FC<{
+  isOpen: boolean;
+  onSetIsOpen: (open: boolean) => void;
+  itemId: string;
+}> = props => {
   const item = useDataItem(props.itemId);
 
   if (!item) {

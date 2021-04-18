@@ -12,7 +12,7 @@ import { Settings } from './components/settings/Settings';
 import { AboutContainerPage } from './components/settings/about/AboutContainerPage';
 import { HomePage } from './components/pages/HomePage';
 
-export const pages: { [key in PageIndex]: { title: string, icon: IconName, content: () => ReactNode } } = {
+export const pages: { [key in PageIndex]: { title: string; icon: IconName; content: () => ReactNode } } = {
   [PageIndex.Home]: { title: 'Home', icon: 'home', content: () => <HomePage /> },
   [PageIndex.StarredItems]: { title: 'Starred', icon: 'star', content: () => <StarredItems /> },
   [PageIndex.FileItems]: { title: 'Files', icon: 'archive', content: () => <FileItems /> },

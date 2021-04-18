@@ -3,17 +3,19 @@ import { SortCriterium } from '../sortCriteria';
 import { Button } from '@blueprintjs/core';
 
 export const SortCriteriumButton: React.FC<{
-  sortCriterium: SortCriterium,
-  changeSorting: (criterium: SortCriterium, asc: boolean) => void,
-  currentSortCriterium?: SortCriterium,
-  asc?: boolean,
+  sortCriterium: SortCriterium;
+  changeSorting: (criterium: SortCriterium, asc: boolean) => void;
+  currentSortCriterium?: SortCriterium;
+  asc?: boolean;
 }> = props => {
-
   return (
     <Button
-      minimal small
+      minimal
+      small
       active={props.sortCriterium.id === props.currentSortCriterium?.id}
-      icon={props.sortCriterium.id === props.currentSortCriterium?.id ? (props.asc ? 'sort-asc' : 'sort-desc') : undefined}
+      icon={
+        props.sortCriterium.id === props.currentSortCriterium?.id ? (props.asc ? 'sort-asc' : 'sort-desc') : undefined
+      }
       onClick={() => {
         if (props.sortCriterium.id === props.currentSortCriterium?.id) {
           props.changeSorting(props.sortCriterium, !props.asc);
@@ -22,7 +24,7 @@ export const SortCriteriumButton: React.FC<{
         }
       }}
     >
-      { props.sortCriterium.name }
+      {props.sortCriterium.name}
     </Button>
   );
 };

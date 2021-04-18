@@ -9,7 +9,7 @@ export const useContextMenu = (menu?: JSX.Element) => {
         e.preventDefault();
         ContextMenu.show(menu, { left: e.clientX, top: e.clientY });
       }
-    }
+    },
   };
   return elementProps;
-}
+};

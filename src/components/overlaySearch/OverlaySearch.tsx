@@ -25,7 +25,7 @@ const styles = {
     },
     ' ::-webkit-scrollbar': {
       width: '8px',
-      padding: '4px'
+      padding: '4px',
     },
     ' ::-webkit-scrollbar-track': {
       background: 'transparent',
@@ -51,10 +51,10 @@ const styles = {
       left: '5%',
       right: '5%',
       bottom: '2%',
-    }
+    },
   }),
   searchBarContainer: cxs({
-    height: '80px'
+    height: '80px',
   }),
   mainContainer: cxs({
     flexGrow: 1,
@@ -63,7 +63,7 @@ const styles = {
   resultContainer: cxs({
     flexGrow: 1,
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   }),
   rightContainer: cxs({
     width: '240px',
@@ -76,16 +76,16 @@ const styles = {
   closeContainer: cxs({
     position: 'fixed',
     top: '40px',
-    right: '40px'
+    right: '40px',
   }),
   backdrop: cxs({
     backgroundColor: 'rgba(0, 0, 0, .7) !important',
   }),
-}
+};
 
 export const OverlaySearch: React.FC<{
-  params: OverlaySearchParameters,
-  handler: (items: DataItem[] | undefined) => void,
+  params: OverlaySearchParameters;
+  handler: (items: DataItem[] | undefined) => void;
 }> = props => {
   const [selectedItems, setSelectedItems] = useState<DataItem[]>([]);
   const [hiddenSearch, setHiddenSearch] = useState<SearchQuery>(props.params.hiddenSearch || {});
@@ -125,11 +125,11 @@ export const OverlaySearch: React.FC<{
                   <SearchResults
                     hiddenSearch={hiddenSearch}
                     hideItemIds={selectedItems.map(item => item.id)}
-                    onClickItem={props.params.selectMultiple ? (
-                      item => setSelectedItems(items => [...items, item])
-                    ) : (
-                      item => props.handler([item])
-                    )}
+                    onClickItem={
+                      props.params.selectMultiple
+                        ? item => setSelectedItems(items => [...items, item])
+                        : item => props.handler([item])
+                    }
                   />
                 </SeachItemsContainer>
               </div>
@@ -137,16 +137,17 @@ export const OverlaySearch: React.FC<{
                 <div className={styles.rightContainerSection + ' ' + 'bp3-dark'}>
                   <SearchBarModifiers buttonProps={{ minimal: true }} />
                   <div>
-                    { props.params.selectMultiple && (
+                    {props.params.selectMultiple && (
                       <Button
-                        outlined large
+                        outlined
+                        large
                         icon={'chevron-right'}
                         intent={'primary'}
                         onClick={() => props.handler(selectedItems)}
                       >
-                        { props.params.buttonText || 'Select' }
+                        {props.params.buttonText || 'Select'}
                       </Button>
-                    ) }
+                    )}
                   </div>
                   <SortingOptions searchQuery={hiddenSearch} onChange={setHiddenSearch} />
                 </div>

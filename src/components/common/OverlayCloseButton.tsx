@@ -14,7 +14,7 @@ const btnStyles = cxs({
   },
   ':active': {
     backgroundColor: '#d2d2d2',
-  }
+  },
 });
 
 const btnStylesDarkbg = cxs({
@@ -29,23 +29,16 @@ const btnStylesDarkbg = cxs({
   },
   ':active': {
     backgroundColor: 'rgba(255, 255, 255, .3)',
-  }
+  },
 });
 
 export const OverlayCloseButton: React.FC<{
-  onClose: () => void,
-  darkBackground?: boolean,
+  onClose: () => void;
+  darkBackground?: boolean;
 }> = props => {
   return (
-    <button
-      onClick={props.onClose}
-      className={props.darkBackground ? btnStylesDarkbg : btnStyles}
-    >
-      <Icon
-        icon={'cross'}
-        iconSize={32}
-        color={props.darkBackground ? '#fff' : '#000'}
-      />
+    <button onClick={props.onClose} className={props.darkBackground ? btnStylesDarkbg : btnStyles}>
+      <Icon icon={'cross'} iconSize={32} color={props.darkBackground ? '#fff' : '#000'} />
     </button>
   );
 };

@@ -17,36 +17,39 @@ export const TrashItems: React.FC<{}> = props => {
       icon="trash"
       hiddenSearch={{ tags: [InternalTag.Trash] }}
       defaultSearch={{}}
-      rightContent={(
+      rightContent={
         <>
           <Button
-            outlined icon="trash" intent="danger"
+            outlined
+            icon="trash"
+            intent="danger"
             onClick={async () => {
               await Alerter.Instance.alert({
                 icon: 'trash',
                 intent: 'danger',
-                content: 'Do you want to permanently remove all items in your trash bin? The items cannot be recovered!',
+                content:
+                  'Do you want to permanently remove all items in your trash bin? The items cannot be recovered!',
                 confirmButtonText: 'Remove permanently',
                 cancelButtonText: 'Cancel',
                 prompt: {
                   type: 'boolean',
                   defaultValue: true,
                   text: 'Recursively delete all children',
-                  onConfirmBoolean: async (recursive) => {
-                    const { results: items } = await dataInterface.search({ tags: [ InternalTag.Trash ] });
+                  onConfirmBoolean: async recursive => {
+                    const { results: items } = await dataInterface.search({ tags: [InternalTag.Trash] });
                     for (const item of items) {
                       await dataInterface.removeItem(item.id, recursive);
                     }
-                  }
-                }
-              })
+                  },
+                },
+              });
             }}
           >
             Clear trash
-          </Button>
-          {' '}
+          </Button>{' '}
           <Button
-            outlined icon="history"
+            outlined
+            icon="history"
             onClick={async () => {
               await Alerter.Instance.alert({
                 icon: 'history',
@@ -55,20 +58,20 @@ export const TrashItems: React.FC<{}> = props => {
                 confirmButtonText: 'Recover all items',
                 cancelButtonText: 'Cancel',
                 onConfirm: async () => {
-                  const { results: items } = await dataInterface.search({ tags: [ InternalTag.Trash ] });
+                  const { results: items } = await dataInterface.search({ tags: [InternalTag.Trash] });
                   for (const item of items) {
                     await dataInterface.changeItem(item.id, ({ tags }) => ({
-                      tags: tags.filter(tag => tag !== InternalTag.Trash)
+                      tags: tags.filter(tag => tag !== InternalTag.Trash),
                     }));
                   }
                 },
-              })
+              });
             }}
           >
             Restore everything
           </Button>
         </>
-      )}
+      }
     />
   );
 };

@@ -5,12 +5,12 @@ import { DataItem, SearchQuery } from '../../../types';
 import { SearchView } from '../../mainContent/searchView/SearchView';
 
 export const FindItemsDrawer: React.FC<{
-  title: string,
-  icon: IconName,
-  hiddenSearch: SearchQuery,
-  isOpen: boolean,
-  onSetIsOpen: (open: boolean) => void,
-  onClickItem: (item: DataItem) => void,
+  title: string;
+  icon: IconName;
+  hiddenSearch: SearchQuery;
+  isOpen: boolean;
+  onSetIsOpen: (open: boolean) => void;
+  onClickItem: (item: DataItem) => void;
 }> = props => {
   return (
     <Drawer

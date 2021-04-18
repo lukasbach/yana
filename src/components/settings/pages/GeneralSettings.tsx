@@ -27,13 +27,7 @@ export const GeneralSettings: React.FC<{}> = props => {
   return (
     <div>
       <SettingsSection title="General Settings">
-        <SettingsNumberInput
-          settingsKey={'zoomFactor'}
-          label="Zoom Factor"
-          step={.1}
-          min={.4}
-          max={5}
-        />
+        <SettingsNumberInput settingsKey={'zoomFactor'} label="Zoom Factor" step={0.1} min={0.4} max={5} />
 
         <SettingsClickable
           title="Restart Tutorial"
@@ -61,39 +55,29 @@ export const GeneralSettings: React.FC<{}> = props => {
               themeSidebarTextColor: theme.sidebarTextColor,
               themeSidebarHoverColor: theme.sidebarHoverColor,
               themeTopbarColor: theme.topBarColor,
-            })
+            });
           }}
         />
 
         <p>After choosing a theme, you have to save the settings to see it applied.</p>
-        <p>Nord theme is inspired by <a href="https://nordtheme.com" target="_blank">nordtheme.com</a></p>
+        <p>
+          Nord theme is inspired by{' '}
+          <a href="https://nordtheme.com" target="_blank">
+            nordtheme.com
+          </a>
+        </p>
 
-        <SettingsColorInput
-          settingsKey={'themePrimaryColor'}
-          label={"Primary Color"}
-        />
-        <SettingsColorInput
-          settingsKey={'themeSidebarColor'}
-          label={"Sidebar Background Color"}
-        />
-        <SettingsColorInput
-          settingsKey={'themeSidebarTextColor'}
-          label={"Sidebar Text Color"}
-        />
-        <SettingsColorInput
-          settingsKey={'themeSidebarHoverColor'}
-          label={"Sidebar Hovering Color"}
-        />
-        <SettingsColorInput
-          settingsKey={'themeTopbarColor'}
-          label={"Application Bar Color"}
-        />
+        <SettingsColorInput settingsKey={'themePrimaryColor'} label={'Primary Color'} />
+        <SettingsColorInput settingsKey={'themeSidebarColor'} label={'Sidebar Background Color'} />
+        <SettingsColorInput settingsKey={'themeSidebarTextColor'} label={'Sidebar Text Color'} />
+        <SettingsColorInput settingsKey={'themeSidebarHoverColor'} label={'Sidebar Hovering Color'} />
+        <SettingsColorInput settingsKey={'themeTopbarColor'} label={'Application Bar Color'} />
       </SettingsSection>
 
       <SettingsSection title="Note Items">
         <SettingsNumberInput
           settingsKey={'noteItemSaveDelay'}
-          label={"Save-delay of notes, in milliseconds"}
+          label={'Save-delay of notes, in milliseconds'}
           helperText="Determines the number of milliseconds that Yana waits after user input until the note is saved.
             Switching or closing the tab or app always auto-saves the note. If the user continues typing, the timer is reset"
         />
@@ -105,29 +89,17 @@ export const GeneralSettings: React.FC<{}> = props => {
       </SettingsSection>
 
       <SettingsSection title="Backups">
-        <SettingsSwitchInput
-          settingsKey={'autoBackupActive'}
-          label={"Automatically backup workspaces"}
-        />
-        <SettingsSwitchInput
-          settingsKey={'autoBackupIncludeMedia'}
-          label={"Include media data in workspace backups"}
-        />
-        <SettingsNumberInput
-          settingsKey={'autoBackupCount'}
-          label={"Maximum number of automatic backups to keep"}
-        />
+        <SettingsSwitchInput settingsKey={'autoBackupActive'} label={'Automatically backup workspaces'} />
+        <SettingsSwitchInput settingsKey={'autoBackupIncludeMedia'} label={'Include media data in workspace backups'} />
+        <SettingsNumberInput settingsKey={'autoBackupCount'} label={'Maximum number of automatic backups to keep'} />
         <SettingsNumberInput
           settingsKey={'autoBackupInterval'}
-          label={"Backup Interval, in Minutes"}
+          label={'Backup Interval, in Minutes'}
           divideFactor={1000 * 60}
           step={1000 * 60}
           min={0}
         />
-        <SettingsFilesystemPathInput
-          settingsKey={'autoBackupLocation'}
-          label={"Backup Location"}
-        />
+        <SettingsFilesystemPathInput settingsKey={'autoBackupLocation'} label={'Backup Location'} />
         <SettingsClickable
           title="Open Backup Location"
           icon="folder-open"
@@ -139,11 +111,11 @@ export const GeneralSettings: React.FC<{}> = props => {
       <SettingsSection title="Updates">
         <SettingsSwitchInput
           settingsKey={'autoUpdateAppActive'}
-          label={"Automatically update Yana when a new version gets available"}
+          label={'Automatically update Yana when a new version gets available'}
         />
         <SettingsSwitchInput
           settingsKey={'autoUpdateAppBackupActive'}
-          label={"Automatically backup workspaces before updating"}
+          label={'Automatically backup workspaces before updating'}
         />
       </SettingsSection>
 
@@ -167,7 +139,7 @@ export const GeneralSettings: React.FC<{}> = props => {
               defaultPath: workspace.name.toLowerCase().replace(/\s/g, '_') + '.zip',
             });
             if (result.filePath) {
-              await AppDataExportService.exportTo(result.filePath, workspace, console.log)
+              await AppDataExportService.exportTo(result.filePath, workspace, console.log);
               remote.shell.showItemInFolder(result.filePath);
             }
           }}

@@ -22,25 +22,22 @@ export const OverlaySearchProvider: React.FC<{}> = props => {
   const handler = useRef<undefined | ((items: DataItem[] | undefined) => void)>(undefined);
 
   return (
-    <OverlaySearchContext.Provider value={{
-      performSearch: (p) => {
-        return new Promise(res => {
-          handler.current = items => {
-            setParams(undefined);
-            handler.current = undefined;
-            res(items);
-          }
-          setParams(p);
-        });
-      }
-    }}>
-      { props.children }
-      { params && handler.current && (
-        <OverlaySearch
-          params={params}
-          handler={handler.current}
-        />
-      ) }
+    <OverlaySearchContext.Provider
+      value={{
+        performSearch: p => {
+          return new Promise(res => {
+            handler.current = items => {
+              setParams(undefined);
+              handler.current = undefined;
+              res(items);
+            };
+            setParams(p);
+          });
+        },
+      }}
+    >
+      {props.children}
+      {params && handler.current && <OverlaySearch params={params} handler={handler.current} />}
     </OverlaySearchContext.Provider>
   );
 };

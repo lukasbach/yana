@@ -10,7 +10,7 @@ const styles = {
     width: '100%',
     minHeight: '100px',
     padding: '12px',
-    marginBottom: '16px'
+    marginBottom: '16px',
   }),
   previewImage: cxs({
     width: '120px',
@@ -21,40 +21,37 @@ const styles = {
     flex: '1',
     ' h2': {
       margin: 0,
-    }
-  })
-}
+    },
+  }),
+};
 
 export const FilePreview: React.FC<{
   file: UploadEntity;
   onRemove: () => any;
   onChange: (changed: UploadEntity) => any;
 }> = props => {
-  const {file} = props;
-
+  const { file } = props;
 
   return (
     <div className={styles.container}>
       <div>
-        { ["image/png"].includes(file.file.type) ? (
-          <img
-            src={"file:///" + file.file.path.replace(/\\/g, '/')}
-            className={styles.previewImage}
-          />
-        ) : <div className={styles.previewImage} /> }
+        {['image/png'].includes(file.file.type) ? (
+          <img src={'file:///' + file.file.path.replace(/\\/g, '/')} className={styles.previewImage} />
+        ) : (
+          <div className={styles.previewImage} />
+        )}
       </div>
 
       <div className={styles.content}>
         <AutoSizer>
-          {({width, height}) => (
+          {({ width, height }) => (
             <div>
               <h2 style={{ width, height: '20px' }}>
-                <EditableText
-                  defaultValue={file.name}
-                  onConfirm={name => props.onChange({...props.file, name})}
-                />
+                <EditableText defaultValue={file.name} onConfirm={name => props.onChange({ ...props.file, name })} />
               </h2>
-              <p className={Classes.TEXT_MUTED + ' ' + Classes.TEXT_OVERFLOW_ELLIPSIS} style={{ width }}>{ file.file.path }</p>
+              <p className={Classes.TEXT_MUTED + ' ' + Classes.TEXT_OVERFLOW_ELLIPSIS} style={{ width }}>
+                {file.file.path}
+              </p>
             </div>
           )}
         </AutoSizer>

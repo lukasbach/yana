@@ -14,11 +14,10 @@ const styles = {
   }),
 };
 
-
 export const ListItem: React.FC<{
-  item: TodoListItem,
-  index: number,
-  onChangeItem: (item: TodoListItem) => void,
+  item: TodoListItem;
+  index: number;
+  onChangeItem: (item: TodoListItem) => void;
 }> = ({ item, index, onChangeItem }) => {
   return (
     <Draggable key={item.id} draggableId={item.id} index={index}>
@@ -31,17 +30,16 @@ export const ListItem: React.FC<{
           draggable={true}
           title={item.title}
           selected={!!item.tickedOn}
-          onToogleSelect={selected => onChangeItem({
-            ...item,
-            tickedOn: selected ? Date.now() : undefined
-          })}
-          expansionContent={(
+          onToogleSelect={selected =>
+            onChangeItem({
+              ...item,
+              tickedOn: selected ? Date.now() : undefined,
+            })
+          }
+          expansionContent={
             <>
               <div>
-                <ColorSelection
-                  selectedColor={item.color}
-                  onSelectColor={color => onChangeItem({ ...item, color })}
-                />
+                <ColorSelection selectedColor={item.color} onSelectColor={color => onChangeItem({ ...item, color })} />
                 <div className={styles.descriptionContainer}>
                   <EditableText
                     defaultValue={item.description}
@@ -54,7 +52,7 @@ export const ListItem: React.FC<{
                 </div>
               </div>
             </>
-          )}
+          }
           isStarred={item.starred}
           onToggleStar={starred => onChangeItem({ ...item, starred })}
         />

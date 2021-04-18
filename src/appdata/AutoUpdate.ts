@@ -1,10 +1,10 @@
-import fs from "fs";
+import fs from 'fs';
 import { appDataFile, userDataFolder } from './paths';
 import { AppData } from '../types';
 import { AppDataExportService } from './AppDataExportService';
 import { LogService } from '../common/LogService';
 import path from 'path';
-import { autoUpdater } from "electron-updater"
+import { autoUpdater } from 'electron-updater';
 
 const logger = LogService.getLogger('AutoUpdate');
 
@@ -68,6 +68,6 @@ export class AutoUpdate {
     autoUpdater.on('update-downloaded', () => {
       // Do nothing for now
       // autoUpdater.quitAndInstall();
-    })
+    });
   }
 }

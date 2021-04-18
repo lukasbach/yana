@@ -14,8 +14,5 @@ export const SmallPreviewComponent: React.FC<EditorSmallPreviewProps<AtlassianNo
     );
   }
 
-
-  return (
-    <ReactRenderer document={props.content.adf}  />
-  );
+  return <ReactRenderer document={props.content.adf} />;
 };

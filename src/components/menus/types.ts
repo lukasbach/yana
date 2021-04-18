@@ -10,5 +10,5 @@ export interface MenuItemDefinition extends IMenuItemProps {
 }
 
 export type MenuRenderer = React.FC<{
-  menu: MenuDefinition
+  menu: MenuDefinition;
 }>;

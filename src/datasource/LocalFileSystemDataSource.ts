@@ -26,14 +26,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     structures: { [key: string]: any };
   };
 
-  private thumbnailExtensions: string[] = [
-    'png',
-    'jpg',
-    'gif',
-    'jpeg',
-    'bmp',
-    'tiff'
-  ]
+  private thumbnailExtensions: string[] = ['png', 'jpg', 'gif', 'jpeg', 'bmp', 'tiff'];
 
   private resolvePath(...p: string[]) {
     return path.join(this.options.sourcePath, ...p);
@@ -73,7 +66,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     await fs.writeFile(
       path.join(options.sourcePath, STRUCTURE_FILE),
       JSON.stringify({
-        items: {}
+        items: {},
       })
     );
   }
@@ -86,8 +79,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     await this.load();
   }
 
-  public async unload() {
-  }
+  public async unload() {}
 
   public async getDataItem<K extends DataItemKind>(id: string): Promise<DataItem<K> | null> {
     return this.structure.items[id] || null;
@@ -102,7 +94,9 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     await fs.writeFile(this.resolvePath(NOTES_DIR, id + '.json'), JSON.stringify(content));
   }
 
-  public async createDataItem<K extends DataItemKind>(item: Omit<DataItem<K>, 'id'> & { id?: string }): Promise<DataItem<K>> {
+  public async createDataItem<K extends DataItemKind>(
+    item: Omit<DataItem<K>, 'id'> & { id?: string }
+  ): Promise<DataItem<K>> {
     let itemCopy: DataItem<K> = { ...item, id: item.id || this.createId(item.kind) };
     this.structure.items[itemCopy.id] = itemCopy;
     return itemCopy;
@@ -128,11 +122,9 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     } as any;
   }
 
-  public async search(
-    search: SearchQuery,
-  ): Promise<SearchResult> {
+  public async search(search: SearchQuery): Promise<SearchResult> {
     let result: DataItem[] = [];
-    const start = search.pagingValue as number ?? 0;
+    const start = (search.pagingValue as number) ?? 0;
 
     for (const item of Object.values(this.structure.items)) {
       if (await SearchHelper.satisfiesSearch(item, search, this)) {
@@ -141,8 +133,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     }
 
     if (search.sortColumn) {
-      result = result.sort((a, b) =>
-        SearchHelper.sortItems(a, b, search.sortColumn!, search.sortDirection));
+      result = result.sort((a, b) => SearchHelper.sortItems(a, b, search.sortColumn!, search.sortDirection));
     }
 
     if (search.limit) {
@@ -180,30 +171,34 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
     }
   }
 
-  public async storeMediaItemContent(id: string, localPath: string, thumbnail: { width?: number; height?: number } | undefined): Promise<DataSourceActionResult> {
+  public async storeMediaItemContent(
+    id: string,
+    localPath: string,
+    thumbnail: { width?: number; height?: number } | undefined
+  ): Promise<DataSourceActionResult> {
     const mediaItem = this.structure.items[id] as MediaItem;
-    logger.log("Storing media item content", [], {id, localPath, mediaItem, thumbnail});
+    logger.log('Storing media item content', [], { id, localPath, mediaItem, thumbnail });
     if (!mediaItem.referencePath) {
       await fs.copyFile(localPath, this.resolvePath(MEDIA_DIR, id + '.' + mediaItem.extension));
     }
 
     if (thumbnail && (thumbnail.width || thumbnail?.height) && this.thumbnailExtensions.includes(mediaItem.extension)) {
-      logger.log("Preparing thumbnail", [], {thumbnail, mediaItem, localPath});
+      logger.log('Preparing thumbnail', [], { thumbnail, mediaItem, localPath });
       const file = await fs.readFile(localPath);
       const jimpImage = await Jimp.read(file);
-      logger.log("Read original image", [], {jimpImage});
+      logger.log('Read original image', [], { jimpImage });
       const resized = await jimpImage.resize(thumbnail.width || Jimp.AUTO, thumbnail.height || Jimp.AUTO);
       const buffer = await resized.getBufferAsync(resized.getMIME());
       await fs.writeFile(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension), buffer);
-       // .writeAsync(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension));
-      logger.log("Resized image and stored thumbnail", [], {});
+      // .writeAsync(this.resolvePath(MEDIA_DIR, id + '.thumb.' + mediaItem.extension));
+      logger.log('Resized image and stored thumbnail', [], {});
     }
   }
 
   public async removeMediaItemContent(item: MediaItem): Promise<DataSourceActionResult> {
     const mediaPath = this.resolvePath(MEDIA_DIR, item.id + '.' + item.extension);
     const thumbPath = this.resolvePath(MEDIA_DIR, item.id + '.thumb.' + item.extension);
-    logger.log("Removing media contents", [], {item, mediaPath, thumbPath, hasThumb: item.hasThumbnail});
+    logger.log('Removing media contents', [], { item, mediaPath, thumbPath, hasThumb: item.hasThumbnail });
     await fs.unlink(mediaPath);
 
     if (item.hasThumbnail) {
@@ -213,7 +208,7 @@ export class LocalFileSystemDataSource implements AbstractDataSource {
 
   public async persist() {
     const data = JSON.stringify(this.structure, null, 1);
-    logger.log("Persisting to", [this.resolvePath(STRUCTURE_FILE)], {data, structure: this.structure});
+    logger.log('Persisting to', [this.resolvePath(STRUCTURE_FILE)], { data, structure: this.structure });
     await fs.writeFile(this.resolvePath(STRUCTURE_FILE), data);
   }
 

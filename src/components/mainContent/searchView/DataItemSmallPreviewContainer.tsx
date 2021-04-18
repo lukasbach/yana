@@ -12,11 +12,11 @@ const containerStyle = cxs({
   overflow: 'hidden',
   ' *': {
     fontSize: '11px !important',
-    color: 'black !important'
+    color: 'black !important',
   },
   ' p': {
     margin: '0 !important',
-  }
+  },
 });
 
 const dontClickThroughContainer = cxs({
@@ -24,10 +24,13 @@ const dontClickThroughContainer = cxs({
   top: '0px',
   right: '0px',
   bottom: '0px',
-  left: '0px'
+  left: '0px',
 });
 
-export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<any>, noteItemContent?: object }> = props => {
+export const DataItemSmallPreviewContainer: React.FC<{
+  noteItem: NoteDataItem<any>;
+  noteItemContent?: object;
+}> = props => {
   const editor = EditorRegistry.Instance.getEditorWithId(props.noteItem.noteType);
 
   if (!editor || !editor.smallPreviewComponent) {
@@ -38,11 +41,11 @@ export const DataItemSmallPreviewContainer: React.FC<{ noteItem: NoteDataItem<an
 
   return (
     <div className={containerStyle}>
-      { props.noteItemContent ? (
+      {props.noteItemContent ? (
         <PreviewComponent item={props.noteItem} content={props.noteItemContent} />
       ) : (
         <NonIdealState icon={<Spinner />} />
-      ) }
+      )}
       <div className={dontClickThroughContainer} />
     </div>
   );

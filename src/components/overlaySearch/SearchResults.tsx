@@ -9,9 +9,9 @@ import ago from 's-ago';
 import { Spinner } from '@blueprintjs/core';
 
 export const SearchResults: React.FC<{
-  onClickItem?: (item: DataItem) => void,
-  hideItemIds: string[],
-  hiddenSearch: SearchQuery,
+  onClickItem?: (item: DataItem) => void;
+  hideItemIds: string[];
+  hiddenSearch: SearchQuery;
 }> = props => {
   const search = useSearchBar();
   const searchResult = useDataSearch({ ...search.searchQuery, ...props.hiddenSearch }, 30);
@@ -20,7 +20,7 @@ export const SearchResults: React.FC<{
 
   return (
     <AutoSizer>
-      {({width, height}) => {
+      {({ width, height }) => {
         return (
           <List
             rowCount={items.length + (searchResult.nextPageAvailable ? 50 : 0)}
@@ -28,7 +28,7 @@ export const SearchResults: React.FC<{
             width={width}
             height={height}
             containerStyle={{ paddingRight: '10px' }}
-            rowRenderer={(cellProps) => {
+            rowRenderer={cellProps => {
               const itemId = cellProps.index;
 
               if (itemId >= items.length) {
@@ -60,10 +60,10 @@ export const SearchResults: React.FC<{
                   onClick={() => props.onClickItem?.(item)}
                   dataItem={item}
                 />
-              )
+              );
             }}
           />
-        )
+        );
       }}
     </AutoSizer>
   );

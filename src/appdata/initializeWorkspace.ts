@@ -4,7 +4,12 @@ import * as fs from 'fs';
 import * as pathLib from 'path';
 import { DataSourceRegistry } from '../datasource/DataSourceRegistry';
 
-export const initializeWorkspace = async (name: string, path: string, dataSourceType: DataSourceType, empty?: boolean): Promise<WorkSpace> => {
+export const initializeWorkspace = async (
+  name: string,
+  path: string,
+  dataSourceType: DataSourceType,
+  empty?: boolean
+): Promise<WorkSpace> => {
   if (fs.existsSync(pathLib.join(path, 'notebook.json'))) {
     throw Error('A workspace already exists at the specified location.');
   }
@@ -12,7 +17,7 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
   const workspace: WorkSpace = {
     name,
     dataSourceType: dataSourceType,
-    dataSourceOptions: { sourcePath: path }
+    dataSourceOptions: { sourcePath: path },
   };
   await DataSourceRegistry.initDataSource(workspace);
   const dataSource = DataSourceRegistry.getDataSource(workspace);
@@ -26,10 +31,29 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
       tags: [InternalTag.Starred],
       kind: DataItemKind.NoteItem,
       childIds: [],
-      noteType: 'atlaskit-editor-note'
+      noteType: 'atlaskit-editor-note',
     } as any);
 
-    await dataSource.writeNoteItemContent(note1.id, {"adf":{"version":1,"type":"doc","content":[{"type":"paragraph","content":[{"type":"text","text":"Welcome to "},{"type":"text","text":"Yana","marks":[{"type":"em"},{"type":"strong"},{"type":"textColor","attrs":{"color":"#00b8d9"}}]},{"type":"text","text":", your easy notebook app with lots of different features!"}]}]}});
+    await dataSource.writeNoteItemContent(note1.id, {
+      adf: {
+        version: 1,
+        type: 'doc',
+        content: [
+          {
+            type: 'paragraph',
+            content: [
+              { type: 'text', text: 'Welcome to ' },
+              {
+                type: 'text',
+                text: 'Yana',
+                marks: [{ type: 'em' }, { type: 'strong' }, { type: 'textColor', attrs: { color: '#00b8d9' } }],
+              },
+              { type: 'text', text: ', your easy notebook app with lots of different features!' },
+            ],
+          },
+        ],
+      },
+    });
 
     const collection1 = await dataSource.createDataItem({
       name: 'Welcome',
@@ -37,7 +61,7 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
       lastChange: new Date().getTime(),
       tags: [],
       kind: DataItemKind.Collection,
-      childIds: [note1.id]
+      childIds: [note1.id],
     });
 
     const myCollections = await dataSource.createDataItem({
@@ -46,7 +70,7 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
       lastChange: new Date().getTime(),
       tags: [InternalTag.Internal],
       kind: DataItemKind.Collection,
-      childIds: [collection1.id]
+      childIds: [collection1.id],
     });
 
     await dataSource.createDataItem({
@@ -55,7 +79,7 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
       lastChange: new Date().getTime(),
       tags: [InternalTag.WorkspaceRoot, InternalTag.Internal],
       kind: DataItemKind.Collection,
-      childIds: [myCollections.id]
+      childIds: [myCollections.id],
     });
   }
 
@@ -69,4 +93,4 @@ export const initializeWorkspace = async (name: string, path: string, dataSource
       sourcePath: path,
     },
   };
-}
+};

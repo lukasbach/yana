@@ -10,7 +10,8 @@ import {
   Menu,
   MenuDivider,
   MenuItem,
-  Popover, Tooltip,
+  Popover,
+  Tooltip,
 } from '@blueprintjs/core';
 import { useAppData } from '../../appdata/AppDataProvider';
 import cxs from 'cxs';
@@ -33,22 +34,22 @@ import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 const style = {
   popoverContainer: cxs({
     '> span': {
-      width: '100%'
+      width: '100%',
     },
     '> span > span': {
-      width: '100%'
-    }
+      width: '100%',
+    },
   }),
   container: cxs({
     display: 'flex',
-    cursor: 'pointer'
+    cursor: 'pointer',
   }),
   iconContainer: cxs({
     margin: '8px 8px 8px 14px',
     padding: '7px 0 0 0',
     '> img': {
       height: '30px',
-    }
+    },
   }),
   titleContainer: cxs({
     flexGrow: 1,
@@ -56,19 +57,19 @@ const style = {
     alignItems: 'center',
     margin: '8px',
     fontWeight: 'bold',
-    fontSize: '14px'
+    fontSize: '14px',
   }),
   actionsContainer: cxs({
     margin: '14px 14px 14px 0',
     display: 'flex',
-    alignItems: 'center'
+    alignItems: 'center',
   }),
   actionsButton: cxs({
     border: 'none',
     backgroundColor: 'transparent',
-    cursor: 'pointer'
-  })
-}
+    cursor: 'pointer',
+  }),
+};
 
 export const WorkSpaceSelection: React.FC<{}> = props => {
   const appData = useAppData();
@@ -79,9 +80,9 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
   const actionsButtonClass = cxs({
     color: theme.sidebarTextColor,
     ':hover': {
-      color: Color(theme.sidebarTextColor).lighten(.3).toString(),
-    }
-  })
+      color: Color(theme.sidebarTextColor).lighten(0.3).toString(),
+    },
+  });
 
   return (
     <>
@@ -91,17 +92,11 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
           content={
             <Menu>
               <MenuDivider title="Switch Workspace" />
-              {
-                appData.workspaces.map(workspace => (
-                  <MenuItem key={workspace.name} text={workspace.name} onClick={() => appData.setWorkSpace(workspace)} />
-                ))
-              }
+              {appData.workspaces.map(workspace => (
+                <MenuItem key={workspace.name} text={workspace.name} onClick={() => appData.setWorkSpace(workspace)} />
+              ))}
               <MenuDivider title="More..." />
-              <MenuItem
-                text="Create new Workspace"
-                icon="add"
-                onClick={() => appData.openWorkspaceCreationWindow()}
-              />
+              <MenuItem text="Create new Workspace" icon="add" onClick={() => appData.openWorkspaceCreationWindow()} />
               <MenuItem
                 text="Manage Workspaces"
                 icon="database"
@@ -112,22 +107,20 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
                 icon="cog"
                 onClick={() => mainContent.openInCurrentTab(PageIndex.Settings)}
               />
-              <MenuItem
-                text="About Yana"
-                icon="help"
-                onClick={() => mainContent.openInCurrentTab(PageIndex.About)}
-              />
+              <MenuItem text="About Yana" icon="help" onClick={() => mainContent.openInCurrentTab(PageIndex.About)} />
             </Menu>
           }
         >
-          <div className={cx(
-            style.container,
-            cxs({
-              ':hover': {
-                backgroundColor: theme.sidebarHoverColor
-              }
-            })
-          )}>
+          <div
+            className={cx(
+              style.container,
+              cxs({
+                ':hover': {
+                  backgroundColor: theme.sidebarHoverColor,
+                },
+              })
+            )}
+          >
             <div className={style.iconContainer}>
               <img src={Color(theme.sidebarColor).isDark() ? brand : brandDark} />
             </div>
@@ -135,10 +128,10 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
               className={cx(
                 Classes.TEXT_OVERFLOW_ELLIPSIS,
                 style.titleContainer,
-                cxs({ color: Color(theme.sidebarTextColor).lighten(.3).toString() })
+                cxs({ color: Color(theme.sidebarTextColor).lighten(0.3).toString() })
               )}
             >
-              { appData.currentWorkspace.name }&nbsp;&nbsp;
+              {appData.currentWorkspace.name}&nbsp;&nbsp;
               <Icon icon={'chevron-down'} iconSize={12} />
             </div>
             <div className={style.actionsContainer}>
@@ -161,15 +154,17 @@ export const WorkSpaceSelection: React.FC<{}> = props => {
                     className={cx(actionsButtonClass, style.actionsButton)}
                     onClick={e => {
                       e.stopPropagation();
-                      dataInterface.createDataItem({
-                        name: 'New Draft',
-                        tags: [InternalTag.Draft],
-                        kind: DataItemKind.NoteItem,
-                        childIds: [],
-                        lastChange: new Date().getTime(),
-                        created: new Date().getTime(),
-                        noteType: 'atlaskit-editor-note'
-                      } as any).then(item => mainContent.newTab(item));
+                      dataInterface
+                        .createDataItem({
+                          name: 'New Draft',
+                          tags: [InternalTag.Draft],
+                          kind: DataItemKind.NoteItem,
+                          childIds: [],
+                          lastChange: new Date().getTime(),
+                          created: new Date().getTime(),
+                          noteType: 'atlaskit-editor-note',
+                        } as any)
+                        .then(item => mainContent.newTab(item));
                       TelemetryService?.trackEvent(...TelemetryEvents.Items.createDraftItem);
                     }}
                   >

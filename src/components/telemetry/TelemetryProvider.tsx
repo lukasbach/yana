@@ -12,17 +12,17 @@ const APP_NAME = pkg.name;
 const APP_VERSION = pkg.version;
 
 export interface TelemetryContextValue {
-  trackScreenView: (screenName: string) => void,
-  trackEvent: (category: string, action: string) => void,
-  trackEventWithValue: (category: string, action: string, label: string, value: string | number) => void,
-  trackException: (error: string, fatal?: boolean) => void,
+  trackScreenView: (screenName: string) => void;
+  trackEvent: (category: string, action: string) => void;
+  trackEventWithValue: (category: string, action: string, label: string, value: string | number) => void;
+  trackException: (error: string, fatal?: boolean) => void;
 }
 
 export const TelemetryContext = React.createContext<TelemetryContextValue>(null as any);
 
 export const useTelemetry = () => useContext(TelemetryContext);
 
-const gtag: (...args: any[]) => void = function() {
+const gtag: (...args: any[]) => void = function () {
   (window as any).dataLayer.push(arguments);
 };
 
@@ -31,7 +31,7 @@ export const install = (trackingId: string, userId: string) => {
 
   if (document.getElementById(scriptId)) return;
 
-  const {head} = document;
+  const { head } = document;
   const script = document.createElement('script');
   script.id = scriptId;
   script.type = 'text/javascript';
@@ -43,8 +43,8 @@ export const install = (trackingId: string, userId: string) => {
 
   gtag('js', new Date());
   gtag('config', trackingId, {
-    'user_id': userId,
-    'end_page_view': false,
+    user_id: userId,
+    end_page_view: false,
   });
 };
 
@@ -54,10 +54,18 @@ export const TelemetryProvider: React.FC<{}> = props => {
   const settings = useSettings();
   const appData = useAppData();
   const [ctxValue, setCtxValue] = useState<TelemetryContextValue>({
-    trackEvent: () => { logger.log('Telemetry event not sent'); },
-    trackEventWithValue: () => { logger.log('Telemetry event not sent'); },
-    trackException: () => { logger.log('Telemetry event not sent'); },
-    trackScreenView: () => { logger.log('Telemetry event not sent'); },
+    trackEvent: () => {
+      logger.log('Telemetry event not sent');
+    },
+    trackEventWithValue: () => {
+      logger.log('Telemetry event not sent');
+    },
+    trackException: () => {
+      logger.log('Telemetry event not sent');
+    },
+    trackScreenView: () => {
+      logger.log('Telemetry event not sent');
+    },
   });
   const telemetryId = appData.telemetryId;
   const useTelemetry = settings.telemetry;
@@ -67,42 +75,42 @@ export const TelemetryProvider: React.FC<{}> = props => {
       install(GANALYTICS_PROP_ID, telemetryId);
       logger.log(`Connected to telemetry with user ID "${telemetryId}".`);
       gtag('event', TelemetryEvents.App.init[1], {
-        'event_category': TelemetryEvents.App.init[0],
+        event_category: TelemetryEvents.App.init[0],
       });
 
       const telemetry: TelemetryContextValue = {
-        trackScreenView: (screenName) => {
+        trackScreenView: screenName => {
           gtag('event', 'page_view', {
-            'page_title': screenName,
-            'page_location': screenName,
-            'page_path': screenName,
-            'send_to': GANALYTICS_PROP_ID
+            page_title: screenName,
+            page_location: screenName,
+            page_path: screenName,
+            send_to: GANALYTICS_PROP_ID,
           });
-          logger.log('trackScreenView', [], {screenName});
+          logger.log('trackScreenView', [], { screenName });
         },
         trackEvent: (category, action) => {
           gtag('event', action, {
-            'event_category': category,
+            event_category: category,
           });
-          logger.log('trackEvent', [], {category, action});
+          logger.log('trackEvent', [], { category, action });
         },
         trackEventWithValue: (category, action, label, value) => {
           gtag('event', action, {
-            'event_category': category,
-            'event_label': label,
-            'value': value
+            event_category: category,
+            event_label: label,
+            value: value,
           });
-          logger.log('trackEventWithValue', [], {category, action, label, value});
+          logger.log('trackEventWithValue', [], { category, action, label, value });
         },
         trackException: (error, fatal) => {
           gtag('event', 'exception', {
-            'description': error,
-            'fatal': fatal
+            description: error,
+            fatal: fatal,
           });
           gtag('event', `error_${error.toLocaleLowerCase().replace(/\s/g, '-')}`, {
-            'event_category': 'error',
+            event_category: 'error',
           });
-          logger.log('trackException', [], {error, fatal});
+          logger.log('trackException', [], { error, fatal });
         },
       };
 
@@ -111,9 +119,5 @@ export const TelemetryProvider: React.FC<{}> = props => {
     }
   }, []);
 
-  return (
-    <TelemetryContext.Provider value={ctxValue}>
-      { props.children }
-    </TelemetryContext.Provider>
-  );
+  return <TelemetryContext.Provider value={ctxValue}>{props.children}</TelemetryContext.Provider>;
 };

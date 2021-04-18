@@ -37,77 +37,71 @@ export const SearchView: React.FC<{
   const [userSearch, setUserSearch] = useState(props.defaultSearch);
   // const [searchQuery, setSearchQuery] = useState<SearchQuery>({ ...props.hiddenSearch, ...props.defaultSearch });
   const searchQuery = { ...hiddenSearch, ...userSearch };
-  const {
-    items,
-    nextPageAvailable,
-    fetchNextPage,
-    isFetching
-  } = useDataSearch(Object.keys(searchQuery).length === 0 ? { all: true } : searchQuery, 200);
-  const parent = useDataItem(hiddenSearch.parents?.[0])
+  const { items, nextPageAvailable, fetchNextPage, isFetching } = useDataSearch(
+    Object.keys(searchQuery).length === 0 ? { all: true } : searchQuery,
+    200
+  );
+  const parent = useDataItem(hiddenSearch.parents?.[0]);
   const previews = useDataItemPreviews(items);
   // TODO currently, all previews are loaded at once. Use Grid.onSectionRendered() to only load previews when they enter the viewport
 
-  useEffect(() => setHiddenSearch(q => ({...q, ...props.hiddenSearch})), [props.hiddenSearch]);
-  useEffect(() => setUserSearch(q => ({...q, ...props.defaultSearch})), [props.defaultSearch]);
+  useEffect(() => setHiddenSearch(q => ({ ...q, ...props.hiddenSearch })), [props.hiddenSearch]);
+  useEffect(() => setUserSearch(q => ({ ...q, ...props.defaultSearch })), [props.defaultSearch]);
 
   return (
-    <PageContainer header={(
-      <PageHeader
-        title={props.title}
-        titleSubtext={props.titleSubtext}
-        icon={props.icon}
-        iconColor={props.iconColor}
-        lowerContent={(
-          <SearchBar onChangeSearchQuery={setUserSearch}>
-            <SearchInput />
-          </SearchBar>
-        )}
-        rightContent={(
-          <>
-            { props.rightContent }
-            {' '}
-            <Popover
-              content={(
-                <SearchSortingMenu
-                  searchQuery={hiddenSearch}
-                  onChange={setHiddenSearch}
-                />
-              )}
-            >
-              <Button
-                icon={searchQuery.sortDirection === SearchQuerySortDirection.Ascending ? 'sort-asc' : 'sort-desc'}
-                outlined
-              >
-                Sort Items
-              </Button>
-            </Popover>
-            {(parent && (
-              <>
-                {' '}
-                <Popover
-                  interactionKind={'click'}
-                  position={'bottom'}
-                  captureDismiss={true}
-                  content={(
-                    <DataItemContextMenu
-                      item={parent}
-                      renderer={Bp3MenuRenderer}
-                      mainContent={mainContent}
-                      dataInterface={dataInterface}
-                      overlaySearch={overlaySearch}
-                    />
-                  )}
+    <PageContainer
+      header={
+        <PageHeader
+          title={props.title}
+          titleSubtext={props.titleSubtext}
+          icon={props.icon}
+          iconColor={props.iconColor}
+          lowerContent={
+            <SearchBar onChangeSearchQuery={setUserSearch}>
+              <SearchInput />
+            </SearchBar>
+          }
+          rightContent={
+            <>
+              {props.rightContent}{' '}
+              <Popover content={<SearchSortingMenu searchQuery={hiddenSearch} onChange={setHiddenSearch} />}>
+                <Button
+                  icon={searchQuery.sortDirection === SearchQuerySortDirection.Ascending ? 'sort-asc' : 'sort-desc'}
+                  outlined
                 >
-                  <Button outlined rightIcon={'chevron-down'}>More</Button>
-                </Popover>
-              </>
-            ))}
-          </>
-        )}
-      />
-    )}>
+                  Sort Items
+                </Button>
+              </Popover>
+              {parent && (
+                <>
+                  {' '}
+                  <Popover
+                    interactionKind={'click'}
+                    position={'bottom'}
+                    captureDismiss={true}
+                    content={
+                      <DataItemContextMenu
+                        item={parent}
+                        renderer={Bp3MenuRenderer}
+                        mainContent={mainContent}
+                        dataInterface={dataInterface}
+                        overlaySearch={overlaySearch}
+                      />
+                    }
+                  >
+                    <Button outlined rightIcon={'chevron-down'}>
+                      More
+                    </Button>
+                  </Popover>
+                </>
+              )}
+            </>
+          }
+        />
+      }
+    >
       <AutoSizer>
-        {({width, height}) => {
+        {({ width, height }) => {
           if (width <= searchViewCellDimensions.cellWidth) return null;
 
           const rowCount = Math.ceil(items.length / Math.floor(width / searchViewCellDimensions.cellWidth));
@@ -115,7 +109,8 @@ export const SearchView: React.FC<{
           return (
             <Grid
               cellRenderer={cellProps => {
-                const itemId = cellProps.rowIndex * Math.floor(width / searchViewCellDimensions.cellWidth) + cellProps.columnIndex;
+                const itemId =
+                  cellProps.rowIndex * Math.floor(width / searchViewCellDimensions.cellWidth) + cellProps.columnIndex;
                 const additionalLeftMargin = (width - columnCount * searchViewCellDimensions.cellWidth) / 2;
 
                 if (items.length === 0) {
@@ -144,26 +139,20 @@ export const SearchView: React.FC<{
                     cellProps={cellProps}
                     dataItem={item}
                     additionalLeftMargin={additionalLeftMargin}
-                    onClick={props.onClickItem ? (() => props.onClickItem?.(item)) : undefined}
+                    onClick={props.onClickItem ? () => props.onClickItem?.(item) : undefined}
                     preview={previews[item.id]}
                   />
                 );
               }}
               columnWidth={searchViewCellDimensions.cellWidth}
               columnCount={columnCount}
-              noContentRenderer={() => (
+              noContentRenderer={() =>
                 isFetching ? (
-                  <NonIdealState
-                    icon={<Spinner />}
-                    title="Loading items..."
-                  />
+                  <NonIdealState icon={<Spinner />} title="Loading items..." />
                 ) : (
-                  <NonIdealState
-                    icon={'warning-sign'}
-                    title="No items found"
-                  />
+                  <NonIdealState icon={'warning-sign'} title="No items found" />
                 )
-              )}
+              }
               overscanColumnCount={0}
               overscanRowCount={6}
               rowHeight={searchViewCellDimensions.cellHeight}

@@ -20,22 +20,16 @@ export const SideBarTreeOnIds: React.FC<{
   const [hasLoaded, setHasLoaded] = useState(false);
 
   useAsyncEffect(async () => {
-    logger.log('loading', [], {rootitems: props.rootItems})
+    logger.log('loading', [], { rootitems: props.rootItems });
     setHasLoaded(false);
     const loadedItems: DataItem[] = [];
     for (const id of props.rootItems) {
       loadedItems.push(await dataInterface.getDataItem(id));
     }
-    logger.log('found items: ', [], {loadedItems})
+    logger.log('found items: ', [], { loadedItems });
     setInitialItems(loadedItems);
-    setHasLoaded(true)
+    setHasLoaded(true);
   }, [props.rootItems]);
 
-  return hasLoaded ? (
-    <SideBarTree
-      title={props.title}
-      rootItems={items}
-      masterItem={props.masterItem}
-    />
-  ) : null;
+  return hasLoaded ? <SideBarTree title={props.title} rootItems={items} masterItem={props.masterItem} /> : null;
 };

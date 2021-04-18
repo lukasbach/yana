@@ -11,13 +11,13 @@ const styles = {
   container: cxs({
     height: '100%',
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'column',
   }),
   editorContainer: cxs({
     flexGrow: 1,
     position: 'relative',
-  })
-}
+  }),
+};
 
 export const NoteContainer: React.FC<{
   dataItem: NoteDataItem<any>;

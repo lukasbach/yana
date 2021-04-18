@@ -11,17 +11,12 @@ const styles = {
   }),
   containerGrow: cxs({
     flexGrow: 1,
-    maxHeight: 'none'
-  })
-}
+    maxHeight: 'none',
+  }),
+};
 
 export const SeachItemsContainer: React.FC<{
-  grow?: boolean
+  grow?: boolean;
 }> = props => {
-
-  return (
-    <div className={cx(styles.container, props.grow && styles.containerGrow)}>
-      { props.children }
-    </div>
-  );
+  return <div className={cx(styles.container, props.grow && styles.containerGrow)}>{props.children}</div>;
 };

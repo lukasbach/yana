@@ -13,13 +13,13 @@ const styles = {
   container: cxs({
     display: 'flex',
     flexDirection: 'column',
-    height: '100%'
+    height: '100%',
   }),
   content: cxs({
     flexGrow: 1,
     backgroundColor: 'rgb(240,240,240)',
     boxShadow: '0px 3px 4px -2px rgba(0,0,0,.2) inset',
-    overflowY: 'auto'
+    overflowY: 'auto',
   }),
   itemCard: cxs({
     borderRadius: '8px',
@@ -31,18 +31,18 @@ const styles = {
     transition: '.2s all ease',
     cursor: 'pointer',
     ':hover': {
-      transform: 'translateY(-8px)'
-    }
-  })
-}
+      transform: 'translateY(-8px)',
+    },
+  }),
+};
 
 export const CollectionContainer: React.FC<{
-  dataItem: CollectionDataItem
+  dataItem: CollectionDataItem;
 }> = props => {
   return (
     <SearchView
       title={props.dataItem.name}
-      icon={props.dataItem.icon as any || 'document'}
+      icon={(props.dataItem.icon as any) || 'document'}
       hiddenSearch={{ parents: [props.dataItem.id] }}
       defaultSearch={{}}
     />

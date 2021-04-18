@@ -10,7 +10,6 @@ import cxs from 'cxs';
 import { useTelemetry } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
-
 export const TagList: React.FC<{
   dataItem: DataItem;
   isEditing: boolean;
@@ -31,16 +30,18 @@ export const TagList: React.FC<{
   if (!props.isEditing) {
     return (
       <>
-        { dataItem.tags.filter(tag => !tag.startsWith('__')).map(tag => (
-          <React.Fragment key={tag}>
-            {' '}
-            <Tag round minimal intent="primary">
-              { tag }
-            </Tag>
-          </React.Fragment>
-        )) }
+        {dataItem.tags
+          .filter(tag => !tag.startsWith('__'))
+          .map(tag => (
+            <React.Fragment key={tag}>
+              {' '}
+              <Tag round minimal intent="primary">
+                {tag}
+              </Tag>
+            </React.Fragment>
+          ))}
       </>
-    )
+    );
   } else {
     return (
       <MultiSelect<string>
@@ -61,13 +62,17 @@ export const TagList: React.FC<{
         tagRenderer={tag => tag}
         tagInputProps={{
           onRemove: (tag, idx1) => setTags(tags => tags.filter((tag_, idx2) => idx1 !== idx2)),
-          tagProps: {  },
+          tagProps: {},
           rightElement: (
-            <Button minimal icon={'tick'} onClick={() => {
-              dataInterface.changeItem(dataItem.id, { tags }).then(props.onStopEditing);
-              telemetry.trackEvent(...TelemetryEvents.Items.changeTags);
-            }} />
-          )
+            <Button
+              minimal
+              icon={'tick'}
+              onClick={() => {
+                dataInterface.changeItem(dataItem.id, { tags }).then(props.onStopEditing);
+                telemetry.trackEvent(...TelemetryEvents.Items.changeTags);
+              }}
+            />
+          ),
         }}
         itemRenderer={(tag, { handleClick, modifiers, query }) => {
           if (!modifiers.matchesPredicate) {
@@ -97,6 +102,6 @@ export const TagList: React.FC<{
           />
         )}
       />
-    )
+    );
   }
 };

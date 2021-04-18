@@ -14,4 +14,4 @@ export const getNewWorkspaceName = (appData: AppDataContextValue) => {
   }
 
   return `${name} ${counter}`;
-}
+};
