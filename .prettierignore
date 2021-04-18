@@ -1,2 +1,6 @@
 app
 out
+node_modules
+.github
+.idea
+resources
