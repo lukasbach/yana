@@ -31,6 +31,7 @@ const NOTEBOOK_FILE_BACKUP = 'notebook-backup.json';
 const DB_FILE = 'notebook.sqlite';
 const MEDIA_DIR = 'media';
 const UTF8 = 'utf8';
+const SQLITE_UNLOAD_TIMEOUT = 60 * 1000;
 
 export interface LocalSqliteDataSourceOptions {
   sourcePath: string;
@@ -121,7 +122,7 @@ export class LocalSqliteDataSource implements AbstractDataSource {
         this.dbInstance?.destroy();
         this.dbInstance = undefined;
         this.dbInstanceUnloadTimer = undefined;
-      }, 10000);
+      }, SQLITE_UNLOAD_TIMEOUT);
     }
 
     return this.dbInstance;
