@@ -29,7 +29,7 @@ export const usePersistedExpandedSidebarItems = (
   );
 
   useEffect(() => {
-    logger.log(`Persisting to ${structureId}: ${expandedIds.join(', ')}`, [], { storageId, expandedIds });
+    logger.log(`Persisting to ${structureId}`, [], { storageId, expandedIds });
     setStoredValue(expandedIds);
   }, [expandedIds]);
 };

@@ -35,3 +35,14 @@ features include
 Download [the latest release](https://github.com/lukasbach/yana/releases).
 Currently available for Windows, Linux and Mac.
 Find out more about Yana on [yana.js.org](https://yana.js.org).
+
+## Contributing
+
+Feel free to contribute with Issue Reports, Feedback or Pull Requests.
+
+If you want to start developing Yana locally, you need Node 14+ and yarn install. Clone the repo,
+install dependencies with `yarn` and start the app locally with `yarn start`.
+
+Note that, after the electron window has opened, it might not automatically refresh when the web
+package has finished building. Refresh the container with `CTRL+R` to see the app. You can
+open up Devtools with `CTRL+SHIFT+i`.
