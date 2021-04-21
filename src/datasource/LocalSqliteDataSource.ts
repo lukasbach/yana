@@ -37,7 +37,8 @@ export interface LocalSqliteDataSourceOptions {
 }
 
 export class LocalSqliteDataSource implements AbstractDataSource {
-  private db!: Knex<any, unknown[]>;
+  private dbInstance?: Knex<any, unknown[]>;
+  private dbInstanceUnloadTimer?: any;
   private structures: any = {};
 
   private thumbnailExtensions: string[] = ['png', 'jpg', 'gif', 'jpeg', 'bmp', 'tiff'];
@@ -101,9 +102,32 @@ export class LocalSqliteDataSource implements AbstractDataSource {
       });
   }
 
-  constructor(private options: LocalSqliteDataSourceOptions, private telemetry?: TelemetryContextValue) {
-    this.db = LocalSqliteDataSource.getDb(options.sourcePath);
+  private get db() {
+    logger.log(
+      `get db: ${this.dbInstance ? 'is cached' : 'is not cached'} ${
+        this.dbInstanceUnloadTimer ? 'and was timed for unloading' : 'and was not timed for unloading'
+      }`
+    );
+
+    if (!this.dbInstance) {
+      this.dbInstance = LocalSqliteDataSource.getDb(this.options.sourcePath);
+
+      if (this.dbInstanceUnloadTimer) {
+        clearTimeout(this.dbInstanceUnloadTimer);
+      }
+
+      this.dbInstanceUnloadTimer = setTimeout(() => {
+        logger.log(`get db: unloaded`);
+        this.dbInstance?.destroy();
+        this.dbInstance = undefined;
+        this.dbInstanceUnloadTimer = undefined;
+      }, 10000);
+    }
+
+    return this.dbInstance;
   }
+
+  constructor(private options: LocalSqliteDataSourceOptions, private telemetry?: TelemetryContextValue) {}
 
   public static async init(options: LocalFileSystemDataSourceOptions) {
     await runWithoutClose(async () => {
