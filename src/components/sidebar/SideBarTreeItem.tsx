@@ -126,15 +126,15 @@ export const SideBarTreeItem: React.FC<{
 
   const clickAction = useMemo(
     () => createOnAction(getActionPropertyFromSettings(ActionKind.BackgroundClick, item.kind, settings)),
-    [item.kind, settings]
+    [item.kind, settings, createOnAction]
   );
   const middleClickAction = useMemo(
     () => createOnAction(getActionPropertyFromSettings(ActionKind.MiddleClick, item.kind, settings)),
-    [item.kind, settings]
+    [item.kind, settings, createOnAction]
   );
   const titleClickAction = useMemo(
     () => createOnAction(getActionPropertyFromSettings(ActionKind.TitleClick, item.kind, settings)),
-    [item.kind, settings]
+    [item.kind, settings, createOnAction]
   );
 
   return (
