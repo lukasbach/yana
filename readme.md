@@ -7,7 +7,8 @@
     <a href="https://yana.js.org">yana.js.org</a>
 </p>
 
-[![Build Status](https://travis-ci.com/lukasbach/yana.svg?branch=master)](https://travis-ci.com/github/lukasbach/yana)
+![GitHub all releases](https://img.shields.io/github/downloads/lukasbach/yana/total)
+![GitHub release (latest by date)](https://img.shields.io/github/downloads/lukasbach/yana/latest/total)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=lukasbach_yana&metric=ncloc)](https://sonarcloud.io/dashboard?id=lukasbach_yana)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=lukasbach_yana&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=lukasbach_yana)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=lukasbach_yana&metric=security_rating)](https://sonarcloud.io/dashboard?id=lukasbach_yana)
