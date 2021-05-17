@@ -143,6 +143,7 @@ export class LocalSqliteDataSource implements AbstractDataSource {
         await fs.mkdir(mediaDataPath, { recursive: true });
       }
 
+      // Create and wait for database just so its created on file. We do not need a reference to it here.
       await new Promise(res => {
         new sqlite3.Database(path.join(sourcePath, DB_FILE), sqlite3.OPEN_CREATE, () => res());
       });
