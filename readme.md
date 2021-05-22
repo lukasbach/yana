@@ -47,3 +47,5 @@ install dependencies with `yarn` and start the app locally with `yarn start`.
 Note that, after the electron window has opened, it might not automatically refresh when the web
 package has finished building. Refresh the container with `CTRL+R` to see the app. You can
 open up Devtools with `CTRL+SHIFT+i`.
+
+More details are available in [contributing.md](./contributing.md).
