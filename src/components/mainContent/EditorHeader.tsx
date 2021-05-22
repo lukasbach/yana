@@ -33,7 +33,7 @@ export const EditorHeader: React.FC<{
   const [titleValue, setTitleValue] = useState(props.dataItem.name);
   const [isEditingTags, setIsEditingTags] = useState(false);
   const { EditItemDrawer, onOpenEditItemDrawer } = useEditItemDrawer(props.dataItem.id);
-  useEffect(() => setTitleValue(props.dataItem.name), [props.dataItem.id]);
+  useEffect(() => setTitleValue(props.dataItem.name), [props.dataItem.id, props.dataItem.name]);
 
   const isStarred = props.dataItem.tags.includes(InternalTag.Starred);
 
