@@ -57,4 +57,5 @@ export const defaultSettings: SettingsObject = {
   spellingLanguages: ['en-US'],
   notifications: [],
   campaigns: true,
+  rtl: false,
 };

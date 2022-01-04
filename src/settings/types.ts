@@ -65,4 +65,5 @@ export interface SettingsObject {
   spellingLanguages: string[];
   notifications: Array<{ id: string; seenDate: number; dismissed: boolean; seenCount?: number }>;
   campaigns: boolean;
+  rtl: boolean;
 }

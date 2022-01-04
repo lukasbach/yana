@@ -80,6 +80,9 @@ export const EditorComponent: React.FC<EditorComponentProps<AtlassianNoteEditorC
                   width: width + 'px',
                   overflow: 'auto',
                 },
+                ' .ak-editor-content-area': {
+                  direction: settings.rtl ? 'rtl' : 'ltr'
+                }
               })}
             >
               <IgnoreErrorBoundary>

@@ -18,6 +18,14 @@ export const EditorSettings: React.FC<{}> = props => {
             'Saves are always automatic, so this feature is mostly for debugging.'
           }
         />
+
+        <SettingsSwitchInput
+          settingsKey={'rtl'}
+          label={'Use Right-to-Left (RTL) as text direction'}
+          helperText={
+            'Use for languages written from right to left (like Hebrew or Arabic)'
+          }
+        />
       </SettingsSection>
 
       <SettingsSection title="Notes Editor">
