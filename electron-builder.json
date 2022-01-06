@@ -20,7 +20,7 @@
       },
       {
         "target": "deb",
-        "arch": ["arm64", "armv7l", "x64"]
+        "arch": ["x64"]
       },
       {
         "target": "zip",
