@@ -1,6 +1,6 @@
 {
   "name": "yana",
-  "version": "1.0.14",
+  "version": "1.0.15",
   "description": "Yana notebook app",
   "main": "app/electron-main.js",
   "scripts": {
