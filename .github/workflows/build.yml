@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  YARN_GPG: no 
+  GH_TOKEN: ${{ secrets.GH_SECRET }}
+  DEBUG: electron-builder
+
+jobs:
+  build_ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Dependencies
+        run: yarn
+      - name: Build
+        run: yarn build
+
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Dependencies
+        run: yarn
+      - name: Build
+        run: yarn build
+
+  build_macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+      - name: Dependencies
+        run: yarn
+      - name: Build
+        run: yarn build
