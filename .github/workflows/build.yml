@@ -24,7 +24,7 @@ jobs:
       - name: Dependencies
         run: yarn
       - name: Build
-        run: yarn build
+        run: yarn build --publish=never
 
   build_windows:
     runs-on: windows-latest
@@ -40,7 +40,7 @@ jobs:
       - name: Dependencies
         run: yarn
       - name: Build
-        run: yarn build
+        run: yarn build --publish=never
 
   build_macos:
     runs-on: macos-latest
@@ -56,4 +56,4 @@ jobs:
       - name: Dependencies
         run: yarn
       - name: Build
-        run: yarn build
+        run: yarn build --publish=never
