@@ -3,8 +3,8 @@
 > Yet another notebook app
 
 <p align="center">
-    <img src="./demo.gif" alt="Yana Demo"><br>
-    <a href="https://yana.js.org">yana.js.org</a>
+    <img src="https://github.com/lukasbach/yana/raw/master/demo.gif" alt="Yana Demo"><br>
+    <a href="https://yana.js.org" data-homepagehide="true">yana.js.org</a>
 </p>
 
 ![GitHub all releases](https://img.shields.io/github/downloads/lukasbach/yana/total)
