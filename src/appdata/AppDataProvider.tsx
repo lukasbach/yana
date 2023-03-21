@@ -152,7 +152,7 @@ export const AppDataProvider: React.FC = props => {
       }
 
       if (deleteData) {
-        await new Promise((res, rev) => {
+        await new Promise<void>((res, rev) => {
           rimraf(workspace.dataSourceOptions.sourcePath, error => {
             if (error) {
               Alerter.Instance.alert({ content: 'Error: ' + error.message });

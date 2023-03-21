@@ -35,7 +35,6 @@
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
-    "@lukasbach/campaigns-react": "^0.1.0",
     "@atlaskit/button": "^15.1.5",
     "@atlaskit/editor-common": "^55.4.3",
     "@atlaskit/editor-core": "^140.0.0",
@@ -57,6 +56,7 @@
     "@blueprintjs/select": "^3.13.7",
     "@emotion/core": "^10.0.35",
     "@emotion/css": "^10.0.27",
+    "@lukasbach/campaigns-react": "^0.1.0",
     "@types/archiver": "^3.1.1",
     "@types/chalk": "^2.2.0",
     "@types/classnames": "^2.2.10",
@@ -118,7 +118,7 @@
     "styled-components": "3.4.6",
     "ts-loader": "^8.0.3",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2",
+    "typescript": "^5.0.2",
     "uuid": "^8.3.1",
     "webpack": "^4.44.1",
     "webpack-cli": "^3.3.12",
@@ -139,5 +139,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/lukasbach/yana.git"
+  },
+  "volta": {
+    "node": "16.19.1",
+    "yarn": "1.22.19"
   }
 }

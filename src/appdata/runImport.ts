@@ -23,7 +23,7 @@ export const runImport = async (
     const folder = path.resolve(getElectronPath('temp'), 'yana-import');
 
     onUpdate('Clearing temporary folder');
-    await new Promise(r => rimraf(folder, r));
+    await new Promise<void>((r: any) => rimraf(folder, r));
     await fs.promises.mkdir(folder, { recursive: true });
 
     onUpdate('Creating new workspace');
@@ -43,7 +43,7 @@ export const runImport = async (
     await di.load();
 
     onUpdate('Unzipping exported zip');
-    await new Promise(res =>
+    await new Promise<void>(res =>
       fs
         .createReadStream(sourcePath)
         .pipe(unzipper.Extract({ path: folder }))

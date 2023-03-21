@@ -92,7 +92,7 @@ export class AppDataExportService {
 
     archive.directory(folder + '/', false);
 
-    return new Promise(res => {
+    return new Promise<void>(res => {
       output.on('close', function () {
         onUpdate('Clearing temporary folder');
         rimraf(folder, () => {});
