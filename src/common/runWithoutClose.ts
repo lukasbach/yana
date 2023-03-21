@@ -1,8 +1,8 @@
 import { closeEventEmitter } from './closeEventEmitter';
 
 export const runWithoutClose = async (handler: () => Promise<any>) => {
-  let resolve: () => void = () => {};
-  const completePromise = new Promise(res => {
+  let resolve: any;
+  const completePromise = new Promise<void>(res => {
     resolve = res;
   });
 
