@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  YARN_GPG: no 
+  YARN_GPG: no
   GH_TOKEN: ${{ secrets.GH_SECRET }}
   DEBUG: electron-builder
 
@@ -22,7 +22,9 @@ jobs:
         with:
           node-version: '12.x'
       - name: Dependencies
-        run: yarn
+        run: |
+          yarn config set network-timeout 300000
+          yarn
       - name: Build
         run: yarn build --publish=never
 
@@ -37,8 +39,9 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-      - name: Dependencies
-        run: yarn
+        run: |
+          yarn config set network-timeout 300000
+          yarn
       - name: Build
         run: yarn build --publish=never
 
@@ -53,7 +56,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-      - name: Dependencies
-        run: yarn
+        run: |
+          yarn config set network-timeout 300000
+          yarn
       - name: Build
         run: yarn build --publish=never
