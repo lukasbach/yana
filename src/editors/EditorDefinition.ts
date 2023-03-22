@@ -1,5 +1,6 @@
 import React from 'react';
 import { NoteDataItem } from '../types';
+import { MarkdownExportOptions } from '../appdata/runMarkdownExport';
 
 export interface EditorComponentProps<C extends object> {
   content: C;
@@ -21,4 +22,6 @@ export interface EditorDefinition<T extends string, C extends object> {
   initializeContent: () => C;
   editorComponent: React.FC<EditorComponentProps<C>>;
   smallPreviewComponent?: React.FC<EditorSmallPreviewProps<C>>;
+  exportContent: (content: C, note: NoteDataItem<any>, options: MarkdownExportOptions) => Promise<string>;
+  getExportFileExtension: (content: C) => string;
 }
