@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    tags: 
+    tags:
       - v*
 
   workflow_dispatch:
 
 env:
-  YARN_GPG: no 
+  YARN_GPG: no
   GH_TOKEN: ${{ secrets.GH_SECRET }}
 
 jobs:
@@ -32,6 +32,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '2.7.18'
       - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
@@ -42,17 +45,17 @@ jobs:
       - name: Build
         run: yarn build --publish=always
 
-  build_macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
-      - uses: volta-cli/action@v3
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-      - name: Dependencies
-        run: yarn install --network-timeout 1000000000
-      - name: Build
-        run: yarn build --publish=always
+  # build_macos:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v3
+  #     - uses: volta-cli/action@v3
+  #     - uses: actions/cache@v2
+  #       with:
+  #         path: '**/node_modules'
+  #         key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+  #     - name: Dependencies
+  #       run: yarn install --network-timeout 1000000000
+  #     - name: Build
+  #       run: yarn build --publish=always

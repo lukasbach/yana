@@ -13,24 +13,7 @@
     "publish": ["github"]
   },
   "linux": {
-    "target": [
-      {
-        "target": "snap",
-        "arch": ["arm64", "armv7l", "x64"]
-      },
-      {
-        "target": "deb",
-        "arch": ["x64"]
-      },
-      {
-        "target": "zip",
-        "arch": ["arm64", "armv7l", "x64"]
-      },
-      {
-        "target": "AppImage",
-        "arch": ["arm64", "armv7l", "x64"]
-      }
-    ],
+    "target": ["snap", "deb", "zip", "AppImage"],
     "publish": ["github"]
   },
   "mac": {

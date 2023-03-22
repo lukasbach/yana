@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  YARN_GPG: no 
+  YARN_GPG: no
   GH_TOKEN: ${{ secrets.GH_SECRET }}
   DEBUG: electron-builder
 
@@ -23,9 +23,6 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
       - name: Dependencies
         run: yarn install --network-timeout 1000000000
       - name: Build
@@ -44,31 +41,25 @@ jobs:
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
       - name: Dependencies
         run: yarn install --network-timeout 1000000000
       - name: Build
         run: yarn build --publish=never
 
-  build_macos:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '2.7.18'
-      - uses: volta-cli/action@v3
-      - uses: actions/cache@v2
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '12.x'
-      - name: Dependencies
-        run: yarn install --network-timeout 1000000000
-      - name: Build
-        run: yarn build --publish=never
+  # build_macos:
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-node@v3
+  #     - uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '2.7.18'
+  #     - uses: volta-cli/action@v3
+  #     - uses: actions/cache@v2
+  #       with:
+  #         path: '**/node_modules'
+  #         key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+  #     - name: Dependencies
+  #       run: yarn install --network-timeout 1000000000
+  #     - name: Build
+  #       run: yarn build --publish=never
