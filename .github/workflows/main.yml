@@ -2,13 +2,13 @@ name: CI
 
 on:
   push:
-    tags:
+    tags: 
       - v*
 
   workflow_dispatch:
 
 env:
-  YARN_GPG: no
+  YARN_GPG: no 
   GH_TOKEN: ${{ secrets.GH_SECRET }}
 
 jobs:
@@ -23,9 +23,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-        run: |
-          yarn config set network-timeout 300000
-          yarn
+      - name: Dependencies
+        run: yarn install --network-timeout 1000000000
       - name: Build
         run: yarn build --publish=always
 
@@ -40,9 +39,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-        run: |
-          yarn config set network-timeout 300000
-          yarn
+      - name: Dependencies
+        run: yarn install --network-timeout 1000000000
       - name: Build
         run: yarn build --publish=always
 
@@ -57,8 +55,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-        run: |
-          yarn config set network-timeout 300000
-          yarn
+      - name: Dependencies
+        run: yarn install --network-timeout 1000000000
       - name: Build
         run: yarn build --publish=always

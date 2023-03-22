@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 env:
-  YARN_GPG: no
+  YARN_GPG: no 
   GH_TOKEN: ${{ secrets.GH_SECRET }}
   DEBUG: electron-builder
 
@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
@@ -22,9 +23,7 @@ jobs:
         with:
           node-version: '12.x'
       - name: Dependencies
-        run: |
-          yarn config set network-timeout 300000
-          yarn
+        run: yarn install --network-timeout 1000000000
       - name: Build
         run: yarn build --publish=never
 
@@ -32,6 +31,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
@@ -39,9 +39,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-        run: |
-          yarn config set network-timeout 300000
-          yarn
+      - name: Dependencies
+        run: yarn install --network-timeout 1000000000
       - name: Build
         run: yarn build --publish=never
 
@@ -49,6 +48,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
@@ -56,8 +56,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-        run: |
-          yarn config set network-timeout 300000
-          yarn
+      - name: Dependencies
+        run: yarn install --network-timeout 1000000000
       - name: Build
         run: yarn build --publish=never

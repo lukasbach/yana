@@ -7,6 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
@@ -15,6 +16,6 @@ jobs:
         with:
           node-version: '12.x'
       - name: Dependencies
-        run: yarn
+        run: yarn install --network-timeout 1000000000
       - uses: doyensec/electronegativity-action@v1.1
       - uses: github/codeql-action/upload-sarif@v1
