@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1
       - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
@@ -31,6 +32,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1
       - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
@@ -48,6 +50,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1
       - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:

@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
@@ -32,6 +33,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
@@ -48,6 +50,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: microsoft/setup-msbuild@v1
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
