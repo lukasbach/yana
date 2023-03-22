@@ -17,7 +17,7 @@ jobs:
       - uses: actions/setup-node@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '2.9'
+          python-version: '2.7.18'
       - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
@@ -38,7 +38,7 @@ jobs:
       - uses: actions/setup-node@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '2.9'
+          python-version: '2.7.18'
       - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
@@ -59,7 +59,7 @@ jobs:
       - uses: actions/setup-node@v3
       - uses: actions/setup-python@v4
         with:
-          python-version: '2.9'
+          python-version: '2.7.18'
       - uses: volta-cli/action@v3
       - uses: actions/cache@v2
         with:
