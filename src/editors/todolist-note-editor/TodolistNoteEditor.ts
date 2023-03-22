@@ -30,4 +30,17 @@ export class TodolistNoteEditor implements EditorDefinition<'todolist-editor-not
       items: [],
     };
   }
+
+  public async exportContent(content: TodoListNoteEditorContent): Promise<string> {
+    return content.items.map(item => {
+      const tick = item.tickedOn ? '[x]' : '[ ]';
+      const descr = item.description ? `\n   - ${item.description}` : '';
+      const steps = item.steps.map(step => `\n      - ${step.title}`).join('');
+      return `${tick} ${item.title}${descr}${steps}`;
+    }).join('\n');
+  }
+
+  public getExportFileExtension(content: TodoListNoteEditorContent): string {
+    return 'md';
+  }
 }

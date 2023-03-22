@@ -12,6 +12,9 @@ import { runImportWizard } from '../../appdata/runImportWizard';
 import { runAddWorkspaceWizard } from '../../appdata/runAddWorkspaceWizard';
 import { useScreenView } from '../telemetry/useScreenView';
 import { Alerter } from '../Alerter';
+import { runMarkdownExport } from '../../appdata/runMarkdownExport';
+import { TelemetryService } from '../telemetry/TelemetryProvider';
+import { TelemetryEvents } from '../telemetry/TelemetryEvents';
 
 export const ManageWorkspaces: React.FC<{}> = props => {
   useScreenView('manage-workspaces');
@@ -82,6 +85,44 @@ export const ManageWorkspaces: React.FC<{}> = props => {
                       if (result.filePath) {
                         await AppDataExportService.exportTo(result.filePath, workspace, console.log);
                         remote.shell.showItemInFolder(result.filePath);
+                      }
+                    }}
+                  />
+                </Tooltip>
+                <Tooltip content="Export workspace to markdown files" position={'bottom'}>
+                  <Button
+                    outlined
+                    icon={'export'}
+                    onClick={async () => {
+                      const result = await remote.dialog.showOpenDialog({
+                        buttonLabel: 'Export',
+                        properties: ['createDirectory', 'openDirectory'],
+                        title: 'Choose a location to export your workspace to',
+                      });
+                      if (result.filePaths) {
+                        Alerter.Instance.alert({
+                          content: (
+                            <>
+                              Warning: This will delete existing contents in <b>{result.filePaths[0]}</b> and
+                              export the notebook there. Do you want to continue?
+                            </>
+                          ),
+                          intent: 'danger',
+                          cancelButtonText: 'Cancel',
+                          confirmButtonText: 'Continue',
+                          prompt: {
+                            type: "boolean",
+                            defaultValue: false,
+                            text: "Export code files as markdown files",
+                            onConfirmBoolean: async (makeTextFilesToMarkdown) => {
+                              await runMarkdownExport({
+                                targetFolder: result.filePaths[0],
+                                makeTextFilesToMarkdown
+                              }, workspace);
+                              remote.shell.showItemInFolder(result.filePaths[0]);
+                            }
+                          }
+                        });
                       }
                     }}
                   />

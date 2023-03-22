@@ -32,6 +32,7 @@
     "archiver": "^5.0.2",
     "electron-updater": "^4.3.5",
     "sqlite3": "^5.0.0",
+    "turndown": "^7.1.2",
     "unzipper": "^0.10.11"
   },
   "devDependencies": {
@@ -73,6 +74,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/rimraf": "^3.0.0",
     "@types/sqlite3": "^3.1.6",
+    "@types/turndown": "^5.0.1",
     "@types/unzip": "^0.1.1",
     "@types/unzipper": "^0.10.3",
     "@types/webpack": "^4.41.22",
