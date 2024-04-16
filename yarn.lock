@@ -5604,7 +5604,7 @@ ejs@^3.1.6:
   dependencies:
     jake "^10.8.5"
 
-electron-builder@^22.8.0:
+electron-builder@^22.14.13:
   version "22.14.13"
   resolved "https://registry.yarnpkg.com/electron-builder/-/electron-builder-22.14.13.tgz#fd40564685cf5422a8f8d667940af3d3776f4fb8"
   integrity sha512-3fgLxqF2TXVKiUPeg74O4V3l0l3j7ERLazo8sUbRkApw0+4iVAf2BJkHsHMaXiigsgCoEzK/F4/rB5rne/VAnw==
@@ -5647,7 +5647,7 @@ electron-publish@22.14.13:
     lazy-val "^1.0.5"
     mime "^2.5.2"
 
-electron-rebuild@^2.3.2:
+electron-rebuild@^2.3.5:
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/electron-rebuild/-/electron-rebuild-2.3.5.tgz#10dc38d1ffe1515ba2eef8b8be8e973ad1e1d597"
   integrity sha512-1sQ1DRtQGpglFhc3urD4olMJzt/wxlbnAAsf+WY2xHf5c50ZovivZvCXSpVgTOP9f4TzOMvelWyspyfhxQKHzQ==
