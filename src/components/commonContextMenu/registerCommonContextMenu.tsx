@@ -1,4 +1,4 @@
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import { ContextMenu, Menu, MenuDivider, MenuItem } from '@blueprintjs/core';
 import React from 'react';
 import { shouldShowMenu } from './shouldShowMenu';

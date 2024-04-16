@@ -4,10 +4,10 @@
   "description": "Yana notebook app",
   "main": "app/electron-main.js",
   "scripts": {
-    "build:renderer:prod": "cross-env NODE_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpack-renderer.config.ts --mode production",
-    "start:renderer:dev": "cross-env NODE_ENV=development node --max_old_space_size=4096 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack-renderer.config.ts --mode development",
-    "build:electron-main:dev": "cross-env NODE_ENV=development webpack --config webpack-electron.config.ts --mode development",
-    "build:electron-main:prod": "cross-env NODE_ENV=production cross-env NODE_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpack-electron.config.ts --mode production",
+    "build:renderer:prod": "cross-env NODE_ENV=production NODE_OPTIONS=--openssl-legacy-provider node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpack-renderer.config.ts --mode production",
+    "start:renderer:dev": "cross-env NODE_ENV=development NODE_OPTIONS=--openssl-legacy-provider node --max_old_space_size=4096 ./node_modules/webpack-dev-server/bin/webpack-dev-server.js --config webpack-renderer.config.ts --mode development",
+    "build:electron-main:dev": "cross-env NODE_ENV=development NODE_OPTIONS=--openssl-legacy-provider webpack --config webpack-electron.config.ts --mode development",
+    "build:electron-main:prod": "cross-env NODE_ENV=production NODE_OPTIONS=--openssl-legacy-provider cross-env NODE_ENV=production node --max_old_space_size=4096 ./node_modules/webpack/bin/webpack.js --config webpack-electron.config.ts --mode production",
     "build:app": "yarn build:renderer:prod && yarn build:electron-main:prod",
     "build:unpacked": "electron-builder --dir",
     "build:packed": "electron-builder",
@@ -55,6 +55,7 @@
     "@blueprintjs/core": "^3.31.0",
     "@blueprintjs/icons": "^3.20.1",
     "@blueprintjs/select": "^3.13.7",
+    "@electron/remote": "^2.1.2",
     "@emotion/core": "^10.0.35",
     "@emotion/css": "^10.0.27",
     "@lukasbach/campaigns-react": "^0.1.0",
@@ -88,9 +89,9 @@
     "cross-env": "^7.0.2",
     "css-loader": "^4.3.0",
     "cxs": "^6.2.0",
-    "electron": "^10.1.1",
-    "electron-builder": "^22.8.0",
-    "electron-rebuild": "^2.3.2",
+    "electron": "^19.1.9",
+    "electron-builder": "^24.13.3",
+    "electron-rebuild": "^3.2.9",
     "file-loader": "^6.1.0",
     "finalhandler": "^1.1.2",
     "get-port": "^5.1.1",
@@ -143,7 +144,7 @@
     "url": "https://github.com/lukasbach/yana.git"
   },
   "volta": {
-    "node": "16.19.1",
+    "node": "18.20.2",
     "yarn": "1.22.19"
   }
 }

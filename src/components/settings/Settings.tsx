@@ -15,7 +15,7 @@ import { LogService } from '../../common/LogService';
 import { SpellingSettings } from './pages/SpellingSettings';
 import { useTelemetry } from '../telemetry/TelemetryProvider';
 import { TelemetryEvents } from '../telemetry/TelemetryEvents';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 
 export const Settings: React.FC<{}> = props => {
   const appData = useAppData();

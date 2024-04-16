@@ -7,7 +7,7 @@ import { useState } from 'react';
 import path from 'path';
 import { getElectronPath } from '../../utils';
 import pkg from '../../../package.json';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import { runImportWizard } from '../../appdata/runImportWizard';
 import { Alerter } from '../Alerter';
 import { OverlayCloseButton } from '../common/OverlayCloseButton';

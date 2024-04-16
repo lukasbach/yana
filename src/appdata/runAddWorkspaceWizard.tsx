@@ -1,5 +1,5 @@
 import { AppDataContextValue } from './AppDataProvider';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import fs from 'fs';
 import path from 'path';
 import { Alerter } from '../components/Alerter';

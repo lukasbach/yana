@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SettingsSection } from '../layout/SettingsSection';
 import { SettingsClickable } from '../layout/SettingsClickable';
 import pkg from '../../../../package.json';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import cxs from 'cxs';
 
 export const AboutYanaPage: React.FC<{}> = props => {

@@ -3,7 +3,7 @@ import cxs from 'cxs';
 import { Campaign as CampaignComponent } from '@lukasbach/campaigns-react';
 import { Button } from '@blueprintjs/core';
 import { useSettings } from '../../appdata/AppDataProvider';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 
 const styles = {
   text: cxs({

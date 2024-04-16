@@ -5,7 +5,7 @@ import { SettingsClickable } from '../layout/SettingsClickable';
 import { createPerformanceTestingWorkspace } from '../../../appdata/createPerformanceTestingWorkspace';
 import { useAppData } from '../../../appdata/AppDataProvider';
 import { SettingsTextAreaInput } from '../layout/SettingsTextAreaInput';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 
 const telemetryHelperText = `
 If you enable this feature, anonymous usage data such as events and hardware information

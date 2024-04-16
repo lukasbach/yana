@@ -1,5 +1,5 @@
 import { AppDataContextValue } from './AppDataProvider';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import { Alerter } from '../components/Alerter';
 import * as React from 'react';
 import { runImport } from './runImport';

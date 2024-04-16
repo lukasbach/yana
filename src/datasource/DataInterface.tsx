@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { AbstractDataSource } from './AbstractDataSource';
 import { DataItem, DataItemKind, DataSourceActionResult, MediaItem, SearchQuery, SearchResult } from '../types';
 import { EventEmitter } from '../common/EventEmitter';

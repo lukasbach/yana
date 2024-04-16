@@ -2,7 +2,7 @@ import * as React from 'react';
 import cxs from 'cxs';
 import Color from 'color';
 import cx from 'classnames';
-import { remote } from 'electron';
+import * as remote from '@electron/remote';
 import { useTheme } from '../../common/theming';
 import { TabContainer } from './TabContainer';
 import { useEffect, useState } from 'react';
