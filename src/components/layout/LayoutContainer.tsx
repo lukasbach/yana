@@ -13,7 +13,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { useSettings } from '../../appdata/AppDataProvider';
 import { DevToolsSidebar } from '../devtools/DevToolsSidebar';
 import { SpotlightTarget } from '@atlaskit/onboarding';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 
 const styles = {
   mainContainer: cxs({

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SettingsObject } from '../../../settings/types';
 import { Button, ControlGroup, FormGroup, InputGroup } from '@blueprintjs/core';
 import { useSettingsPageContext } from '../SettingsContext';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 
 export const SettingsFilesystemPathInput: React.FC<{
   settingsKey: keyof SettingsObject;

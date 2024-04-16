@@ -1,5 +1,4 @@
 import { app, BrowserWindow, ipcMain, protocol, shell } from 'electron';
-import { enable as enableRemote } from '@electron/remote/main';
 import * as path from 'path';
 import { IpcChannel } from './IpcChannel';
 import { AutoUpdate } from './appdata/AutoUpdate';
@@ -42,10 +41,10 @@ app.on('ready', async () => {
     webPreferences: {
       nodeIntegration: true,
       webSecurity: false,
+      worldSafeExecuteJavaScript: true,
+      enableRemoteModule: true,
     },
   });
-
-  enableRemote(mainWindow.webContents);
 
   if (process.env.NODE_ENV === 'development') {
     mainWindow.loadURL(`http://localhost:4000`);
@@ -84,7 +83,7 @@ app.on('ready', async () => {
   });
 });
 
-// app.allowRendererProcessReuse = false;
+app.allowRendererProcessReuse = false;
 // TODO maybe set to false?
 // https://github.com/electron/electron/issues/22119
 

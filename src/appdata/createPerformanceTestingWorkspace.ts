@@ -1,5 +1,5 @@
 import { Alerter } from '../components/Alerter';
-import * as electron from 'electron';
+import { remote } from 'electron';
 import { DataItemKind } from '../types';
 import { InternalTag } from '../datasource/InternalTag';
 import { AppDataContextValue } from './AppDataProvider';
@@ -27,7 +27,7 @@ export const createPerformanceTestingWorkspace = async (appDataContext: AppDataC
 
   if (!workspaceName) return;
 
-  const workspacePathDialog = await electron.dialog.showOpenDialog({
+  const workspacePathDialog = await remote.dialog.showOpenDialog({
     buttonLabel: 'Set',
     properties: ['createDirectory', 'openDirectory'],
     title: 'Choose a location where to store the workspace at',

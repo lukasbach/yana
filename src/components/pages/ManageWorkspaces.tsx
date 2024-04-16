@@ -5,7 +5,7 @@ import { Button, Tooltip } from '@blueprintjs/core';
 import { DetailedListContainer } from '../common/DetailedListContainer';
 import { DetailedListItem } from '../common/DetailedListItem';
 import { useAppData } from '../../appdata/AppDataProvider';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 import { AppDataExportService } from '../../appdata/AppDataExportService';
 import { runRemoveWorkspaceWizard } from '../../appdata/runRemoveWorkspaceWizard';
 import { runImportWizard } from '../../appdata/runImportWizard';

@@ -1,5 +1,5 @@
 import { EventEmitter } from './EventEmitter';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 import { IpcChannel } from '../IpcChannel';
 
 export const closeEventEmitter = new EventEmitter<{}>();

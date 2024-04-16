@@ -5,7 +5,7 @@ import { SettingsNumberInput } from '../layout/SettingsNumberInput';
 import { SettingsClickable } from '../layout/SettingsClickable';
 import { useMainContentContext } from '../../mainContent/context';
 import { PageIndex } from '../../../PageIndex';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 import { AppDataExportService } from '../../../appdata/AppDataExportService';
 import { useAppData } from '../../../appdata/AppDataProvider';
 import { SettingsFilesystemPathInput } from '../layout/SettingsFilesystemPathInput';

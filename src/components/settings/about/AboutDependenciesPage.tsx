@@ -2,7 +2,7 @@ import * as React from 'react';
 import { SettingsSection } from '../layout/SettingsSection';
 import { SettingsClickable } from '../layout/SettingsClickable';
 import pkg from '../../../../package.json';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 
 export const AboutDependenciesPage: React.FC<{}> = props => {
   return (

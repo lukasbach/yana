@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { CollectionDataItem, DataItem, DataItemKind, MediaItem, NoteDataItem, SearchQuery } from './types';
-import { app } from 'electron';
-import * as remote from '@electron/remote';
+import { remote, app } from 'electron';
 
 export const useAsyncEffect = (effect: () => Promise<any>, deps: any[]) =>
   useEffect(() => {
@@ -32,5 +31,21 @@ export const mergeSearchQueries = (sq1: SearchQuery, sq2: SearchQuery): SearchQu
 });
 export const getElectronPath = (
   pathIdentifier:
-    'appData' | 'desktop' | 'home' | 'music' | 'userData' | 'cache' | 'temp' | 'exe' | 'module' | 'documents' | 'downloads' | 'pictures' | 'videos' | 'recent' | 'logs' | 'crashDumps'
+    | 'home'
+    | 'appData'
+    | 'userData'
+    | 'cache'
+    | 'temp'
+    | 'exe'
+    | 'module'
+    | 'desktop'
+    | 'documents'
+    | 'downloads'
+    | 'music'
+    | 'pictures'
+    | 'videos'
+    | 'recent'
+    | 'logs'
+    | 'pepperFlashSystemPlugin'
+    | 'crashDumps'
 ) => (remote?.app || app).getPath(pathIdentifier);

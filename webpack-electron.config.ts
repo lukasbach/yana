@@ -23,7 +23,6 @@ const config: webpack.Configuration = {
     filename: 'electron-main.js',
     publicPath: './',
     libraryTarget: 'commonjs2',
-    // hashFunction: 'sha256'
   },
   plugins: [
     new webpack.IgnorePlugin(
@@ -52,8 +51,6 @@ const config: webpack.Configuration = {
 
     'aws-sdk': 'aws-sdk',
     'node-pre-gyp': 'node-pre-gyp',
-
-    '@electron/remote': '@electron/remote'
     // '../package': '../package',
   },
 };

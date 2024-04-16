@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Menu, MenuItem, NonIdealState, Popover, Position } from '@blueprintjs/core';
 import * as React from 'react';
 import { useAppData } from '../appdata/AppDataProvider';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 
 export const DataInterfaceContextError: React.FC<{
   message: string;
@@ -14,7 +14,7 @@ export const DataInterfaceContextError: React.FC<{
       description={
         <>
           <p>The following error occured when loading workspace {appdata.currentWorkspace.name}:</p>
-          <p>{props.message}</p>uti
+          <p>{props.message}</p>
         </>
       }
       action={

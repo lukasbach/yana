@@ -45,7 +45,6 @@ const config: webpack.Configuration = {
     filename: 'js/[name].js',
     publicPath: './',
     libraryTarget: 'commonjs2',
-    // hashFunction: 'sha256'
   },
   plugins: [
     new HtmlWebpackPlugin({

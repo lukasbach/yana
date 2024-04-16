@@ -4,7 +4,7 @@ import { SettingsSelectInput } from '../layout/SettingsSelectInput';
 import { SettingsSwitchInput } from '../layout/SettingsSwitchInput';
 import { SettingsNumberInput } from '../layout/SettingsNumberInput';
 import { SettingsClickable } from '../layout/SettingsClickable';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 
 export const EditorSettings: React.FC<{}> = props => {
   return (

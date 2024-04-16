@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { SettingsSection } from '../layout/SettingsSection';
-import * as remote from '@electron/remote';
+import { remote } from 'electron';
 import { useState } from 'react';
 import { useAsyncEffect } from '../../../utils';
 import { Menu, MenuItem, Popover, Tag } from '@blueprintjs/core';
