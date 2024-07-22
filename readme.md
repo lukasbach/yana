@@ -9,10 +9,6 @@
 
 ![GitHub all releases](https://img.shields.io/github/downloads/lukasbach/yana/total)
 ![GitHub release (latest by date)](https://img.shields.io/github/downloads/lukasbach/yana/latest/total)
-[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=lukasbach_yana&metric=ncloc)](https://sonarcloud.io/dashboard?id=lukasbach_yana)
-[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=lukasbach_yana&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=lukasbach_yana)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=lukasbach_yana&metric=security_rating)](https://sonarcloud.io/dashboard?id=lukasbach_yana)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=lukasbach_yana&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=lukasbach_yana)
 
 <p align="center">
   <a href="https://www.producthunt.com/posts/yana-3?utm_source=badge-featured&utm_medium=badge&utm_souce=badge-yana-3" target="_blank"><img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=276473&theme=light" alt="Yana - Powerful & organizable note-taking app with lots of features | Product Hunt" style="width: 250px; height: 54px;" width="250" height="54" /></a>
